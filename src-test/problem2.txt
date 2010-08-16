@@ -1,0 +1,14 @@
+start(procUnit(procUnit1), procUnit(procUnit2), 
+      procUnit(procUnit3), procUnit(procUnit4),
+      device(procUnit1), device(procUnit2), 
+      device(procUnit3), device(procUnit4), 
+      device(depositBelt), device(feedBelt),
+      empty(procUnit1), empty(feedBelt), 
+      empty(procUnit3), empty(procUnit4), 
+      empty(depositBelt), block(block1),
+      over(block1,procUnit2)//, //processed(block1,procUnit2),
+      //processed(block1,procUnit4)
+      )
+goal(processed(block1,procUnit2), processed(block1,procUnit4), 
+     finished(block1)
+     )		

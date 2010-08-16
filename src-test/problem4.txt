@@ -1,0 +1,11 @@
+start(totalBlocks(0), procUnit(procUnit1), procUnit(procUnit2), 
+      procUnit(procUnit3), procUnit(procUnit4), 
+      device(procUnit1), device(procUnit2), 
+      device(procUnit3), device(procUnit4), 
+      device(depositBelt), device(feedBelt), 
+      block(block1), totalTime(0), empty(procUnit1), 
+      empty(procUnit2), empty(procUnit3), empty(procUnit4), 
+      empty(depositBelt), over(block1,feedBelt), type(block1,type1))
+goal(processed(block1,procUnit1), processed(block1,procUnit2), 
+     processed(block1,procUnit3), finished(block1))
+     

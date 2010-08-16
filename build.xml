@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     31 May 2007 15:46:48                                                        
+
+     JavaGP    
+     A Java implementation of Graphplan
+                   
+     meneguzz                                                                
+     ====================================================================== -->
+<project name="JavaGP" default="jar">
+	<description>
+            A Java implementation of Graphplan
+    </description>
+
+	<property name="jason.jar" value="${basedir}/lib/jason.jar"/>
+	<property name="javacc.jar" value="${basedir}/lib/javacc.jar"/>
+	<property name="build.dir" value="${basedir}/bin" />
+	<property name="src.dir" value="${basedir}/src"/>
+	<property name="debug" value="false"/>
+
+
+	<property name="version" value="0.9" />
+	<property name="release" value="1" />
+	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
+	<property name="dist.file" value="${basedir}/javagp-src-${version}.zip" />
+	<property name="javagp.jar" value="${basedir}/javagp.jar" />
+	<property name="bin.dist.file" value="${basedir}/javagp-bin-${version}.zip" />
+	
+	<path id="project.classpath">
+		<pathelement location="bin"/>
+	    <pathelement location="${jason.jar}"/>
+		<pathelement location="${javacc.jar}"/>
+	</path>
+
+	<!-- ================================= 
+          target: jar              
+         ================================= -->
+	<target name="jar" depends="init" description="--> A Java implementation of Graphplan">
+		<jar destfile="${javagp.jar}">
+			<manifest>
+				<attribute name="Main-Class" value="graphplan.Graphplan" />
+				<attribute name="Class-Path" value="jason.jar"/>
+			</manifest>
+			<fileset dir="${basedir}/bin">
+				<include name="**/*.class" />
+			</fileset>
+			<fileset dir="${basedir}/src">
+				<include name="logging.properties"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- ================================= 
+		  target: clean              
+	     ================================= -->
+	<target name="clean" description="--> description">
+		<delete dir="${build.dir}" />
+	</target>
+
+
+	<!-- - - - - - - - - - - - - - - - - - 
+	      target: init                      
+	     - - - - - - - - - - - - - - - - - -->
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+	</target>
+	
+	<!-- ================================= 
+          target: compile              
+         ================================= -->
+    <target name="compile" depends="parser" description="--> Compiles the sources">
+    	<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${debug}" deprecation="true" optimize="true" nowarn="true" source="1.5" target="1.5">
+			<classpath refid="project.classpath" />
+		</javac>
+    </target>
+
+	<!-- ================================= 
+          target: parser              
+         ================================= -->
+    <target name="parser" depends="init" description="Compiles the planner parser with JavaCC">
+        <delete failonerror="no">
+			<fileset dir="${basedir}/src/graphplan/parser" includes="*.java"/>
+		</delete>
+    	<java dir="${basedir}/src/graphplan/parser" classname="javacc" fork="yes">
+    		<classpath refid="project.classpath"/>
+    		<arg line="Parser.jj"/>
+    	</java>
+    </target>
+	
+	<!-- ================================= 
+		  target: dist              
+		 ================================= -->
+	<target name="dist" depends="jar,clean" description="Creates a zip for distribution">
+		<delete file="${dist.file}" />
+		<zip destfile="${dist.file}">
+			<fileset dir="${basedir}">
+				<include name="**/*" />
+				<exclude name=".svn*" />
+				<exclude name="${build.dir}" />
+			</fileset>
+		</zip>
+		<delete file="${bin.dist.file}" />
+		<zip destfile="${bin.dist.file}">
+			<fileset dir="${basedir}">
+				<include name="javagp.jar" />
+				<include name="release-notes.txt" />
+				<include name="LICENSE" />
+				<include name="src-test/*.txt" />
+			</fileset>
+		</zip>
+	</target>
+
+	
+	<!-- ================================= 
+          target: run              
+         ================================= -->
+    <target name="run" depends="init" description="--> Runs Graphplan">
+        <java classname="graphplan.Graphplan">
+        	<classpath refid="project.classpath"/>
+        </java>
+    </target>
+
+
+</project>

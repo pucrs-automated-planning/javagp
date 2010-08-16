@@ -1,0 +1,7 @@
+---------------------------
+version 0.9
+
+revision XXX on SVN
+---------------------------
+
+The very first release of JavaGP, with a few examples of domains and problems.

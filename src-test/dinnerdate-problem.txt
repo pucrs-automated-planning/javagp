@@ -1,0 +1,2 @@
+start(garbage, cleanHands, quiet)
+goal(dinner, ~garbage, present)

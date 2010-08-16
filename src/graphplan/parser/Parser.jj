@@ -1,0 +1,408 @@
+/*
+ * ---------------------------------------------------------------------------
+ * Copyright (C) 2010  Felipe Meneguzzi
+ * JavaGP is distributed under LGPL. See file LGPL.txt in this directory.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * To contact the author:
+ * http://www.meneguzzi.eu/felipe/contact.html
+ * ---------------------------------------------------------------------------
+ */
+ 
+/**
+ * JavaCC file
+ * Parts of the parser were *lovingly* ripped off from Jason
+ * http://jason.sourceforge.net
+ */
+ 
+options {
+  JDK_VERSION = "1.5";
+  STATIC = false;
+}
+PARSER_BEGIN(PlannerParser)
+package graphplan.parser;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
+import graphplan.domain.DomainDescription;
+import graphplan.domain.Operator;
+import graphplan.domain.Proposition;
+import graphplan.domain.jason.OperatorImpl;
+import graphplan.domain.jason.PropositionImpl;
+import graphplan.flyweight.OperatorFactory;
+import graphplan.flyweight.PropositionFactory;
+
+import jason.asSyntax.*;
+import jason.asSyntax.ArithExpr.ArithmeticOp;
+
+@SuppressWarnings("unchecked")
+public class PlannerParser {
+	protected OperatorFactory operatorFactory;
+	protected PropositionFactory propositionFactory;
+	protected DomainDescription domainDescription;
+	protected String source = null;
+	
+	public PlannerParser(){
+		this(System.in);
+		operatorFactory = OperatorFactory.getInstance();
+		propositionFactory = PropositionFactory.getInstance();
+	}
+	
+	/**
+	 * Parses a planning problem from files containing operators and 
+	 * problem a description.
+	 *
+	 * @param operators A file containing the domain operators
+	 * @param problem   A file containing the planning problem
+	 * 
+	 */
+	public DomainDescription parseProblem(File operators, File problem) throws FileNotFoundException, ParseException {
+		List<Operator> ops = null;
+		try {
+			source = operators.getPath();
+			ops = parseOperators(new FileInputStream(operators));
+		} catch (ParseException e) {
+			String message = e.getMessage();
+			throw new ParseException(operators.getName()+": "+message);
+		}
+		
+		DomainDescription domain = null;
+		try {
+			source = problem.getPath();
+			domain = parseDomain(new FileInputStream(problem));
+		} catch(ParseException e) {
+			String message = e.getMessage();
+			throw new ParseException(problem.getName()+": "+message);
+		}
+		
+		domain.setOperators(ops);
+		
+		return domain;
+	}
+	
+	public List<Operator> parseOperators(InputStream operators) throws ParseException {
+		this.ReInit(operators);
+		
+		List<Operator> ops = new ArrayList<Operator>(operators());
+		
+		return ops;
+	}
+	
+	public DomainDescription parseDomain(InputStream problem) throws ParseException {
+		DomainDescription domain = null;
+		
+		this.ReInit(problem);
+		
+		List<Proposition> start = new ArrayList<Proposition>(start());
+		
+		List<Proposition> goal = new ArrayList<Proposition>(goal());
+		
+		domain = new DomainDescription(start, goal);
+		
+		return domain;
+	}
+	
+	public DomainDescription parseProblem(InputStream operators, InputStream problem) throws ParseException {
+		DomainDescription domain = null;
+		
+		this.ReInit(operators);
+		
+		List<Operator> ops = new ArrayList<Operator>(operators());
+		
+		this.ReInit(problem);
+		
+		List<Proposition> start = new ArrayList<Proposition>(start());
+		
+		List<Proposition> goal = new ArrayList<Proposition>(goal());
+		
+		domain = new DomainDescription(ops, start, goal);
+		
+		return domain;
+	}
+}
+PARSER_END(PlannerParser)
+
+SKIP : {
+ " "
+|  "\t"
+|  "\n"
+|  "\r"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+}
+
+// Note: I do not know why
+TOKEN : {
+  <VAR : (<UP_LETTER> (<CHAR>)*) >
+}
+
+TOKEN : {
+// Predefined
+  <TK_TRUE:   "true">
+| <TK_FALSE:  "false">
+| <TK_NOT:    "not">
+| <TK_NEG:    "~">
+| <TK_INTDIV: "div">
+| <TK_INTMOD: "mod">
+| <TK_BEGIN:  "begin" >
+| <TK_END:    "end" >
+| <TK_OPERATOR: "operator" >
+| <TK_PRE: "pre">
+| <TK_POST: "post">
+| <TK_START: "start">
+| <TK_GOAL: "goal">
+| <TK_LABEL_AT: "@"> // special chars
+
+// Numbers
+|  <NUMBER: ["0"-"9"] (["0"-"9"])*
+          | (["0"-"9"])* "." (["0"-"9"])+ (<EXPONENT>)?
+          | (["0"-"9"])+ <EXPONENT> >
+|  <EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+
+// Strings
+|  <STRING: "\"" ( ~["\"","\\","\n","\r"]
+                 | "\\" ( ["n","t","b","r","f","\\","\'","\""]
+                        | ["0"-"7"] (["0"-"7"])?
+                        | ["0"-"3"] ["0"-"7"] ["0"-"7"]))* "\"">
+
+// Identifiers
+|  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*>
+|  <UNNAMEDVAR: ("_" (["0"-"9"])*) >
+|  <CHAR      : (<LETTER> | <DIGIT> | "_")>
+|  <LETTER    : ( <LC_LETTER> | <UP_LETTER> )>
+|  <LC_LETTER : ["a"-"z"]>
+|  <UP_LETTER : ["A"-"Z"]>
+|  <DIGIT     : ["0"-"9"]>
+}
+
+List<OperatorImpl> operators() : {List<OperatorImpl> ops = new ArrayList<OperatorImpl>();
+								  OperatorImpl op;}
+{
+
+	(op=operator()				{ops.add(op);}
+	)*							{return ops;}
+}
+
+OperatorImpl operator() : {Pred p;
+						Structure s;
+					   List<Proposition> preconds;
+					   List<Proposition> effects;}
+{
+	<TK_OPERATOR> p=pred()  				{s = new Structure(p);}
+	<TK_PRE> ":" preconds = propositions()
+	<TK_POST> ":" effects = propositions()
+											{return new OperatorImpl(s,preconds,effects);}
+	
+}
+
+List<Proposition> start() : {List<Proposition> start;}
+{
+	<TK_START> "(" (
+	start=propositions()
+	) ")"						{return start;}
+}
+
+List<Proposition> goal() : {List<Proposition> goal;}
+{
+	<TK_GOAL> "(" (
+	goal=propositions()
+	) ")"						{return goal;}
+}
+
+List<Proposition> propositions() : {List<Proposition> props = new ArrayList<Proposition>(); 
+									  PropositionImpl p;}
+{
+   LOOKAHEAD(4) <TK_TRUE>		{return props;}
+   |p=proposition()				{props.add(p);}
+	("," p=proposition()		{props.add(p);}
+	   )*						{return props;}
+}
+
+PropositionImpl proposition() : {Literal l;}
+{
+	l=literal()					{return (PropositionImpl) propositionFactory.getProposition(l.toString());}
+}
+
+/* The next elements were adapted from Jason */
+
+/* Literal */
+Literal literal() :  { Pred F; Token k; boolean type = Literal.LPos; }
+{
+  ( ( [ <TK_NEG>              { type = Literal.LNeg; }
+      ]
+      F=pred()                { return new LiteralImpl(type,F); }
+    )
+  | k=<TK_TRUE>               { return Literal.LTrue; } 
+  | k=<TK_FALSE>              { return Literal.LFalse; } 
+  )
+}
+
+/* Annotated Formulae */
+Pred pred() :       { Token K; Pred p; Term t; List l; ListTerm lt;}
+{
+  (
+   K=<ATOM>
+   |
+   K=<TK_BEGIN>
+   |
+   K=<TK_END>
+  )                  { p = new Pred(K.image);
+                       p.setSrcInfo(new SourceInfo(source,K.beginLine));
+                     } 
+  
+  [
+      "(" l = terms() 
+      ")"           { p.addTerms(l); }
+  ]
+  [ 
+      lt = list()   { p.setAnnots(lt); }
+  ] 
+  { return p; }
+}
+
+/* List of terms */
+List terms() : { List listTerms = new ArrayList(); Term v; }
+{
+  v=term()             { listTerms.add(v); } 
+  ( "," v=term()       { listTerms.add(v); }
+  )* 
+                       { return listTerms; }
+}
+
+
+Term term() :       { Term u; Object o; }
+{
+  ( u=literal()     { Literal l = (Literal)u;
+                      if (l.isAtom() && !l.negated()) {
+                         Atom a = new Atom(l.getFunctor());
+                         a.setSrcInfo(new SourceInfo(source,l.getSrcInfo().getSrcLine()));
+                         return a;
+                      }
+                    }
+  | u=list()
+  | o=arithm_expr() { return (Term)o; } //Nor do we need arithmetics here
+  | u=string()
+  )
+  { return u; }
+}
+
+ListTermImpl list() : { ListTermImpl lt = new ListTermImpl(); ListTerm last; 
+                        Token K; Term f; }
+{
+  "["
+  [
+  f=term()                { last = lt.append(f); }
+  ( "," f=term()          { last = last.append(f); }
+  )*
+  [ "|"  ( K=<VAR>        { last.setNext(new VarTerm(K.image)); }
+         | K=<UNNAMEDVAR> { last.setNext(new UnnamedVar()); }
+         | f=list()       { last = last.concat((ListTerm)f);	   }
+         )           
+  ]
+  ]
+  "]"                     { return lt; } 
+}
+
+/* arithmetic expression */
+Object arithm_expr() :        { Object t1, t2; ArithmeticOp op;}
+{
+   t1 = arithm_expr_trm()     { op = ArithmeticOp.none; }
+[  ( "+"                      { op = ArithmeticOp.plus;} 
+   | "-"                      { op = ArithmeticOp.minus;}
+   )
+   t2 = arithm_expr()         { if (!(t1 instanceof NumberTerm)) {
+                                   throw new ParseException("ArithExpr: first operand is not numeric or variable.");
+                                }
+                                if (!(t2 instanceof NumberTerm)) {
+                                   throw new ParseException("ArithExpr: second operand is not numeric or variable.");
+                                }
+                                return new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2); 
+                              }
+]                             { return t1; }
+}
+
+Object arithm_expr_trm() :      { Object t1, t2; ArithmeticOp op;}
+{
+   t1 = arithm_expr_factor()    { op = ArithmeticOp.none; }
+[  ( "*"                        { op = ArithmeticOp.times; } 
+   | "/"                        { op = ArithmeticOp.div; }
+   | <TK_INTDIV>                { op = ArithmeticOp.intdiv; }
+   | <TK_INTMOD>                { op = ArithmeticOp.mod; }
+   )
+   t2 = arithm_expr_trm()       { if (!(t1 instanceof NumberTerm)) {
+                                    throw new ParseException("ArithTerm: first operand is not numeric or variable.");
+                                  }
+                                  if (!(t2 instanceof NumberTerm)) {
+                                    throw new ParseException("ArithTerm: second operand is not numeric or variable.");
+                                  }
+                                  return new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2); 
+                                }
+]                               { return t1; }
+}
+
+Object arithm_expr_factor():   
+                                { Object t1, t2; ArithmeticOp op;}
+{
+   t1 = arithm_expr_simple()    { op = ArithmeticOp.none; }
+[  ( "**"                       { op = ArithmeticOp.pow; }
+   )
+   t2 = arithm_expr_factor()    { if (!(t1 instanceof NumberTerm)) {
+                                    throw new ParseException("ArithFactor: first operand is not numeric or variable.");
+                                  }
+                                  if (!(t2 instanceof NumberTerm)) {
+                                    throw new ParseException("ArithFactor: second operand is not numeric or variable.");
+                                  }
+                                  return new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2); 
+                                }
+]                               { return t1; }
+}
+
+
+Object arithm_expr_simple():    
+                                { Token K; Object t; VarTerm v; }
+{
+ ( K = <NUMBER>                 { return new NumberTermImpl(K.image); }
+ | "-" t = arithm_expr_simple() { if (!(t instanceof NumberTerm)) {
+                                    throw new ParseException("operator '-' applied to argument not numeric or variable.");
+                                  }
+                                  return new ArithExpr(ArithmeticOp.minus, (NumberTerm)t); 
+                                }
+// | "(" t = log_expr() ")"       { return t; }
+ | v = var()                    { return v; }
+ )
+}
+
+VarTerm var():      { Token K; VarTerm v; ListTerm lt; }
+{
+ ( K = <VAR>        { v = new VarTerm(K.image); v.setSrcInfo(new SourceInfo(source,K.beginLine)); }
+ | K = <UNNAMEDVAR> { v = new UnnamedVar(); }
+ )
+ [ 
+   lt = list()      { v.setAnnots(lt); }
+ ]
+                    { return v; }
+}
+
+StringTerm string():{ Token k; }
+{
+  k = <STRING>      { return new StringTermImpl(k.image.substring(1,k.image.length()-1)); } 
+}

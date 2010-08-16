@@ -1,0 +1,15 @@
+operator cook
+pre: cleanHands
+post: dinner
+
+operator carry
+pre: true
+post: ~garbage, ~cleanHands
+
+operator dolly
+pre: true
+post: ~garbage, ~quiet
+
+operator wrap
+pre: quiet
+post: present
