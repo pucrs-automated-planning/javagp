@@ -1,7 +1,14 @@
 ---------------------------
+version 0.9.1
+
+revision $Rev$ on SVN
+---------------------------
+
+The very first release of JavaGP, with a few examples of domains and problems.
+---------------------------
 version 0.9
 
-revision XXX on SVN
+revision 15 on SVN
 ---------------------------
 
 The very first release of JavaGP, with a few examples of domains and problems.

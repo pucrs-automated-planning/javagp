@@ -148,6 +148,7 @@ public class Graphplan {
 			logger.info("Planning took "+((t2-t1)/1000)+"s");
 		} else {
 			logger.warning("Wrong parameters");
+			logger.info("Usage is java -jar JavaGP -p <problem> -d <domain> [-maxlevels <max_graph_levels>] [-timeout <planning_timeout>]");
 			System.exit(1);
 		}
 	}
@@ -328,7 +329,6 @@ public class Graphplan {
 	 * @param description	The domain description in which the supplied plan is executed
 	 * @return				The minimum set of propositions that must be true before execution
 	 */
-	@SuppressWarnings("unchecked")
 	public List<Proposition> getPlanPreconditions(List<String> plan, DomainDescription description) {
 		// XXX This variable has been placed here to give us a slight speed up and to ease debug
 		// XXX But this might not be a good idea if we try and change the singleton at runtime

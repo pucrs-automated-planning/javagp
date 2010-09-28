@@ -1,0 +1,4 @@
+In order to use JavaGP you need to have Java (http://java.sun.com) Ant (http://ant.apache.org/) configured in your system, to run the build script build.xml. Then, in order to run the planner you need to follow these steps:
+* Go to the root of the JavaGP distribution (cd <JavaGP>)
+* Build the project (ant)
+* Run "java -jar javagp.jar -d examples/ma-prodcell/domain.txt  -p examples/ma-prodcell/problem.txt"

@@ -19,8 +19,8 @@
 	<property name="debug" value="false"/>
 
 
-	<property name="version" value="0.9" />
-	<property name="release" value="1" />
+	<property name="version" value="0.9.1" />
+	<property name="release" value="2" />
 	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
 	<property name="dist.file" value="${basedir}/javagp-src-${version}.zip" />
 	<property name="javagp.jar" value="${basedir}/javagp.jar" />
