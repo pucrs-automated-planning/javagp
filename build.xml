@@ -105,6 +105,7 @@
 				<include name="javagp.jar" />
 				<include name="release-notes.txt" />
 				<include name="LICENSE" />
+				<include name="README" />
 				<include name="src-test/*.txt" />
 			</fileset>
 		</zip>
