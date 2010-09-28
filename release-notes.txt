@@ -4,7 +4,10 @@ version 0.9.1
 revision $Rev$ on SVN
 ---------------------------
 
-The very first release of JavaGP, with a few examples of domains and problems.
+Changes:
+- Updated usage instructions in the executable
+- Added a basic README describing usage
+
 ---------------------------
 version 0.9
 
