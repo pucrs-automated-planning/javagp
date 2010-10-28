@@ -140,7 +140,9 @@ public class Graphplan {
 			
 			if(result.isTrue()) {
 				logger.info("Plan found");
-				logger.info(result.toString());
+//				logger.info(result.toString());
+				//Change plan output to standard output for easier redirection.
+				System.out.println(result.toString());
 			} else {
 				logger.warning("No plan found");
 			}

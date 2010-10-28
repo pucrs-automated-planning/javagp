@@ -1,0 +1,17 @@
+// The monkey wants to eat the banana by climbing on a crate.
+// He wants to fool the scientists by putting the crate back when he's done.
+
+start(
+  monkey(theMonkey),
+  crate(theCrate),
+  banana(theBanana),
+  room(room1),
+  room(room2),
+  in(theMonkey,room1),
+  in(theCrate,room2),
+  in(theBanana,room1),
+  ~on(theMonkey,theCrate),
+  putback(theCrate)
+)
+
+goal(ate(theMonkey,theBanana), putback(theCrate))
