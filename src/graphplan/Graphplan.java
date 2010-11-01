@@ -113,10 +113,10 @@ public class Graphplan {
 					try {
 						timeout = Long.parseLong(args[i]);
 					} catch (NumberFormatException e) {
-						logger.warning("-timeout argument requires a positive integer number of levels");
+						logger.warning("-timeout argument requires a positive integer amount of time");
 					}
 				} else {
-					logger.warning("-timeout argument requires a positive integer number of levels");
+					logger.warning("-timeout argument requires a positive integer amount of time");
 					argsOk = false;
 				}
 			}
