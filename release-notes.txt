@@ -7,6 +7,7 @@ revision $Rev$ on SVN
 Changes:
 - Updated usage instructions in the executable
 - Added a basic README describing usage
+- Added release notes
 
 ---------------------------
 version 0.9
