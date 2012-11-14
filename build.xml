@@ -16,6 +16,7 @@
 	<property name="javacc.jar" value="${basedir}/lib/javacc.jar"/>
 	<property name="build.dir" value="${basedir}/bin" />
 	<property name="src.dir" value="${basedir}/src"/>
+	<property name="doc.api.dir" value="${basedir}/doc/api"/>
 	<property name="debug" value="false"/>
 
 
@@ -25,6 +26,7 @@
 	<property name="dist.file" value="${basedir}/javagp-src-${version}.zip" />
 	<property name="javagp.jar" value="${basedir}/javagp.jar" />
 	<property name="bin.dist.file" value="${basedir}/javagp-bin-${version}.zip" />
+
 	
 	<path id="project.classpath">
 		<pathelement location="bin"/>
@@ -55,6 +57,7 @@
 	     ================================= -->
 	<target name="clean" description="--> description">
 		<delete dir="${build.dir}" />
+		<delete dir="${doc.api.dir}" />
 	</target>
 
 
@@ -126,5 +129,93 @@
         </java>
     </target>
 
+	
+	 <!-- apidoc related tasks- -->
+
+	    <target name="apidoc" depends="compile,apidocsimple,apidocuml" />
+	    
+	    <condition property="dot-ok" value="true">
+	        <or>
+	            <available file="dot"     filepath="${env.PATH}" />
+	            <available file="dot.exe" filepath="${env.PATH}" />
+	        </or>
+	    </condition>
+	    <condition property="dot-nok" value="true">
+	        <not>
+	            <or>
+	                <!--<available file="dot"     filepath="${env.PATH}" /> -->
+	                <available file="dot.exe" filepath="${env.PATH}" />
+	            	<available file="dot"     filepath="${env.PATH}:/opt/local/bin" />
+	            </or>
+	        </not>
+	    </condition>
+	    
+	    <target name="apidocsimple" unless="dot-ok" > <!-- stylesheetfile="doc/faq/faq.css" -->
+	        <javadoc 
+	            destdir="${doc.api.dir}" 
+	            packagenames="graphplan.*" 
+	            sourcepath="${basedir}/src" 
+	            excludepackagenames="" 
+	            use="true" 
+	            version="true" 
+	            author="true" 
+	            windowtitle="JavaGP - Graphplan Implementation in Java"
+	            >
+	                <classpath refid="project.classpath" />
+	        </javadoc>
+	    </target>
+	    
+	    <target name="apidocuml" unless="dot-nok" >
+	        <javadoc 
+	            destdir="${doc.api.dir}" 
+	            packagenames="graphplan.*" 
+	            sourcepath="${basedir}/src" 
+	            excludepackagenames="" 
+	            use="true" 
+	            version="true" 
+	            author="true" 
+	            windowtitle="JavaGP - Graphplan Implementation in Java">
+	                <classpath refid="project.classpath" />
+	                <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="lib/UmlGraph.jar">
+	                                    <!--param name="-inferrel"/ -->
+	                                    <!--param name="-inferdep"/-->
+	                                    <!--param name="-hide" value="java.*"/-->
+	                                    <param name="-enumconstants" />
+	                                    <!--param name="-collpackages" value="java.util.*"/-->
+	                                    <param name="-qualify"/>
+	                                    <!--param name="-collapsible"/-->
+	                					<param name="-operations"/>
+	                                    <param name="-postfixpackage"/>
+	                                    <param name="-nodefontsize" value="14"/>
+	                                    <param name="-nodefontpackagesize" value="8"/>
+	                                    <param name="-edgefontsize" value="10"/>
+	                                    <!--param name="-link" value="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec"/>
+	                                    <param name="-link" value="http://java.sun.com/j2se/1.5/docs/api"/-->
+	                </doclet>           
+	        </javadoc>
+	    </target>
+
+	    <!-- generate only the UML diagrams in PDF format -->
+	    <target name="uml" unless="dot-nok" >
+	            <property name="uml.dir" value="${doc.api.dir}"/>
+	            <property name="src.uml.dir" value="${src.dir}/doc/uml"/>
+	            <mkdir dir="${uml.dir}"/>
+	            <javadoc sourcepath="src" packagenames="graphplan.*" package="true" >
+	               <doclet name="org.umlgraph.doclet.UmlGraph" path="${basedir}/lib/UMLGraph.jar">
+	                   <param name="-hide" value="java.*"/>
+	                   <param name="-enumconstants" />
+	                   <param name="-d" value="${uml.dir}"/>
+	               </doclet>
+	            </javadoc>
+	            <move file="${uml.dir}/graph.dot" tofile="${uml.dir}/syntax.dot" />
+	            <apply executable="dot" dest="${uml.dir}" parallel="false">
+	                <arg value="-Tpdf"/>
+	                <arg value="-o"/>
+	                <targetfile/>
+	                <srcfile/>
+	                <fileset dir="${uml.dir}" includes="*.dot"/>
+	                <mapper type="glob" from="*.dot" to="*.pdf"/>
+	            </apply>
+	    </target>
 
 </project>
