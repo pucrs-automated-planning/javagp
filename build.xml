@@ -183,7 +183,7 @@
 	                                    <param name="-enumconstants" />
 	                                    <!--param name="-collpackages" value="java.util.*"/-->
 	                                    <param name="-qualify"/>
-	                                    <!--param name="-collapsible"/-->
+	                                    <!--param name="-collapsible"/--> 
 	                					<param name="-operations"/>
 	                                    <param name="-postfixpackage"/>
 	                                    <param name="-nodefontsize" value="14"/>
@@ -193,6 +193,14 @@
 	                                    <param name="-link" value="http://java.sun.com/j2se/1.5/docs/api"/-->
 	                </doclet>           
 	        </javadoc>
+	    	<apply executable="dot" dest="${doc.api.dir}" parallel="false">
+	    		    	         <arg value="-Tsvg"/>
+	    		    	         <arg value="-o"/>
+	    		    	         <targetfile/>
+	    		    	         <srcfile/>
+	    		    	         <fileset dir="${doc.api.dir}" includes="*.dot"/>
+	    		    	         <mapper type="glob" from="*.dot" to="*.svg"/>
+	    		    	     </apply>
 	    </target>
 
 	    <!-- generate only the UML diagrams in PDF format -->
@@ -200,13 +208,15 @@
 	            <property name="uml.dir" value="${doc.api.dir}"/>
 	            <property name="src.uml.dir" value="${src.dir}/doc/uml"/>
 	            <mkdir dir="${uml.dir}"/>
-	            <javadoc sourcepath="src" packagenames="graphplan.*" package="true" >
+	            <javadoc sourcepath="src" packagenames="graphplan.*"  package="true" >
+	               <classpath refid="project.classpath" />
 	               <doclet name="org.umlgraph.doclet.UmlGraph" path="${basedir}/lib/UMLGraph.jar">
 	                   <param name="-hide" value="java.*"/>
 	                   <param name="-enumconstants" />
 	                   <param name="-d" value="${uml.dir}"/>
 	               </doclet>
 	            </javadoc>
+	    	    
 	            <move file="${uml.dir}/graph.dot" tofile="${uml.dir}/syntax.dot" />
 	            <apply executable="dot" dest="${uml.dir}" parallel="false">
 	                <arg value="-Tpdf"/>
