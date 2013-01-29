@@ -1,0 +1,10 @@
+start (
+	onTable(a),
+	onTable(b),
+	clear(a),
+	clear(b)
+)
+
+goal(
+	on(a, b)
+)

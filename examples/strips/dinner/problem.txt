@@ -1,0 +1,11 @@
+start (
+	lixo(Obj),
+	maosLimpas(Obj),
+	silencio(Obj)
+)
+
+goal(
+	jantar(Obj), 
+	presente(Obj),
+	lixo(Obj)
+)

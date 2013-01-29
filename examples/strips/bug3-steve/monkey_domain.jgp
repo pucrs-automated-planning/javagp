@@ -1,0 +1,41 @@
+operator eat(M,B,C,X)
+  pre:
+    monkey(M), banana(B), crate(C), room(X),
+    in(M,X), in(B,X), in(C,X), on(M,C)
+  post:
+    ~in(B,X), ate(M,B)
+
+operator move(M,X,Y)
+  pre:
+    monkey(M), room(X), room(Y),
+    in(M,X)
+  post:
+    ~in(M,X), in(M,Y)
+
+operator pushAway(M,C,X,Y)
+  pre:
+    monkey(M), crate(C), room(X), room(Y),
+    in(C,X), in(M,X), ~on(M,C), putback(C)
+  post:
+    ~in(C,X), ~in(M,X), in(C,Y), in(M,Y), ~putback(C), remember(C,X)
+
+operator pushBack(M,C,X,Y)
+  pre:
+    monkey(M), crate(C), room(X), room(Y),
+    in(C,X), in(M,X), ~on(M,C), remember(C,Y)
+  post:
+    ~in(C,X), ~in(M,X), in(C,Y), in(M,Y), putback(C), ~remember(C,Y)
+
+operator climbOn(M,C,X)
+  pre:
+    monkey(M), crate(C), room(X),
+    in(M,X), in(C,X), ~on(M,C)
+  post:
+    on(M,C)
+
+operator climbOff(M,C,X)
+  pre:
+    monkey(M), crate(C), room(X),
+    in(M,X), in(C,X), on(M,C)
+  post:
+    ~on(M,C)

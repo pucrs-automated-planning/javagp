@@ -1,0 +1,3 @@
+start (obj(object))
+
+goal(a_ok(object),b_ok(object))
