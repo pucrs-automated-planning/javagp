@@ -27,9 +27,10 @@ public class GraphplanPDDLTest {
 		}
 	}
 	
+	@Test
 	public void testDockWorkerRobotsPDDL() {
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d","examples/pddl/dinner/dinner.pddl", "-p", "examples/pddl/dinner/pb1.pddl"});
+			Graphplan.main(new String[] {"-pddl", "-d","examples/pddl/dwr/dwr.pddl", "-p", "examples/pddl/dwr/pb2.pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

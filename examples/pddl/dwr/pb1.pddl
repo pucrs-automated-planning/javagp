@@ -51,10 +51,12 @@
 
 ;; the task is to move all containers to locations l2
 ;; ca and cc in pile p2, the rest in q2
-  (:goal
-    (and (in ca p2)
-	        (in cb q2)
-	        (in cc p2)
-	        (in cd q2)
-	        (in ce q2)
-	        (in cf q2))))
+(:goal
+	(and (in ca p2)
+		 (in cb q2)
+	     (in cc p2)
+	     (in cd q2)
+	     (in ce q2)
+	     (in cf q2)
+	)
+))
