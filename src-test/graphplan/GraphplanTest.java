@@ -98,7 +98,7 @@ public class GraphplanTest {
 	@Test
 	public void testMain() {
 		try {
-			Graphplan.main(new String[] {"-d","domain.txt","-p","problem.txt"});
+			Graphplan.main(new String[] {"-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem.txt"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

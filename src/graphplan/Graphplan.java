@@ -35,6 +35,7 @@ import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.SolutionExtractionVisitor;
 import graphplan.graph.algorithm.TimeoutSolutionExtractionVisitor;
 import graphplan.parser.PlannerParser;
+import graphplan.parser.PlannerParserPDDL;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,30 +66,44 @@ public class Graphplan {
 		Graphplan graphplan = new Graphplan();
 		InputStream operators = null;
 		InputStream problem = null;
+		
+		String pddlProblem = null;
+		String pddlDomain = null;
+		
 		long timeout = 0;
 		boolean argsOk = true;
-		
+		boolean pddl = false;
+
 		for(int i=0; i<args.length && argsOk; i++) {
-			//The domain argument
-			if(args[i].equals("-d")) {
+			if(args[i].equals("-d")) { /* The domain argument */
 				if(++i < args.length && !args[i].startsWith("-")) {
-					try {
-						operators = new FileInputStream(args[i]);
-					} catch (FileNotFoundException e) {
-						logger.warning(e.toString());
-						argsOk = false;
+					if(args[0].equals("-pddl")) {
+						pddl = true;
+						pddlDomain = args[i];  
+					} else {
+						try {
+							operators = new FileInputStream(args[i]);
+						} catch (FileNotFoundException e) {
+							logger.warning(e.toString());
+							argsOk = false;
+						}
 					}
 				} else {
 					logger.warning("-d argument requires a filename with the domain");
 					argsOk = false;
 				}
-			} else if(args[i].equals("-p")) {
+			} else if(args[i].equals("-p")) { /* The problem argument */
 				if(++i < args.length && !args[i].startsWith("-")) {
-					try {
-						problem = new FileInputStream(args[i]);
-					} catch (FileNotFoundException e) {
-						logger.warning(e.toString());
-						argsOk = false;
+					if(args[0].equals("-pddl")) {
+						pddl = true;
+						pddlProblem = args[i];  
+					} else {
+						try {
+							problem = new FileInputStream(args[i]);
+						} catch (FileNotFoundException e) {
+							logger.warning(e.toString());
+							argsOk = false;
+						}
 					}
 				} else {
 					logger.warning("-p argument requires a filename with the problem");
@@ -122,12 +137,19 @@ public class Graphplan {
 			}
 		}
 		
-		argsOk = (operators != null) && (problem != null);
+		if(!pddl) argsOk = (operators != null) && (problem != null);
 		
 		if(argsOk) {
 			long t1 = System.currentTimeMillis();
-			PlannerParser parser = new PlannerParser();
-			DomainDescription domain = parser.parseProblem(operators, problem);
+			DomainDescription domain = null;
+			
+			if(pddl){
+				PlannerParserPDDL parserPDDL = new PlannerParserPDDL(pddlDomain, pddlProblem);
+				domain = parserPDDL.getDomainDescriptionFromPddlObject();
+			} else {
+				PlannerParser parser = new PlannerParser();
+				domain = parser.parseProblem(operators, problem);
+			}
 			
 			PlanResult result = null;
 			
@@ -137,10 +159,9 @@ public class Graphplan {
 				result = graphplan.plan(domain); 
 			}
 			
-			
 			if(result.isTrue()) {
 				logger.info("Plan found");
-//				logger.info(result.toString());
+				//logger.info(result.toString());
 				//Change plan output to standard output for easier redirection.
 				System.out.println(result.toString());
 			} else {
@@ -158,13 +179,9 @@ public class Graphplan {
 	public static void setupLogger() {
 		try {
 			if (new File(LOGGER_FILE).exists()) {
-
-				LogManager.getLogManager().readConfiguration(
-						new FileInputStream(new File(LOGGER_FILE)));
-
+				LogManager.getLogManager().readConfiguration(new FileInputStream(new File(LOGGER_FILE)));
 			} else {
-				LogManager.getLogManager().readConfiguration(
-						Graphplan.class.getResourceAsStream("/" + LOGGER_FILE));
+				LogManager.getLogManager().readConfiguration(Graphplan.class.getResourceAsStream("/" + LOGGER_FILE));
 			}
 		} catch (Exception e) {
 			// e.printStackTrace();
@@ -176,7 +193,6 @@ public class Graphplan {
 	 * Empty constructor for testing.
 	 */
 	public Graphplan() {
-		
 	}
 	
 	/**
@@ -408,10 +424,10 @@ public class Graphplan {
 		for (Iterator<Proposition> iter = level.getPropositions(); iter.hasNext();) {
 			planPreconditions.add(iter.next());
 		}
-		
+
 		return planPreconditions;
 	}
-
+	
 	/**
 	 * @return the solutionExtraction
 	 */
