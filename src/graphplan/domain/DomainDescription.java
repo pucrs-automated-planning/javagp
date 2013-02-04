@@ -25,6 +25,8 @@ package graphplan.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The description of a planning problem, including the set of ground
@@ -40,6 +42,10 @@ public class DomainDescription {
 	protected List<Proposition> initialState;
 
 	protected List<Proposition> goalState;
+	
+	protected Map<String, Set<String>> types;
+	
+	protected Map<String, Set<String>> parameterTypes;
 	
 	/**
 	 * Instantiate a domain description with the supplied  
@@ -63,6 +69,23 @@ public class DomainDescription {
 			List<Proposition> initialState, List<Proposition> goalState) {
 		this(initialState, goalState);
 		this.operators = new ArrayList<Operator>(operators);
+	}
+	
+	/**
+	 * Instantiate a domain description with the supplied <code>operators</code>, 
+	 * <code>initialState</code> and <code>goalState</code>.
+	 * @param operators
+	 * @param initialState
+	 * @param goalState
+	 * @param types
+	 * @param parametertypes
+	 */
+	public DomainDescription(List<Operator> operators,
+			List<Proposition> initialState, List<Proposition> goalState, Map<String, Set<String>> types, Map<String, Set<String>> parameterTypes) {
+		this(initialState, goalState);
+		this.operators = new ArrayList<Operator>(operators);
+		this.types = types;
+		this.parameterTypes = parameterTypes;
 	}
 
 	/**

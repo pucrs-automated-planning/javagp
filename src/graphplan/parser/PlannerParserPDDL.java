@@ -12,9 +12,13 @@ import jason.asSyntax.VarTerm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import pddl4j.PDDLObject;
 import pddl4j.Parser;
@@ -41,6 +45,9 @@ public class PlannerParserPDDL {
 	
 	private String domain;
 	private String problem;
+
+	private Map<String, Set<String>> types;
+	private Map<String, Set<String>> parameterTypes;
 	
 	/**
 	 * 
@@ -58,6 +65,9 @@ public class PlannerParserPDDL {
 	public PlannerParserPDDL(String domain, String problem){
 		this.domain = domain;
 		this.problem = problem;
+		
+		this.types = new HashMap<String, Set<String>>();
+		this.parameterTypes = new HashMap<String, Set<String>>();
 		
         Properties options = new Properties();
         options.put("source", Source.V3_0);
@@ -113,11 +123,16 @@ public class PlannerParserPDDL {
 				Exp precontidion = (Exp) ((Action)actionDef).getPrecondition();
 				Exp effect = (Exp) ((Action)actionDef).getEffect();
 				
+				Set<String> parameterTypes = new HashSet<String>();
+				
 				OperatorImpl operatorImpl = new OperatorImpl(actionDef.getName());
 				List<Term> termsOp = new ArrayList<Term>();
 				for(pddl4j.exp.term.Term term: actionDef.getParameters()){
 					termsOp.add(new VarTerm(term.getImage().replace("?", "").toUpperCase()));
+					parameterTypes.add(term.getTypeSet().toString());
 				}
+
+				this.parameterTypes.put(actionDef.getName(), parameterTypes);
 				
 				operatorImpl.addTerms(termsOp);
 				
@@ -141,6 +156,9 @@ public class PlannerParserPDDL {
 					Constant var = (Constant) variables.next();
 					Atom term = new Atom(var.getImage());
 					terms.add(term);
+					
+					Set<String> setVar = this.types.get(var.getTypeSet().toString());
+					setVar.add(var.getImage());
 				}
 				
 				proposition.addTerms(terms);
@@ -170,7 +188,7 @@ public class PlannerParserPDDL {
 			
 			System.out.println("\nPDDL Parser\n");
 
-			DomainDescription domainDescription = new DomainDescription(operators, initialState, goalState);
+			DomainDescription domainDescription = new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes);
 			return domainDescription;
 		}
 		
@@ -212,6 +230,11 @@ public class PlannerParserPDDL {
 					Variable var = (Variable) variables.next();
 					VarTerm term = new VarTerm(var.getImage().replace("?", "").toUpperCase());
 					terms.add(term);
+					
+					if(this.types.get(var.getTypeSet()) == null){
+						Set<String> setVar = new HashSet<String>();
+						this.types.put(var.getTypeSet().toString(), setVar);
+					}
 				}
 				
 				proposition.addTerms(terms);

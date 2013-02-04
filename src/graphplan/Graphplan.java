@@ -275,7 +275,6 @@ public class Graphplan {
 		solutionExtraction = new TimeoutSolutionExtractionVisitor(domainDescription.getGoalState());
 		((TimeoutSolutionExtractionVisitor)solutionExtraction).setTimeout(timeout);
 		
-		
 		planningGraph = new PlanningGraph(initialLevel);
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
