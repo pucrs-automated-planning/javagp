@@ -61,6 +61,8 @@ public class Graphplan {
 	private PlanningGraph planningGraph;
 	private SolutionExtractionVisitor solutionExtraction;
 	
+	private static boolean pddl = false;
+	
 	public static void main(String[] args) throws Exception {
 		setupLogger();
 		Graphplan graphplan = new Graphplan();
@@ -72,7 +74,6 @@ public class Graphplan {
 		
 		long timeout = 0;
 		boolean argsOk = true;
-		boolean pddl = false;
 
 		for(int i=0; i<args.length && argsOk; i++) {
 			if(args[i].equals("-d")) { /* The domain argument */
@@ -213,9 +214,11 @@ public class Graphplan {
 	public PlanResult plan(DomainDescription domainDescription) throws PlanningGraphException, OperatorFactoryException {
 		PropositionLevel initialLevel = new PropositionLevel();
 		initialLevel.addPropositions(domainDescription.getInitialState());
-		solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
+		this.solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
 		
-		planningGraph = new PlanningGraph(initialLevel);
+		if(pddl) this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes());
+		else this.planningGraph = new PlanningGraph(initialLevel);
+		
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
 		for(Operator operator:domainDescription.getOperators()) {

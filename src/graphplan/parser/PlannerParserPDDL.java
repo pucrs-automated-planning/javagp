@@ -6,6 +6,7 @@ import graphplan.domain.Proposition;
 import graphplan.domain.jason.OperatorImpl;
 import graphplan.domain.jason.PropositionImpl;
 import jason.asSyntax.Atom;
+import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
 
@@ -47,7 +48,7 @@ public class PlannerParserPDDL {
 	private String problem;
 
 	private Map<String, Set<String>> types;
-	private Map<String, Set<String>> parameterTypes;
+	private Map<String, List<String>> parameterTypes;
 	
 	/**
 	 * 
@@ -67,7 +68,7 @@ public class PlannerParserPDDL {
 		this.problem = problem;
 		
 		this.types = new HashMap<String, Set<String>>();
-		this.parameterTypes = new HashMap<String, Set<String>>();
+		this.parameterTypes = new HashMap<String, List<String>>();
 		
         Properties options = new Properties();
         options.put("source", Source.V3_0);
@@ -123,13 +124,21 @@ public class PlannerParserPDDL {
 				Exp precontidion = (Exp) ((Action)actionDef).getPrecondition();
 				Exp effect = (Exp) ((Action)actionDef).getEffect();
 				
-				Set<String> parameterTypes = new HashSet<String>();
+				List<String> parameterTypes = new ArrayList<String>();
 				
 				OperatorImpl operatorImpl = new OperatorImpl(actionDef.getName());
 				List<Term> termsOp = new ArrayList<Term>();
 				for(pddl4j.exp.term.Term term: actionDef.getParameters()){
 					termsOp.add(new VarTerm(term.getImage().replace("?", "").toUpperCase()));
 					parameterTypes.add(term.getTypeSet().toString());
+					
+					Set<String> setVar = this.types.get(term.getTypeSet().toString());
+					
+					if(setVar == null){
+						setVar = new HashSet<String>();
+						setVar.add(term.getImage().replace("?", "").toUpperCase());
+						this.types.put(term.getTypeSet().toString(), setVar);
+					} else setVar.add(term.getImage().replace("?", "").toUpperCase());
 				}
 
 				this.parameterTypes.put(actionDef.getName(), parameterTypes);
@@ -222,7 +231,8 @@ public class PlannerParserPDDL {
 	            break;
 	        case ATOMIC_FORMULA:
 	            AtomicFormula p = (AtomicFormula) exp;
-				PropositionImpl proposition = new PropositionImpl(p.getPredicate());
+				PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, p.getPredicate()));
+				
 				Iterator variables = p.iterator();
 				
 				List<Term> terms = new ArrayList<Term>();
@@ -231,16 +241,18 @@ public class PlannerParserPDDL {
 					VarTerm term = new VarTerm(var.getImage().replace("?", "").toUpperCase());
 					terms.add(term);
 					
-					if(this.types.get(var.getTypeSet()) == null){
-						Set<String> setVar = new HashSet<String>();
+					Set<String> setVar = this.types.get(var.getTypeSet().toString());
+					
+					if(setVar == null){
+						setVar = new HashSet<String>();
+						setVar.add(var.getImage().replace("?", "").toUpperCase());
 						this.types.put(var.getTypeSet().toString(), setVar);
-					}
+					} else setVar.add(var.getImage().replace("?", "").toUpperCase());
 				}
 				
 				proposition.addTerms(terms);
-				if(negated) proposition.setNegated(true);
 				propositionImpls.add(proposition);
-
+				
 				break;
 	        case NOT:
 	            NotExp notExp = (NotExp) exp;

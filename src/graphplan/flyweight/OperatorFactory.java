@@ -28,6 +28,7 @@ import graphplan.domain.Proposition;
 import graphplan.domain.jason.OperatorImpl;
 import graphplan.domain.jason.PropositionImpl;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.Structure;
@@ -39,6 +40,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -52,6 +54,11 @@ public class OperatorFactory {
 	public static final String NOOP_FUNCTOR = "noop";
 	
 	private static OperatorFactory operatorFactory = null;
+	
+	private Map<String, Set<String>> types;
+	private Map<String, List<String>> parameterTypes;
+	
+	private boolean usingTypes = false;
 	
 	/**
 	 * Returns the singleton <code>OperatorFactory</code> instance.
@@ -289,6 +296,7 @@ public class OperatorFactory {
 				//Otherwise, we have to come up with all possible combinations
 				//of parameters
 				Term termInstances[] = null;
+				
 				for(TermInstanceIterator it = new TermInstanceIterator(terms, size);
 					it.hasNext(); ){
 					termInstances = it.next();
@@ -306,6 +314,22 @@ public class OperatorFactory {
 					
 					if(!addInstance) {
 						continue;
+					}
+					
+					if(this.usingTypes){
+						List<String> pTypes = this.parameterTypes.get(operator.getFunctor());
+						int n = pTypes.size();
+						addInstance = true;
+						
+						for(int i=0; i<n; i++){
+							Set<String> tTypes = this.types.get(pTypes.get(i));
+							if(!tTypes.contains(((Atom)termInstances[i]).getFunctor())) {
+								addInstance = false;
+								break;
+							}
+						}
+
+						if(!addInstance) continue;
 					}
 					
 					final OperatorImpl copy = (OperatorImpl) operator.clone();
@@ -425,6 +449,15 @@ public class OperatorFactory {
 			// TODO Auto-generated method stub
 			
 		}
-		
+	}
+
+	public void setTypes(Map<String, Set<String>> types) {
+		this.usingTypes = true;
+		this.types = types;
+	}
+
+	public void setParameterTypes(Map<String, List<String>> parameterTypes) {
+		this.usingTypes = true;
+		this.parameterTypes = parameterTypes;
 	}
 }

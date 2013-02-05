@@ -45,7 +45,7 @@ public class DomainDescription {
 	
 	protected Map<String, Set<String>> types;
 	
-	protected Map<String, Set<String>> parameterTypes;
+	protected Map<String, List<String>> parameterTypes;
 	
 	/**
 	 * Instantiate a domain description with the supplied  
@@ -81,7 +81,7 @@ public class DomainDescription {
 	 * @param parametertypes
 	 */
 	public DomainDescription(List<Operator> operators,
-			List<Proposition> initialState, List<Proposition> goalState, Map<String, Set<String>> types, Map<String, Set<String>> parameterTypes) {
+			List<Proposition> initialState, List<Proposition> goalState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes) {
 		this(initialState, goalState);
 		this.operators = new ArrayList<Operator>(operators);
 		this.types = types;
@@ -121,5 +121,13 @@ public class DomainDescription {
 	 */
 	public void setOperators(List<Operator> operators) {
 		this.operators = operators;
+	}
+
+	public Map<String, Set<String>> getTypes() {
+		return types;
+	}
+
+	public Map<String, List<String>> getParameterTypes() {
+		return parameterTypes;
 	}
 }

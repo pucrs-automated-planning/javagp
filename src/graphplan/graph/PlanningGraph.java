@@ -34,6 +34,8 @@ import graphplan.graph.draw.TextDrawVisitor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unchecked")
@@ -68,6 +70,17 @@ public class PlanningGraph implements GraphElement {
 
 	public PlanningGraph(PropositionLevel initialState) {
 		this();
+		this.addGraphLevel(initialState);
+	}
+
+	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes) {
+		this.graphLevels = new ArrayList<GraphLevel>();
+
+		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl(types, parameterTypes);
+		this.actionLevelGenerator = levelGenerator;
+		this.propositionLevelGenerator = levelGenerator;
+		
+		this.mutexGenerator = new MutexGeneratorImpl();
 		this.addGraphLevel(initialState);
 	}
 

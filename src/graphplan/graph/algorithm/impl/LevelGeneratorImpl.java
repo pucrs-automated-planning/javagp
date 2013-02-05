@@ -35,20 +35,35 @@ import graphplan.graph.algorithm.PropositionLevelGenerator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
 public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLevelGenerator {
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionLevelGenerator.class.getName());
+	
+	private Map<String, Set<String>> types;
+	private Map<String, List<String>> parameterTypes;
+	
+	private boolean usingTypes = false;
 
+	public LevelGeneratorImpl(Map<String, Set<String>> types, Map<String, List<String>> parameterTypes){
+		this.types = types;
+		this.parameterTypes = parameterTypes;
+		this.usingTypes = true;
+	}
+	
+	public LevelGeneratorImpl(){}
+	
 	/*
 	 * TODO Optimize this method
 	 * (non-Javadoc)
 	 * @see graphplan.graph.algorithm.ActionLevelGenerator#createNextActionLevel(graphplan.graph.PropositionLevel)
 	 */
+	@Override
 	public ActionLevel createNextActionLevel(PropositionLevel propositionLevel) throws PlanningGraphException {
 		final ActionLevel actionLevel = new ActionLevel();
 		
@@ -80,7 +95,11 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		
 		//Piece of crap algorithm used before has been replaced by this call
 		try {
-			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
+			if(this.usingTypes)	{
+				opFactory.setTypes(this.types);
+				opFactory.setParameterTypes(this.parameterTypes);
+				opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
+			} else opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
 		} catch (OperatorFactoryException e) {
 			throw new PlanningGraphException(e.getMessage(),propositionLevel.getIndex()+1);
 		}
@@ -94,6 +113,7 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		return actionLevel;
 	}
 	
+	@Override
 	public PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) throws PlanningGraphException {
 		PropositionLevel propositionLevel = new PropositionLevel();
 		for (Operator operator : actionLevel) {
@@ -101,5 +121,4 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		}
 		return propositionLevel;
 	}
-
 }
