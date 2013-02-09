@@ -26,6 +26,7 @@ package graphplan.graph.algorithm;
 import graphplan.PlanResult;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
+import graphplan.domain.jason.OperatorImpl;
 import graphplan.graph.ActionLevel;
 import graphplan.graph.GraphElement;
 import graphplan.graph.GraphElementVisitor;
@@ -230,11 +231,24 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		protected final Set<Proposition> achievableGoals;
 		
 		public ActionSetIterator(Set<Proposition> subGoals, ActionLevel actionLevel) {
+			final ActionLevel newActionLevel = new ActionLevel();
+
+			@SuppressWarnings("rawtypes")
+			Iterator it =  actionLevel.getActions();
+			if(!supportActionStack.isEmpty()){
+				while(it.hasNext()){
+					OperatorImpl op = (OperatorImpl) it.next();
+					if(!supportActionStack.peek().contains(op)){
+						newActionLevel.addAction(op);
+					}
+				}
+			}
+
 			this.actionSet = new HashSet<Operator>(subGoals.size());
 			this.achievableGoals = new HashSet<Proposition>();
 			this.subGoals = subGoals.toArray(new Proposition[subGoals.size()]);
 			this.iterators = new Iterator[subGoals.size()];
-			this.actionLevel = actionLevel;
+			this.actionLevel = newActionLevel;
 			this.requiredOperators = new List[subGoals.size()];
 			this.selectedOperators = new Operator[subGoals.size()];
 			

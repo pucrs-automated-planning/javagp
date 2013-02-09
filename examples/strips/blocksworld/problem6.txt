@@ -1,0 +1,15 @@
+start (
+	on(c, a),
+	on(a, b),
+	onTable(b),
+	clear(c)
+)
+
+goal(
+	onTable(a),
+	onTable(b),
+	onTable(c),
+	clear(a),
+	clear(b),
+	clear(c)
+)

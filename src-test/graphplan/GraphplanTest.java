@@ -98,13 +98,13 @@ public class GraphplanTest {
 	@Test
 	public void testMain() {
 		try {
-			Graphplan.main(new String[] {"-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem4.txt"});
+			for(int i=1;i<=7;i++)
+				Graphplan.main(new String[] {"-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem4.txt"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}
 	
-	@Test
 	public void testPlan() {
 		GraphplanTestUtil util = GraphplanTestUtil.getInstance();
 		DomainDescription domainDescriptions[] = util.createDomains();
@@ -140,7 +140,6 @@ public class GraphplanTest {
 		}
 	}
 
-	@Test
 	public void testGetPlanPreconditions() {
 		DomainDescription description = new DomainDescription(operators, Arrays.asList(new Proposition[] {}), Arrays.asList(new Proposition[] {}));
 		String plan[] = new String[] {"move(b1,pu1,pu2)",

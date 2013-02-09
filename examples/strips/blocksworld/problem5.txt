@@ -2,12 +2,18 @@ start (
 	onTable(a),
 	onTable(b),
 	onTable(c),
+	onTable(d),
+	onTable(e),
 	clear(a),
 	clear(b),
-	clear(c)
+	clear(c),
+	clear(d),
+	clear(e)
 )
 
 goal(
 	on(a, b),
-	on(b, c)
+	on(b, c),
+	on(c, d),
+	on(d, e)
 )
