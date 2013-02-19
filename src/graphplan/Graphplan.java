@@ -35,7 +35,7 @@ import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.SolutionExtractionVisitor;
 import graphplan.graph.algorithm.TimeoutSolutionExtractionVisitor;
 import graphplan.parser.PlannerParser;
-import graphplan.parser.PlannerParserPDDL;
+import graphplan.parser.PDDLPlannerParser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -145,7 +145,7 @@ public class Graphplan {
 			DomainDescription domain = null;
 			
 			if(pddl){
-				PlannerParserPDDL parserPDDL = new PlannerParserPDDL(pddlDomain, pddlProblem);
+				PDDLPlannerParser parserPDDL = new PDDLPlannerParser(pddlDomain, pddlProblem);
 				domain = parserPDDL.getDomainDescriptionFromPddlObject();
 			} else {
 				PlannerParser parser = new PlannerParser();
@@ -153,6 +153,7 @@ public class Graphplan {
 			}
 			
 			PlanResult result = null;
+			GraphplanBitSet graphplanBitSet = new GraphplanBitSet(domain);
 			
 			if(timeout > 0) {
 				result = graphplan.plan(domain, timeout);

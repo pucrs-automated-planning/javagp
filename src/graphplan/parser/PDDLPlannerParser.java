@@ -40,7 +40,7 @@ import pddl4j.exp.term.Variable;
  * @author Ramon Pereira
  *
  */
-public class PlannerParserPDDL {
+public class PDDLPlannerParser {
 	
 	private PDDLObject pddlObject;
 	
@@ -54,7 +54,7 @@ public class PlannerParserPDDL {
 	 * 
 	 * @param pddl4j.PDDLObject pddlObject
 	 */
-	public PlannerParserPDDL(PDDLObject pddlObject){
+	public PDDLPlannerParser(PDDLObject pddlObject){
 		this.pddlObject = pddlObject;
 	}
 
@@ -63,7 +63,7 @@ public class PlannerParserPDDL {
 	 * @param String domain
 	 * @param String problem
 	 */
-	public PlannerParserPDDL(String domain, String problem){
+	public PDDLPlannerParser(String domain, String problem){
 		this.domain = domain;
 		this.problem = problem;
 		
@@ -159,8 +159,10 @@ public class PlannerParserPDDL {
                 AtomicFormula p = (AtomicFormula) init;
 				PropositionImpl proposition = new PropositionImpl(p.getPredicate());
 				Iterator variables = p.iterator();
-				
+								
 				List<Term> terms = new ArrayList<Term>();
+				List<String> parameterTypes = new ArrayList<String>();
+				
 				while(variables.hasNext()){
 					Constant var = (Constant) variables.next();
 					Atom term = new Atom(var.getImage());
@@ -168,10 +170,12 @@ public class PlannerParserPDDL {
 					
 					Set<String> setVar = this.types.get(var.getTypeSet().toString());
 					setVar.add(var.getImage());
+					parameterTypes.add(var.getTypeSet().toString());
 				}
 				
 				proposition.addTerms(terms);
 				initialState.add(proposition);
+				this.parameterTypes.put(p.getPredicate(), parameterTypes);
 			}
 			
 			System.out.println("\n--> Goal\n");
