@@ -237,6 +237,12 @@ public class PDDLPlannerParser {
 	            AtomicFormula p = (AtomicFormula) exp;
 				PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, p.getPredicate()));
 				
+				List<String> paramTypes = null;
+				if(this.parameterTypes.get(proposition.getFunctor()) == null){
+					paramTypes = new ArrayList<String>();
+					this.parameterTypes.put(proposition.getFunctor(), paramTypes);
+				}
+				
 				Iterator variables = p.iterator();
 				
 				List<Term> terms = new ArrayList<Term>();
@@ -246,6 +252,8 @@ public class PDDLPlannerParser {
 					terms.add(term);
 					
 					Set<String> setVar = this.types.get(var.getTypeSet().toString());
+					
+					if(paramTypes != null) paramTypes.add(var.getTypeSet().toString());
 					
 					if(setVar == null){
 						setVar = new HashSet<String>();

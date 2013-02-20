@@ -3,11 +3,15 @@ package graphplan;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
+import graphplan.domain.jason.OperatorImpl;
+import graphplan.domain.jason.PropositionImpl;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Term;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +43,7 @@ public class GraphplanBitSet {
 		
 		this.propositions = new ArrayList<Proposition>(domainDescription.getInitialState());
 		this.propositions.addAll(domainDescription.getGoalState());
-		this.operators = new ArrayList<Operator>(domainDescription.getOperators());
+		this.operators = new ArrayList<Operator>();
 		
 		this.propositionLayers = new ArrayList<BitSet>();
 		BitSet p0 = new BitSet();
@@ -48,63 +52,95 @@ public class GraphplanBitSet {
 		}
 		this.propositionLayers.add(p0);
 		
+		this.positiveEffects = new HashMap<String, BitSet>();
+		this.negativeEffects = new HashMap<String, BitSet>();
+		this.positivePrecond = new HashMap<String, BitSet>();
+		this.negativePrecond = new HashMap<String, BitSet>();
+		
 		this.operatorLayers = new ArrayList<BitSet>();
-		for(Operator op: this.operators){
-			BitSet pe = new BitSet();
-			BitSet ne = new BitSet();
-			for(Proposition e: op.getEffects()){
-				if(e.negated()) ne.set(getIndexProposition(e)); 
-				else pe.set(getIndexProposition(e));
-			}
+		for(Operator op: domainDescription.getOperators()){
+			System.out.println("-");
+			Set<Term> terms = new HashSet<Term>();
+			List<String> pTypes = this.parameterTypes.get(op.getFunctor());
 			
-			this.positiveEffects.put(op.getFunctor(), pe);
-			this.negativeEffects.put(op.getFunctor(), ne);
+			for(String param: pTypes)
+				for(String t :this.types.get(param)) terms.add(new Atom(t));
+			
+			Term[] termInstances = null;
+			int n = this.parameterTypes.get(op.getFunctor()).size();
+			for(TermInstanceIterator it = new TermInstanceIterator(terms, n); it.hasNext();){
+				termInstances = it.next();
+				OperatorImpl newOp = new OperatorImpl(op.getFunctor());
+				List<Term> newTerms = new ArrayList<Term>();
+				for(int i=0; i<n; i++){
+					Set<String> tTypes = this.types.get(pTypes.get(i));
+					if(tTypes.contains(((Atom)termInstances[i]).getFunctor())){
+						newTerms.add(termInstances[i]);
+					} else break;
+				}
+				if(!newTerms.isEmpty() && newTerms.size() == n){
+					newOp.addTerms(newTerms);
+					newOp.getPreconds().addAll(op.getPreconds());
+					newOp.getEffects().addAll(op.getEffects());
+					
+					BitSet pe = new BitSet();
+					BitSet ne = new BitSet();
+					for(Proposition e: newOp.getEffects()){
+						if(e.negated()) ne.set(getIndexProposition(e, newOp.getTerms(), false)); 
+						else pe.set(getIndexProposition(e, newOp.getTerms(), true));
+					}
+					
+					this.positiveEffects.put(op.getFunctor(), pe);
+					this.negativeEffects.put(op.getFunctor(), ne);
 
-			BitSet pp = new BitSet();
-			BitSet np = new BitSet();
-			for(Proposition p: op.getPreconds()){
-				if(p.negated()) np.set(getIndexProposition(p)); 
-				else pp.set(getIndexProposition(p));
+					BitSet pp = new BitSet();
+					BitSet np = new BitSet();
+					for(Proposition p: newOp.getPreconds()){
+						if(p.negated()) np.set(getIndexProposition(p, newOp.getTerms(), false)); 
+						else pp.set(getIndexProposition(p, newOp.getTerms(), true));
+					}
+					
+					this.positivePrecond.put(op.getFunctor(), pp);
+					this.negativePrecond.put(op.getFunctor(), np);
+					
+					this.operators.add(newOp);
+				}
 			}
-			
-			this.positivePrecond.put(op.getFunctor(), pp);
-			this.negativePrecond.put(op.getFunctor(), np);
-		}
-	}
-
-	private int getIndexProposition(Proposition p) {
-		if(this.propositions.indexOf(p) == -1) {
-			List<String> terms = new ArrayList<String>();
-			
-			for(String s: this.parameterTypes.get(p.getFunctor())){
-				terms.addAll(this.types.get(s));
-			}
-			this.propositions.add(p);
-			return this.propositions.indexOf(p);
 		}
 		
-		return this.propositions.indexOf(p);
+		System.out.println();
 	}
 
-	public void expand(int index) {
-		for (Operator op : this.operators) {
-
+	private int getIndexProposition(Proposition p, List<Term> terms, boolean positive) {
+		PropositionImpl newP = new PropositionImpl(positive, p.getFunctor());
+		newP.setTerms(terms);
+		if(!existsProposition(newP)) {
+			this.propositions.add(newP);
+			return this.propositions.indexOf(newP);
 		}
+		
+		return this.propositions.indexOf(newP);
 	}
 	
+	private boolean existsProposition(Proposition p){
+		for(Proposition prop :this.propositions)
+			if(prop.toString().equals(p.toString())) return true;
+		
+		return false;
+	}
+
 	class TermInstanceIterator implements Iterator<Term[]> {
 		protected final Iterator<Term>[] iterators;
 		protected final Term[] currentTerms;
 		protected final Set<Term> terms;
 		
+		@SuppressWarnings("unchecked")
 		public TermInstanceIterator(Set<Term> terms, int size) {
 			iterators = new Iterator[size];
 			currentTerms = new Term[size];
 			this.terms = terms;
 			for(int i=0; i<iterators.length; i++) {
 				iterators[i]=terms.iterator();
-				//Initialize all but the first term
-				//to comply with the next method
 				if(i>0) {
 					currentTerms[i] = iterators[i].next();
 				}
@@ -139,7 +175,12 @@ public class GraphplanBitSet {
 		}
 
 		@Override
-		public void remove() {
+		public void remove() {}
+	}
+	
+	public void expand(int index) {
+		for (Operator op : this.operators) {
+
 		}
 	}
 }

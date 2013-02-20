@@ -16,6 +16,7 @@ public class GraphplanPDDLTest {
 		try {
 			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/blockworld/blocksworld.pddl", "-p", "examples/pddl/blockworld/pb1.pddl"});
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
