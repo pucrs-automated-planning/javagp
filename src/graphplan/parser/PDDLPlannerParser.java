@@ -35,11 +35,6 @@ import pddl4j.exp.action.ActionDef;
 import pddl4j.exp.term.Constant;
 import pddl4j.exp.term.Variable;
 
-/**
- * 
- * @author Ramon Pereira
- *
- */
 public class PDDLPlannerParser {
 	
 	private PDDLObject pddlObject;
@@ -75,7 +70,7 @@ public class PDDLPlannerParser {
         options.put(RequireKey.STRIPS, true);
         options.put(RequireKey.TYPING, true);
         options.put(RequireKey.EQUALITY, true);
-        options.put(RequireKey.NEGATIVE_PRECONDITIONS, false);
+        options.put(RequireKey.NEGATIVE_PRECONDITIONS, true);
         options.put(RequireKey.DISJUNCTIVE_PRECONDITIONS, true);
         options.put(RequireKey.EXISTENTIAL_PRECONDITIONS, true);
         options.put(RequireKey.UNIVERSAL_PRECONDITIONS, true);
@@ -83,8 +78,7 @@ public class PDDLPlannerParser {
 
 		try {
 			Parser parserPDDL = new Parser(options);
-			PDDLObject domainPDDL;
-			domainPDDL = parserPDDL.parse(new File(domain));
+			PDDLObject domainPDDL = parserPDDL.parse(new File(domain));
 			PDDLObject problemPDDL = parserPDDL.parse(new File(problem));
 			if (domainPDDL != null && problemPDDL != null) {
 				this.pddlObject = parserPDDL.link(domainPDDL, problemPDDL);
@@ -111,9 +105,9 @@ public class PDDLPlannerParser {
 			System.out.println("\nPDDL Parser\n");
 			Iterator<ActionDef> actionsIterator = this.pddlObject.actionsIterator();
 			
-			List<Operator> operators = new ArrayList<Operator>();
+			List<Operator>    operators    = new ArrayList<Operator>();
 			List<Proposition> initialState = new ArrayList<Proposition>();
-			List<Proposition> goalState = new ArrayList<Proposition>();
+			List<Proposition> goalState    = new ArrayList<Proposition>();
 			
 			System.out.println("--> Actions\n");
 			
@@ -136,17 +130,17 @@ public class PDDLPlannerParser {
 					
 					if(setVar == null){
 						setVar = new HashSet<String>();
-						setVar.add(term.getImage().replace("?", "").toUpperCase());
+						setVar.add(term.getImage().replace("?", ""));
 						this.types.put(term.getTypeSet().toString(), setVar);
-					} else setVar.add(term.getImage().replace("?", "").toUpperCase());
+					} else setVar.add(term.getImage().replace("?", ""));
 				}
 
 				this.parameterTypes.put(actionDef.getName(), parameterTypes);
 				
 				operatorImpl.addTerms(termsOp);
 				
-				operatorImpl.getPreconds().addAll(this.getPropositionFromExp(precontidion));
-				operatorImpl.getEffects().addAll(this.getPropositionFromExp(effect));
+				operatorImpl.getPreconds().addAll(this.getPropositionFromDomainExp(precontidion));
+				operatorImpl.getEffects().addAll(this.getPropositionFromDomainExp(effect));
 				
 				operators.add(operatorImpl);
 			}
@@ -159,10 +153,8 @@ public class PDDLPlannerParser {
                 AtomicFormula p = (AtomicFormula) init;
 				PropositionImpl proposition = new PropositionImpl(p.getPredicate());
 				Iterator variables = p.iterator();
-								
-				List<Term> terms = new ArrayList<Term>();
-				List<String> parameterTypes = new ArrayList<String>();
 				
+				List<Term> terms = new ArrayList<Term>();
 				while(variables.hasNext()){
 					Constant var = (Constant) variables.next();
 					Atom term = new Atom(var.getImage());
@@ -170,34 +162,42 @@ public class PDDLPlannerParser {
 					
 					Set<String> setVar = this.types.get(var.getTypeSet().toString());
 					setVar.add(var.getImage());
-					parameterTypes.add(var.getTypeSet().toString());
 				}
 				
 				proposition.addTerms(terms);
 				initialState.add(proposition);
-				this.parameterTypes.put(p.getPredicate(), parameterTypes);
 			}
 			
 			System.out.println("\n--> Goal\n");
 			
 			System.out.println(this.pddlObject.getGoal());
+			
+			/*
+		
+			ListExp list = (ListExp) this.pddlObject.getGoal();
 			AndExp andGoal = (AndExp) this.pddlObject.getGoal();
 			
+			
 			for(Exp goal:andGoal){
-                AtomicFormula p = (AtomicFormula) goal;
-				PropositionImpl proposition = new PropositionImpl(p.getPredicate());
-				Iterator variables = p.iterator();
 				
+				AtomicFormula p = (AtomicFormula) goal;
+                PropositionImpl	proposition = new PropositionImpl(p.getPredicate());
+				
+                Iterator variables = p.iterator();
 				List<Term> terms = new ArrayList<Term>();
+
 				while(variables.hasNext()){
 					Constant var = (Constant) variables.next();
 					Atom term = new Atom(var.getImage());
 					terms.add(term);
 				}
-				
 				proposition.addTerms(terms);
 				goalState.add(proposition);
 			}
+			*/
+			//ArrayList<E> lista = this.getPropositionFromDomainExp(this.pddlObject.getInit());
+			
+			goalState.addAll(this.getPropositionFromProblemExp(this.pddlObject.getGoal()));
 			
 			System.out.println("\nPDDL Parser\n");
 
@@ -213,8 +213,8 @@ public class PDDLPlannerParser {
 	 * @param Exp exp
 	 * @return List<PropositionImpl>
 	 */
-	private List<PropositionImpl> getPropositionFromExp(Exp exp){
-		return getPropositionFromExp(exp, false);
+	private List<PropositionImpl> getPropositionFromDomainExp(Exp exp){
+		return getPropositionFromDomainExp(exp, false);
 	}
 	
 	/**
@@ -224,24 +224,18 @@ public class PDDLPlannerParser {
 	 * @return List<PropositionImpl>
 	 */
 	@SuppressWarnings("rawtypes")
-	private List<PropositionImpl> getPropositionFromExp(Exp exp, boolean negated){
+	private List<PropositionImpl> getPropositionFromDomainExp(Exp exp, boolean negated){
 		List<PropositionImpl> propositionImpls = new ArrayList<PropositionImpl>();
 		switch (exp.getExpID()) {
 	    	case AND:
 	            AndExp andExp = (AndExp) exp;
 	            for (Exp and : andExp) {
-	            	propositionImpls.addAll(getPropositionFromExp(and, false));
+	            	propositionImpls.addAll(getPropositionFromDomainExp(and, false));
 	            }
 	            break;
 	        case ATOMIC_FORMULA:
 	            AtomicFormula p = (AtomicFormula) exp;
 				PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, p.getPredicate()));
-				
-				List<String> paramTypes = null;
-				if(this.parameterTypes.get(proposition.getFunctor()) == null){
-					paramTypes = new ArrayList<String>();
-					this.parameterTypes.put(proposition.getFunctor(), paramTypes);
-				}
 				
 				Iterator variables = p.iterator();
 				
@@ -253,13 +247,11 @@ public class PDDLPlannerParser {
 					
 					Set<String> setVar = this.types.get(var.getTypeSet().toString());
 					
-					if(paramTypes != null) paramTypes.add(var.getTypeSet().toString());
-					
 					if(setVar == null){
 						setVar = new HashSet<String>();
-						setVar.add(var.getImage().replace("?", "").toUpperCase());
+						setVar.add(var.getImage().replace("?", ""));
 						this.types.put(var.getTypeSet().toString(), setVar);
-					} else setVar.add(var.getImage().replace("?", "").toUpperCase());
+					} else setVar.add(var.getImage().replace("?", ""));
 				}
 				
 				proposition.addTerms(terms);
@@ -268,10 +260,73 @@ public class PDDLPlannerParser {
 				break;
 	        case NOT:
 	            NotExp notExp = (NotExp) exp;
-	            propositionImpls.addAll(getPropositionFromExp(notExp.getExp(), true));
+	            propositionImpls.addAll(getPropositionFromDomainExp(notExp.getExp(), true));
 	            break;
 		}
 		
 		return propositionImpls;
 	}
+
+
+	/**
+	 * 
+	 * @param Exp exp
+	 * @return List<PropositionImpl>
+	 */
+	private List<PropositionImpl> getPropositionFromProblemExp(Exp exp){
+		return getPropositionFromProblemExp(exp, false);
+	}
+	
+	/**
+	 * 
+	 * @param Exp exp
+	 * @param boolean negated
+	 * @return List<PropositionImpl>
+	 */
+	@SuppressWarnings("rawtypes")
+	private List<PropositionImpl> getPropositionFromProblemExp(Exp exp, boolean negated){
+		List<PropositionImpl> propositionImpls = new ArrayList<PropositionImpl>();
+		switch (exp.getExpID()) {
+	    	case AND:
+	            AndExp andExp = (AndExp) exp;
+	            for (Exp and : andExp) {
+	            	propositionImpls.addAll(getPropositionFromProblemExp(and, false));
+	            }
+	            break;
+	        case ATOMIC_FORMULA:
+	            AtomicFormula p = (AtomicFormula) exp;
+				PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, p.getPredicate()));
+				
+				Iterator constants = p.iterator();
+				
+				List<Term> terms = new ArrayList<Term>();
+				while(constants.hasNext()){
+					Constant con = (Constant) constants.next();
+					Atom term = new Atom(con.getImage());
+					terms.add(term);
+					
+					Set<String> setCon = this.types.get(con.getTypeSet().toString());
+					
+					if(setCon == null){
+						setCon = new HashSet<String>();
+						setCon.add(con.getImage());
+						this.types.put(con.getTypeSet().toString(), setCon);
+					} else setCon.add(con.getImage());
+				}
+				
+				proposition.addTerms(terms);
+				propositionImpls.add(proposition);
+				
+				break;
+	        case NOT:
+	            NotExp notExp = (NotExp) exp;
+	            propositionImpls.addAll(getPropositionFromProblemExp(notExp.getExp(), true));
+	            break;
+		}
+		
+		return propositionImpls;
+	}
+
 }
+
+
