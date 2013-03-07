@@ -200,9 +200,54 @@ public class GraphplanBitSet {
 		public void remove() {}
 	}
 	
-	public void expand(int index) {
-		for (Operator op : this.operators) {
+	public void solve(){
+		while((!containGoals(this.index) && goalsNotMutex(this.index)) || !fixedPoint()){
+			this.index++;
+			this.expand(this.index);
+		}
+		
+		if(!containGoals(this.index) || goalsMutex(this.index))
+			return;
+		
+		this.extract(this.index);
+		
+		if(fixedPoint()); //memoization
+		else; //none memoization
+		
+		while(true){//solution failure
+			this.index++;
+			this.expand(this.index);
+			
+			this.extract(this.index);
+			
+			if(true && fixedPoint());//memoization index
+			else;//memoization index
+		}
+	}
+	
+	private void extract(int index) {
+		
+	}
 
+	private boolean goalsMutex(int index) {
+		return false;
+	}
+
+	private boolean fixedPoint() {
+		return false;
+	}
+
+	private boolean goalsNotMutex(int index) {
+		return false;
+	}
+
+	private boolean containGoals(int index) {
+		return false;
+	}
+
+	private void expand(int index) {
+		for (Operator op : this.operators) {
+			BitSet p = this.propositionLayers.get(this.index-1);
 		}
 	}
 }
