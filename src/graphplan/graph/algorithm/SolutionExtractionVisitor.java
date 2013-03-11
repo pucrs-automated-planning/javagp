@@ -167,11 +167,10 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			return false;
 		}
 		
-		final ActionLevel actionLevel = (ActionLevel) propositionLevel.getPrevLevel();
+		ActionLevel actionLevel = (ActionLevel) propositionLevel.getPrevLevel();
 		
 		//For each possible set of actions
-		for(ActionSetIterator iterator = new ActionSetIterator(subGoals, actionLevel);
-			iterator.hasNext(); ) {
+		for(ActionSetIterator iterator = new ActionSetIterator(subGoals, actionLevel); iterator.hasNext(); ) {
 			Set<Operator> selectedOperators = iterator.next();
 			if(selectedOperators != null) {
 				supportActionStack.push(selectedOperators);
@@ -248,7 +247,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			this.achievableGoals = new HashSet<Proposition>();
 			this.subGoals = subGoals.toArray(new Proposition[subGoals.size()]);
 			this.iterators = new Iterator[subGoals.size()];
-			this.actionLevel = newActionLevel;
+			this.actionLevel = actionLevel;
 			this.requiredOperators = new List[subGoals.size()];
 			this.selectedOperators = new Operator[subGoals.size()];
 			
