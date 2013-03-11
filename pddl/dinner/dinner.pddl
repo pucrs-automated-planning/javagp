@@ -18,11 +18,11 @@
 )
 (:action carregarLixo
 	:parameters(?Obj)
-	:precondition(lixo ?Obj)
+	:precondition ()
 	:effect(and (not(lixo ?Obj)) (not(maosLimpas ?Obj)))
 )
 (:action reciclarLixo
 	:parameters(?Obj)
-	:precondition (lixo ?Obj)
+	:precondition ()
 	:effect(and (not(lixo ?Obj)) (not(silencio ?Obj)))
 ))
