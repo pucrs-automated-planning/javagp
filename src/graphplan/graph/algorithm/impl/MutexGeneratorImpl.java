@@ -151,7 +151,7 @@ public class MutexGeneratorImpl implements MutexGenerator {
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 }
