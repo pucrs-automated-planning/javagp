@@ -25,9 +25,12 @@ package graphplan.graph;
 
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
+import graphplan.domain.jason.OperatorImpl;
 import graphplan.flyweight.OperatorFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -145,7 +148,7 @@ public class ActionLevel implements GraphLevel<Operator> {
 			generatingActionsCache.put(proposition, generatingActions);
 		}
 		
-		
+		this.sortByNoopsFirst(generatingActions);
 		return generatingActions;
 	}
 	
@@ -268,5 +271,29 @@ public class ActionLevel implements GraphLevel<Operator> {
 			res+=mutex.size();
 		}
 		return res;
+	}
+	
+	private void sortByNoopsFirst(List<Operator> operators){
+		/*
+		Collections.sort(operators, new Comparator<Operator>() {
+
+			public int compare(Operator o1, Operator o2) {
+				if( o1.isNoop() && !o2.isNoop()) return -1;
+				if(!o2.isNoop() &&  o2.isNoop()) return 1;
+				return 0;
+			}
+
+		});
+		*/
+		
+		//versao porca, a acima n funcionou
+		for (int i = 0; i < operators.size(); i++){
+			Operator o = operators.get(i);
+			if(o.isNoop()){
+				operators.add(0,o);
+				operators.remove(i+1);
+			}
+		}
+		
 	}
 }
