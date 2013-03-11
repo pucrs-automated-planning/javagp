@@ -1,0 +1,6 @@
+start(
+location(location),
+vehicle(vehicle)
+)
+
+goal(mobility_info(closestLocation,vehicle))

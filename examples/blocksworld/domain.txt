@@ -1,0 +1,15 @@
+operator pickup(Obj)
+pre: clear(Obj), onTable(Obj)
+post: holding(Obj), ~clear(Obj), ~onTable(Obj)
+
+operator putdown(Obj)
+pre: holding(Obj)
+post: clear(Obj), onTable(Obj), ~holding(Obj)
+
+operator stack(Obj, UnderObj)
+pre: clear(UnderObj), holding(Obj)
+post: clear(Obj), on(Obj, UnderObj), ~clear(UnderObj), ~holding(Obj) 
+
+operator unstack(Obj, UnderObj)
+pre: on(Obj, UnderObj), clear(Obj)
+post: holding(Obj), clear(UnderObj), ~on(Obj, UnderObj), ~clear(Obj)

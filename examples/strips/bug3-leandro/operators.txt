@@ -1,0 +1,15 @@
+operator getWeatherInfo(Location)
+pre: true
+post: weather_info(Location)
+
+operator sendVehicleInfo(Vehicle)
+pre: true
+post: vehicle_info_sent(Vehicle)
+
+operator mobilityInfo(Location,Vehicle)
+pre: weather_info(Location),vehicle_info_sent(Vehicle)
+post: mobility_info(Location,Vehicle)
+
+operator getClosestLocation(Location)
+pre: true
+post: location(closestLocation)

@@ -1,0 +1,15 @@
+operator cozinhar(Obj)
+pre: maosLimpas(Obj)
+post: jantar(Obj)
+
+operator embrulhar(Obj)
+pre: silencio(Obj)
+post: presente(Obj)
+	
+operator carregarLixo(Obj)
+pre: true
+post: ~lixo(Obj), ~maosLimpas(Obj)
+	
+operator reciclarLixo(Obj)
+pre: true
+post: ~lixo(Obj), ~silencio(Obj)

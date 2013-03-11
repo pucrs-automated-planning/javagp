@@ -1,0 +1,16 @@
+operator bookHotel (City,CheckIn,CheckOut)
+pre: 	city(City), 
+	date(CheckIn),date(CheckOut),
+	at(from,City,CheckIn,CheckOut)		
+post: hotelBooked (City,CheckIn,CheckOut)
+
+operator bookFlight (From,To,Arrival,Departure)
+pre: 	city(From), city(To),
+	date(Arrival),date(Departure)
+post: flightBooked (From,To,Arrival,Departure), at(From,To,Arrival,Departure)
+
+operator bookTrain (From,To,Arrival,Departure)
+pre: 	city(From), city(To),
+	date(Arrival),date(Departure)
+post: trainBooked (From,To,Arrival,Departure), at(From,To,Arrival,Departure)
+

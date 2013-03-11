@@ -5,7 +5,3 @@ post: a_ok(Obj)
 operator b(Obj)
 pre: a_ok(Obj)
 post: b_ok(Obj)
-
-
-
-

@@ -1,0 +1,8 @@
+start(
+city(from),
+date(eventday),
+city(eventcity),
+date(eventdayAfter)
+)
+
+goal(flightBooked (from, eventcity, eventday, eventdayAfter),hotelBooked (eventcity, eventday, eventdayAfter))
