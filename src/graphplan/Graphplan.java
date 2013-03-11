@@ -34,8 +34,8 @@ import graphplan.graph.PlanningGraphException;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.SolutionExtractionVisitor;
 import graphplan.graph.algorithm.TimeoutSolutionExtractionVisitor;
-import graphplan.parser.PlannerParser;
 import graphplan.parser.PDDLPlannerParser;
+import graphplan.parser.PlannerParser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -153,7 +153,6 @@ public class Graphplan {
 			}
 			
 			PlanResult result = null;
-			//GraphplanBitSet graphplanBitSet = new GraphplanBitSet(domain);
 			
 			if(timeout > 0) {
 				result = graphplan.plan(domain, timeout);

@@ -1,10 +1,12 @@
-package graphplan;
+package graphplan.graph.planning;
 
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.domain.jason.OperatorImpl;
 import graphplan.domain.jason.PropositionImpl;
+import graphplan.graph.GraphElement;
+import graphplan.graph.GraphElementVisitor;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Term;
 
@@ -17,8 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GraphplanBitSet {
+@SuppressWarnings("rawtypes")
+public class PlanningGraphBitSet implements GraphElement {
 
+	private static final long serialVersionUID = 3839137792873718097L;
+	
 	private List<Proposition> propositions;
 	private List<BitSet> propositionLayers;
 
@@ -32,15 +37,14 @@ public class GraphplanBitSet {
 	private BitSet goal;
 	private BitSet init;
 	
+	private int index = 0;
+	
 	private Map<String, Set<String>> types;
 	private Map<String, List<String>> parameterTypes;
-	
-	private Map<String, TermInstanceIterator> termsOps;
 	private Map<String, List<String>> opsEquals;
-
-	private int index = 0;
-
-	public GraphplanBitSet(DomainDescription domainDescription){
+	
+	@SuppressWarnings("unchecked")
+	public PlanningGraphBitSet(DomainDescription domainDescription){
 		this.parameterTypes = domainDescription.getParameterTypes();
 		this.types = domainDescription.getTypes();
 		
@@ -56,7 +60,6 @@ public class GraphplanBitSet {
 		this.positivePrecond = new HashMap<String, BitSet>();
 		this.negativePrecond = new HashMap<String, BitSet>();
 		
-		this.termsOps = new HashMap<String, TermInstanceIterator>();
 		this.opsEquals = new HashMap<String, List<String>>();
 		
 		this.parameters(domainDescription.getOperators());
@@ -103,9 +106,17 @@ public class GraphplanBitSet {
 		for(Proposition p: domainDescription.getInitialState()){
 			p0.set(this.propositions.indexOf(p));
 		}
+		this.init = p0;
 		this.propositionLayers.add(p0);
+		
+		BitSet g = new BitSet();
+		for(Proposition p: domainDescription.getGoalState()){
+			g.set(this.propositions.indexOf(p));
+		}
+		this.goal = g;
+		System.out.println();
 	}
-
+	
 	private void parameters(List<Operator> operators) {
 		for(Operator op: operators)
 			for(Operator op1: operators)
@@ -145,7 +156,50 @@ public class GraphplanBitSet {
 		
 		return false;
 	}
+
+	@Override
+	public boolean accept(GraphElementVisitor visitor) {
+		return false;
+	}
+
+	@Override
+	public Iterator iterator() {
+		return null;
+	}
 	
+	public int getSize(){
+		return this.index;
+	}
+	
+	public void expandGraph(){
+		BitSet pi = this.propositionLayers.get(this.index);
+		BitSet newPropLayer = new BitSet();
+		BitSet newOpLayer = new BitSet();
+		
+		for(Operator op: this.operators){
+			if(isOk(op, this.index)){
+				newOpLayer.set(this.operators.indexOf(op), true);
+				
+				
+			}
+		}
+	}
+	
+	private boolean isOk(Operator op, int index) {
+        BitSet preCondition = this.positivePrecond.get(op.getFunctor());
+        return this.contains(preCondition, index) && this.isMutexFree(preCondition, index);
+	}
+	
+	private boolean isMutexFree(BitSet preCondition, int index) {
+		return true;
+	}
+
+	private boolean contains(BitSet prop, int index){
+        final BitSet pi = this.propositionLayers.get(index);
+        pi.and(prop);
+        return pi.equals(prop);
+	}
+
 	class TermInstanceIterator implements Iterator<Term[]> {
 		protected final Iterator<Term>[] iterators;
 		protected final Term[] currentTerms;
@@ -198,56 +252,5 @@ public class GraphplanBitSet {
 
 		@Override
 		public void remove() {}
-	}
-	
-	public void solve(){
-		while((!containGoals(this.index) && goalsNotMutex(this.index)) || !fixedPoint()){
-			this.index++;
-			this.expand(this.index);
-		}
-		
-		if(!containGoals(this.index) || goalsMutex(this.index))
-			return;
-		
-		this.extract(this.index);
-		
-		if(fixedPoint()); //memoization
-		else; //none memoization
-		
-		while(true){//solution failure
-			this.index++;
-			this.expand(this.index);
-			
-			this.extract(this.index);
-			
-			if(true && fixedPoint());//memoization index
-			else;//memoization index
-		}
-	}
-	
-	private void extract(int index) {
-		
-	}
-
-	private boolean goalsMutex(int index) {
-		return false;
-	}
-
-	private boolean fixedPoint() {
-		return false;
-	}
-
-	private boolean goalsNotMutex(int index) {
-		return false;
-	}
-
-	private boolean containGoals(int index) {
-		return false;
-	}
-
-	private void expand(int index) {
-		for (Operator op : this.operators) {
-			BitSet p = this.propositionLayers.get(this.index-1);
-		}
 	}
 }
