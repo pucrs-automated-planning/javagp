@@ -153,7 +153,7 @@ public class Graphplan {
 			}
 			
 			PlanResult result = null;
-			GraphplanBitSet graphplanBitSet = new GraphplanBitSet(domain);
+			//GraphplanBitSet graphplanBitSet = new GraphplanBitSet(domain);
 			
 			if(timeout > 0) {
 				result = graphplan.plan(domain, timeout);
