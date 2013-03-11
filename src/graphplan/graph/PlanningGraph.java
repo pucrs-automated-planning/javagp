@@ -194,8 +194,7 @@ public class PlanningGraph implements GraphElement {
 	 */
 	public boolean goalsPossible(List<Proposition> goals, int level) {
 		if (graphLevels.get(level).isPropositionLevel()) {
-			PropositionLevel propositionLevel = (PropositionLevel) this.graphLevels
-					.get(level);
+			PropositionLevel propositionLevel = (PropositionLevel) this.graphLevels.get(level);
 			return propositionLevel.goalsPossible(goals);
 		} else {
 			return false;
