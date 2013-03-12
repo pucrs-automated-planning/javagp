@@ -5,7 +5,7 @@ import graphplan.graph.GraphElementVisitor;
 import graphplan.graph.GraphLevel;
 
 @SuppressWarnings("rawtypes")
-public class SoluctionExtractionBitSetVisitor implements GraphElementVisitor {
+public class SolutionExtractionBitSetVisitor implements GraphElementVisitor {
 
 	@Override
 	public boolean visitElement(GraphElement element) {
