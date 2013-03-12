@@ -29,10 +29,14 @@ public class PlanningGraphBitSet implements GraphElement {
 
 	private List<Operator> operators;
 	private List<BitSet> operatorLayers;
+
 	private HashMap<String, BitSet> positiveEffects;
 	private HashMap<String, BitSet> negativeEffects;
 	private HashMap<String, BitSet> positivePrecond;
 	private HashMap<String, BitSet> negativePrecond;
+	
+	private HashMap<Proposition, Set<Proposition>> propositionsMutexes;
+	private HashMap<Operator, Set<Operator>> actionsMutexes;
 
 	private BitSet goal;
 	private BitSet init;
@@ -114,7 +118,9 @@ public class PlanningGraphBitSet implements GraphElement {
 			g.set(this.propositions.indexOf(p));
 		}
 		this.goal = g;
-		System.out.println();
+
+		this.actionsMutexes = new HashMap<Operator, Set<Operator>>();
+		this.propositionsMutexes = new HashMap<Proposition, Set<Proposition>>();
 	}
 	
 	private void parameters(List<Operator> operators) {
@@ -180,9 +186,17 @@ public class PlanningGraphBitSet implements GraphElement {
 			if(isOk(op, this.index)){
 				newOpLayer.set(this.operators.indexOf(op), true);
 				
-				
+				newPropLayer.or(this.positiveEffects.get(op.getFunctor()));
+				newPropLayer.or(this.negativeEffects.get(op.getFunctor()));
 			}
 		}
+		
+		this.operatorLayers.add(newOpLayer);
+		this.propositionLayers.add(newPropLayer);
+		
+		//addActionMutexes(lastLevel, actionLevel);
+		//addPropositionMutexes(actionLevel, propositionLevel);
+		this.index++;
 	}
 	
 	private boolean isOk(Operator op, int index) {
@@ -195,7 +209,7 @@ public class PlanningGraphBitSet implements GraphElement {
 	}
 
 	private boolean contains(BitSet prop, int index){
-        final BitSet pi = this.propositionLayers.get(index);
+        final BitSet pi = (BitSet) this.propositionLayers.get(index).clone();
         pi.and(prop);
         return pi.equals(prop);
 	}
