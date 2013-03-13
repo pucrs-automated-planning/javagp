@@ -82,25 +82,29 @@ public class PlanningGraphBitSet implements GraphElement {
 					newTerms.add(termInstances[i]);
 
 				newOp.addTerms(newTerms);
+				List<String> termsOp = new ArrayList<String>();
+				for(int i=0; i<newOp.getTerms().toArray().length; i++)
+					termsOp.add(op.getTerms().toArray()[i].toString() +"@"+ newOp.getTerms().toArray()[i].toString());
+				
 				BitSet pe = new BitSet();
 				BitSet ne = new BitSet();
 				for(Proposition e: op.getEffects()){
-					if(e.negated()) ne.set(getIndexProposition(e, e.getTerms(), false)); 
-					else pe.set(getIndexProposition(e, e.getTerms(), true));
+					if(e.negated()) ne.set(getIndexProposition(e, getTerms(termsOp, e.getTerms()), false)); 
+					else pe.set(getIndexProposition(e, getTerms(termsOp, e.getTerms()), true));
 				}
 
-				this.positiveEffects.put(op.getFunctor(), pe);
-				this.negativeEffects.put(op.getFunctor(), ne);
+				this.positiveEffects.put(newOp.toString(), pe);
+				this.negativeEffects.put(newOp.toString(), ne);
 
 				BitSet pp = new BitSet();
 				BitSet np = new BitSet();
 				for(Proposition p: op.getPreconds()){
-					if(p.negated()) np.set(getIndexProposition(p, p.getTerms(), false)); 
-					else pp.set(getIndexProposition(p, p.getTerms(), true));
+					if(p.negated()) np.set(getIndexProposition(p, getTerms(termsOp, p.getTerms()), false)); 
+					else pp.set(getIndexProposition(p, getTerms(termsOp, p.getTerms()), true));
 				}
 
-				this.positivePrecond.put(op.getFunctor(), pp);
-				this.negativePrecond.put(op.getFunctor(), np);
+				this.positivePrecond.put(newOp.toString(), pp);
+				this.negativePrecond.put(newOp.toString(), np);
 
 				this.operators.add(newOp);
 			}
@@ -121,6 +125,17 @@ public class PlanningGraphBitSet implements GraphElement {
 
 		this.actionsMutexes = new HashMap<Operator, Set<Operator>>();
 		this.propositionsMutexes = new HashMap<Proposition, Set<Proposition>>();
+	}
+	
+	public List<Term> getTerms(List<String> termsOp, List<Term> terms){
+		List<Term> newTerms = new ArrayList<Term>();
+		for(String s:termsOp)
+			for(Term t:terms)
+				if(s.split("@")[0].equals(t.toString())) {
+					newTerms.add(new Atom(s.split("@")[1]));
+					continue;
+				}
+		return newTerms;
 	}
 	
 	private void parameters(List<Operator> operators) {
@@ -186,8 +201,8 @@ public class PlanningGraphBitSet implements GraphElement {
 			if(isOk(op, this.index)){
 				newOpLayer.set(this.operators.indexOf(op), true);
 				
-				newPropLayer.or(this.positiveEffects.get(op.getFunctor()));
-				newPropLayer.or(this.negativeEffects.get(op.getFunctor()));
+				newPropLayer.or(this.positiveEffects.get(op.toString()));
+				newPropLayer.or(this.negativeEffects.get(op.toString()));
 			}
 		}
 		
@@ -200,7 +215,7 @@ public class PlanningGraphBitSet implements GraphElement {
 	}
 	
 	private boolean isOk(Operator op, int index) {
-        BitSet preCondition = this.positivePrecond.get(op.getFunctor());
+        BitSet preCondition = this.positivePrecond.get(op.toString());
         return this.contains(preCondition, index) && this.isMutexFree(preCondition, index);
 	}
 	
