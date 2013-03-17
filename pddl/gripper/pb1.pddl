@@ -1,7 +1,7 @@
 (define (problem pb1)
     (:domain gripper)
-    (:requirements :strips)
   	(:objects roomA roomB Ball1 Ball2 left right)
+
 	(:init 
 		(room roomA)
 		(room roomB)
@@ -9,11 +9,11 @@
 		(ball Ball2)
 		(gripper left)
 		(gripper right)
-		(at-robby roomA) 
+		(atRobby roomA) 
 		(free left) 
 		(free right)  
 		(at Ball1 roomA)
 		(at Ball2 roomA))
-	(:goal (and (at Ball1 roomB) 
-		(at Ball2 roomB)))
+
+	(:goal (and (at Ball1 roomB) (at Ball2 roomB)) )
 )
