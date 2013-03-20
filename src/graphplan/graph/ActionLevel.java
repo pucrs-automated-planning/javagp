@@ -25,7 +25,6 @@ package graphplan.graph;
 
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import graphplan.domain.jason.OperatorImpl;
 import graphplan.flyweight.OperatorFactory;
 
 import java.util.ArrayList;
@@ -274,26 +273,12 @@ public class ActionLevel implements GraphLevel<Operator> {
 	}
 	
 	private void sortByNoopsFirst(List<Operator> operators){
-		/*
 		Collections.sort(operators, new Comparator<Operator>() {
-
 			public int compare(Operator o1, Operator o2) {
 				if( o1.isNoop() && !o2.isNoop()) return -1;
-				if(!o2.isNoop() &&  o2.isNoop()) return 1;
+				if(!o1.isNoop() &&  o2.isNoop()) return 1;
 				return 0;
 			}
-
 		});
-		*/
-		
-		//versao porca, a acima n funcionou
-		for (int i = 0; i < operators.size(); i++){
-			Operator o = operators.get(i);
-			if(o.isNoop()){
-				operators.add(0,o);
-				operators.remove(i+1);
-			}
-		}
-		
 	}
 }

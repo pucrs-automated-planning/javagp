@@ -23,18 +23,19 @@
  */
 package graphplan.graph.algorithm.impl;
 
-import java.util.Iterator;
-
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.graph.ActionLevel;
+import graphplan.graph.GraphLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.MutexGenerator;
 
+import java.util.Iterator;
+
 public class MutexGeneratorImpl implements MutexGenerator {
 
-	public void addActionMutexes(PropositionLevel previousLevel,
-			ActionLevel actionLevel) {
+	@Override
+	public void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel) {
 		//For every action in this level
 		for(Iterator<Operator> i=actionLevel.iterator(); i.hasNext();) {
 			//Check every other operator for static mutexes
@@ -50,15 +51,15 @@ public class MutexGeneratorImpl implements MutexGenerator {
 				/*if(operator1.isMutex(operator2)) {
 					actionLevel.addMutex(operator1, operator2);
 				}*/
-				if(isMutex(operator1, operator2, previousLevel)) {
-					actionLevel.addMutex(operator1, operator2);
+				if(isMutex(operator1, operator2, (PropositionLevel) previousLevel)) {
+					((ActionLevel) actionLevel).addMutex(operator1, operator2);
 				}
 			}
 		}
 	}
 	
-	public void addPropositionMutexes(ActionLevel previousLevel,
-			PropositionLevel propositionLevel) {
+	@Override
+	public void addPropositionMutexes(GraphLevel<Operator> previousLevel, GraphLevel<Proposition> propositionLevel) {
 		for (Proposition proposition1 : propositionLevel) {
 			for (Proposition proposition2 : propositionLevel) {
 				//for nested iterators, we check everything before the current
@@ -70,8 +71,8 @@ public class MutexGeneratorImpl implements MutexGenerator {
 				/*if(proposition1.isMutex(proposition2)) {
 					propositionLevel.addMutex(proposition1, proposition2);
 				}*/
-				if(isMutex(proposition1, proposition2, previousLevel)) {
-					propositionLevel.addMutex(proposition1, proposition2);
+				if(isMutex(proposition1, proposition2, (ActionLevel)previousLevel)) {
+					((PropositionLevel) propositionLevel).addMutex(proposition1, proposition2);
 				}
 			}
 		}
@@ -153,5 +154,4 @@ public class MutexGeneratorImpl implements MutexGenerator {
 		}
 		return true;
 	}
-
 }

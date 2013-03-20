@@ -23,8 +23,9 @@
  */
 package graphplan.graph.algorithm;
 
-import graphplan.graph.ActionLevel;
-import graphplan.graph.PropositionLevel;
+import graphplan.domain.Operator;
+import graphplan.domain.Proposition;
+import graphplan.graph.GraphLevel;
 
 public interface MutexGenerator {
 	/**
@@ -36,7 +37,7 @@ public interface MutexGenerator {
 	 * @param actionLevel	The action level onto which mutex relationships 
 	 * 						are to be added.
 	 */
-	public void addActionMutexes(PropositionLevel previousLevel, ActionLevel actionLevel);
+	public void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel);
 	
 	/**
 	 * Adds mutex relationships to the specified proposition level based on
@@ -46,6 +47,6 @@ public interface MutexGenerator {
 	 * @param propositionLevel The proposition level onto which mutex 
 	 * 						relationships are to be added.
 	 */
-	public void addPropositionMutexes(ActionLevel previousLevel, PropositionLevel propositionLevel);
+	public void addPropositionMutexes(GraphLevel<Operator> previousLevel, GraphLevel<Proposition> propositionLevel);
 	
 }
