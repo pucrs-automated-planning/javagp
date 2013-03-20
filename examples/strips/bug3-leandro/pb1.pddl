@@ -1,0 +1,6 @@
+(define (problem pb1)
+	(:domain vehicle)
+	(:objects l v)
+	(:init (location l) (vehicle v) )
+	(:goal (mobility_info(l,v)) )
+)
