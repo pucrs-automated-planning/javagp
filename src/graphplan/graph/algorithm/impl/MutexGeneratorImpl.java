@@ -117,7 +117,7 @@ public class MutexGeneratorImpl implements MutexGenerator {
 				}
 			}
 			
-			for(Proposition effect : operator1.getEffects()) {
+			for(Proposition effect : operator2.getEffects()) {
 				if(proposition.isMutex(effect)) {
 					return true;
 				}
