@@ -9,8 +9,7 @@ public class GraphplanPDDLTest {
 	@Test
 	public void testBlocksWorldPDDL() {
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d", "pddl/blockworld/blocksworld.pddl", "-p", "pddl/blockworld/pb1.pddl"});
-			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/blockworld/blocksworld.pddl", "-p", "examples/pddl/blockworld/pb5.pddl"});
+			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/blockworld/blocksworld.pddl", "-p", "examples/pddl/blockworld/pb3.pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
