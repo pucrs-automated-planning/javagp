@@ -30,6 +30,7 @@ import graphplan.graph.algorithm.PropositionLevelGenerator;
 import graphplan.graph.algorithm.impl.LevelGeneratorImpl;
 import graphplan.graph.algorithm.impl.MutexGeneratorImpl;
 import graphplan.graph.draw.TextDrawVisitor;
+import graphplan.graph.memo.mutexes.StaticsMutexesTable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -73,14 +74,14 @@ public class PlanningGraph implements GraphElement {
 		this.addGraphLevel(initialState);
 	}
 
-	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes) {
+	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, StaticsMutexesTable staticsMutexesTable) {
 		this.graphLevels = new ArrayList<GraphLevel>();
 
 		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl(types, parameterTypes);
 		this.actionLevelGenerator = levelGenerator;
 		this.propositionLevelGenerator = levelGenerator;
 		
-		this.mutexGenerator = new MutexGeneratorImpl();
+		this.mutexGenerator = new MutexGeneratorImpl(staticsMutexesTable);
 		this.addGraphLevel(initialState);
 	}
 

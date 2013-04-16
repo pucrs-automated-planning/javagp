@@ -34,6 +34,7 @@ import graphplan.graph.PlanningGraphException;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.SolutionExtractionVisitor;
 import graphplan.graph.algorithm.TimeoutSolutionExtractionVisitor;
+import graphplan.graph.memo.mutexes.StaticsMutexesTable;
 import graphplan.parser.PDDLPlannerParser;
 import graphplan.parser.PlannerParser;
 
@@ -215,8 +216,8 @@ public class Graphplan {
 		PropositionLevel initialLevel = new PropositionLevel();
 		initialLevel.addPropositions(domainDescription.getInitialState());
 		this.solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
-		
-		if(pddl) this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes());
+
+		if(pddl) this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticsMutexesTable(domainDescription.getOperators()));
 		else this.planningGraph = new PlanningGraph(initialLevel);
 		
 		OperatorFactory.getInstance().resetOperatorTemplates();

@@ -29,10 +29,19 @@ import graphplan.graph.ActionLevel;
 import graphplan.graph.GraphLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.MutexGenerator;
+import graphplan.graph.memo.mutexes.StaticsMutexesTable;
 
 import java.util.Iterator;
 
 public class MutexGeneratorImpl implements MutexGenerator {
+	
+	private StaticsMutexesTable staticsMutexesTable;
+
+	public MutexGeneratorImpl(){}
+	
+	public MutexGeneratorImpl(StaticsMutexesTable staticsMutexesTable){
+		this.staticsMutexesTable = staticsMutexesTable; 
+	}
 
 	@Override
 	public void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel) {
@@ -51,7 +60,9 @@ public class MutexGeneratorImpl implements MutexGenerator {
 				/*if(operator1.isMutex(operator2)) {
 					actionLevel.addMutex(operator1, operator2);
 				}*/
-				if(isMutex(operator1, operator2, (PropositionLevel) previousLevel)) {
+				if(this.staticsMutexesTable != null && this.staticsMutexesTable.isMutex(operator1, operator2)){
+					((ActionLevel) actionLevel).addMutex(operator1, operator2);
+				} else if(isMutex(operator1, operator2, (PropositionLevel) previousLevel)) {
 					((ActionLevel) actionLevel).addMutex(operator1, operator2);
 				}
 			}
