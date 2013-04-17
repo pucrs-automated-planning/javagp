@@ -1,7 +1,8 @@
 package graphplan.graph.memo.mutexes;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.xml.internal.xsom.impl.Ref.Term;
 
 
 public class MutextCondition {
@@ -13,20 +14,24 @@ public class MutextCondition {
 		this.op1Parameters = new ArrayList<Integer>();
 		this.op2Parameters = new ArrayList<Integer>();
 	}
-
-	public List<Integer> getOp1Parameters() {
-		return op1Parameters;
+	
+	public void addOp1Parameter(int index){
+		this.op1Parameters.add(index);
+	}
+	
+	public void addOp2Parameter(int index){
+		this.op2Parameters.add(index);
+	}
+	
+	public boolean verifyConditionsByIndexes(List<Term> termsOp1, List<Term> termsOp2){
+		for (int i = 0; i < op1Parameters.size(); i++) {
+			if(!termsOp1.get(op1Parameters.get(i)).toString().equals(termsOp2.get(op2Parameters.get(i)).toString())){
+				return false;
+			}
+		}
+		return true;
 	}
 
-	public void setOp1Parameters(List<Integer> op1Parameters) {
-		this.op1Parameters = op1Parameters;
-	}
+	
 
-	public List<Integer> getOp2Parameters() {
-		return op2Parameters;
-	}
-
-	public void setOp2Parameters(List<Integer> op2Parameters) {
-		this.op2Parameters = op2Parameters;
-	}
 }
