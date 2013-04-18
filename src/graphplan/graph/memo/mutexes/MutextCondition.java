@@ -1,9 +1,8 @@
 package graphplan.graph.memo.mutexes;
+import jason.asSyntax.Term;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.sun.xml.internal.xsom.impl.Ref.Term;
-
 
 public class MutextCondition {
 
@@ -31,7 +30,4 @@ public class MutextCondition {
 		}
 		return true;
 	}
-
-	
-
 }
