@@ -1,8 +1,11 @@
 package graphplan.graph.memo.mutexes;
+import jason.asSyntax.Atom;
+
 import jason.asSyntax.Term;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class MutextCondition {
 
@@ -22,7 +25,7 @@ public class MutextCondition {
 		this.op2Parameters.add(index);
 	}
 	
-	public boolean verifyConditionsByIndexes(List<Term> termsOp1, List<Term> termsOp2){
+	public boolean verifyConditionsByIndexes(List<Atom> termsOp1, List<Atom> termsOp2){
 		for (int i = 0; i < op1Parameters.size(); i++) {
 			if(!termsOp1.get(op1Parameters.get(i)).toString().equals(termsOp2.get(op2Parameters.get(i)).toString())){
 				return false;
@@ -30,4 +33,9 @@ public class MutextCondition {
 		}
 		return true;
 	}
+	
+	
+
+	
+
 }

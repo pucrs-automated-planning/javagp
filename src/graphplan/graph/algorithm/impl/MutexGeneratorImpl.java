@@ -104,17 +104,11 @@ public class MutexGeneratorImpl implements MutexGenerator {
 		//If any mutex is found, we can return immediately
 		for(Proposition proposition : operator1.getPreconds()) {
 			for(Proposition precond : operator2.getPreconds()) {
-				if(previousLevel.isMutex(proposition, precond)
-				   //|| proposition.isMutex(precond) //this second test seems unnecessary
-					) {
-					return true;
-				}
+				if(interference(previousLevel, proposition, precond)) return true;
 			}
 			
 			for(Proposition effect : operator2.getEffects()) {
-				if(proposition.isMutex(effect)) {
-					return true;
-				}
+				if (concurrentNeeds(proposition, effect)) return true;
 			}
 		}
 		
@@ -123,15 +117,11 @@ public class MutexGeneratorImpl implements MutexGenerator {
 		//Again, if we bump into any mutex, we can return immediately
 		for(Proposition proposition : operator1.getEffects()) {
 			for(Proposition precond : operator2.getPreconds()) {
-				if(proposition.isMutex(precond)) {
-					return true;
-				}
+				if (concurrentNeeds(proposition, precond)) return true;
 			}
 			
 			for(Proposition effect : operator2.getEffects()) {
-				if(proposition.isMutex(effect)) {
-					return true;
-				}
+				if(inconsistentEffects(proposition, effect)) return true;
 			}
 		}
 		return false;
@@ -147,10 +137,28 @@ public class MutexGeneratorImpl implements MutexGenerator {
 	 */
 	public boolean isMutex(Proposition proposition1, Proposition proposition2, ActionLevel previousLevel) {
 		//First check for the static mutex
-		if(proposition1.isMutex(proposition2)) {
-			return true;
-		}
+		if(proposition1.isMutex(proposition2))	return true;
 		//Otherwise, check for inconsistent support in the previous level
+		return inconsistentSupport(proposition1, proposition2, previousLevel);
+	}
+
+
+
+	private boolean inconsistentEffects(Proposition proposition, Proposition effect){
+		return (proposition.isMutex(effect));
+	}
+	
+	private boolean interference(PropositionLevel previousLevel, Proposition proposition, Proposition precond){
+		return (previousLevel.isMutex(proposition, precond));
+		//|| proposition.isMutex(precond) //this second test seems unnecessary) {
+	}
+	
+	private boolean concurrentNeeds(Proposition proposition, Proposition effect){
+		return (proposition.isMutex(effect));
+	}
+	
+	private boolean inconsistentSupport(Proposition proposition1, Proposition proposition2, ActionLevel previousLevel){
+		
 		//This is done by checking all combinations of operators in the
 		// previous level for mutexes
 		//If there is at least one pair of operators that can be used to 
@@ -165,4 +173,5 @@ public class MutexGeneratorImpl implements MutexGenerator {
 		}
 		return true;
 	}
+
 }

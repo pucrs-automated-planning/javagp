@@ -9,11 +9,22 @@ public class GraphplanPDDLTest {
 	@Test
 	public void testBlocksWorldPDDL() {
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/blockworld/blocksworld.pddl", "-p", "examples/pddl/blockworld/pb2.pddl"});
+			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/blockworld/blocksworld.pddl", "-p", "examples/pddl/blockworld/pb7.pddl"});
+		} catch (Exception e) {
+//			fail(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGripperPDDL(){
+		try {
+			Graphplan.main(new String[] {"-pddl", "-d", "pddl/gripper/gripper.pddl", "-p", "pddl/gripper/pb3.pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}
+	
 	
 	@Test
 	public void testDinnerPDDL() {

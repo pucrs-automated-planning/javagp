@@ -217,8 +217,15 @@ public class Graphplan {
 		initialLevel.addPropositions(domainDescription.getInitialState());
 		this.solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
 
-		if(pddl) this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticsMutexesTable(domainDescription.getOperators()));
-		else this.planningGraph = new PlanningGraph(initialLevel);
+		if(pddl) {
+			this.planningGraph = new PlanningGraph(initialLevel, 
+														domainDescription.getTypes(), 
+														domainDescription.getParameterTypes(), 
+														new StaticsMutexesTable( new ArrayList<Operator>(domainDescription.getOperators())));
+		}
+		else {
+			this.planningGraph = new PlanningGraph(initialLevel);
+		}
 		
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
