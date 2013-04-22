@@ -118,14 +118,20 @@ public class StaticsMutexesTable {
 		
 		if (hashOp1 != null ) {
 			Set<String> mutexes = this.tableMutexesHits.get(op1.toString());; 
-			if(mutexes != null)	
-				if(mutexes.contains(op2.toString())) return true;
+			if(mutexes != null){
+				if(mutexes.contains(op2.toString())) {
+					return true;
+				}
+			}
 
 			List<MutextCondition> mutexConditions = hashOp1.get(op2.getFunctor());
 			if(mutexConditions != null){
 				for (MutextCondition mutextCondition : mutexConditions) {
 					if (mutextCondition.verifyConditionsByIndexes(op1.getTerms(), op2.getTerms())) {
-						if(mutexes == null) mutexes = new HashSet<String>();
+						if(mutexes == null) {
+							mutexes = new HashSet<String>();
+							this.tableMutexesHits.put(op1.toString(), mutexes);
+						}
 						mutexes.add(op2.toString());
 						return true;
 					}
