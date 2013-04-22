@@ -15,8 +15,7 @@ import java.util.Set;
 public class StaticsMutexesTable {
 
 	private HashMap<String, HashMap<String, List<MutextCondition>>> mutexesTable = new HashMap<String, HashMap<String,List<MutextCondition>>>();
-	//private HashMap<String, Set<String>> table = new HashMap<String, Set<String>>();
-	
+	private HashMap<String, Set<String>> tableMutexesHits = new HashMap<String, Set<String>>();
 	
 	public StaticsMutexesTable(List<Operator> operators){
 		this.initializeConstructor(operators);
@@ -68,6 +67,7 @@ public class StaticsMutexesTable {
 	}
 	
 	
+	@SuppressWarnings("rawtypes")
 	private void populateStaticMutexTable(Proposition p1, Proposition p2, Operator op1, Operator op2){
 		HashMap<String, List<MutextCondition>> mutexOp = this.mutexesTable.get(op1.getFunctor());
 		if(mutexOp == null) mutexOp = new HashMap<String, List<MutextCondition>>();
@@ -114,14 +114,19 @@ public class StaticsMutexesTable {
 	
 	@SuppressWarnings("unchecked")
 	public boolean isMutex(Operator op1, Operator op2) {
-		
 		HashMap<String, List<MutextCondition>> hashOp1 = this.mutexesTable.get(op1.getFunctor());
 		
 		if (hashOp1 != null ) {
+			Set<String> mutexes = this.tableMutexesHits.get(op1.toString());; 
+			if(mutexes != null)	
+				if(mutexes.contains(op2.toString())) return true;
+
 			List<MutextCondition> mutexConditions = hashOp1.get(op2.getFunctor());
 			if(mutexConditions != null){
 				for (MutextCondition mutextCondition : mutexConditions) {
 					if (mutextCondition.verifyConditionsByIndexes(op1.getTerms(), op2.getTerms())) {
+						if(mutexes == null) mutexes = new HashSet<String>();
+						mutexes.add(op2.toString());
 						return true;
 					}
 				}
@@ -129,6 +134,4 @@ public class StaticsMutexesTable {
 		}
 		return false;
 	}
-
-	
 }
