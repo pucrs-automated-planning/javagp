@@ -44,6 +44,7 @@ public class PropositionImpl extends LiteralImpl implements Proposition {
 	};
 	
 	private String signatureCache = null;
+	private int index = -1;
 	
 	public PropositionImpl(boolean pos, String functor) {
 		super(pos, functor);
@@ -127,10 +128,18 @@ public class PropositionImpl extends LiteralImpl implements Proposition {
 				if(un.unifies(t, term)) {
 					term.apply(un);
 				}
-				
 			}
 		}
-		
 		return ground;
+	}
+
+	@Override
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	@Override
+	public int getIndex() {
+		return this.index;
 	}
 }

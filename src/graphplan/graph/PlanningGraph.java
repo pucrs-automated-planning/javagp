@@ -24,6 +24,7 @@
 package graphplan.graph;
 
 import graphplan.domain.Proposition;
+import graphplan.domain.set.PropositionSet;
 import graphplan.graph.algorithm.ActionLevelGenerator;
 import graphplan.graph.algorithm.MutexGenerator;
 import graphplan.graph.algorithm.PropositionLevelGenerator;
@@ -54,6 +55,7 @@ public class PlanningGraph implements GraphElement {
 	protected ActionLevelGenerator actionLevelGenerator = null;
 	protected PropositionLevelGenerator propositionLevelGenerator = null;
 	protected MutexGenerator mutexGenerator = null;
+	protected PropositionSet<Proposition> propositions;
 	
 	//The level in which the graph has levelled off
 	protected int levelOff = 0;
@@ -74,15 +76,18 @@ public class PlanningGraph implements GraphElement {
 		this.addGraphLevel(initialState);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, StaticsMutexesTable staticsMutexesTable) {
 		this.graphLevels = new ArrayList<GraphLevel>();
 
 		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl(types, parameterTypes);
 		this.actionLevelGenerator = levelGenerator;
 		this.propositionLevelGenerator = levelGenerator;
-		
+		this.propositions = new PropositionSet();
 		this.mutexGenerator = new MutexGeneratorImpl(staticsMutexesTable);
+		
 		this.addGraphLevel(initialState);
+		this.setIndexToPropositions(initialState);
 	}
 
 	public boolean accept(GraphElementVisitor visitor) {
@@ -218,6 +223,7 @@ public class PlanningGraph implements GraphElement {
 			//And then add the subsequent proposition level
 			PropositionLevel propositionLevel = propositionLevelGenerator.createNextPropositionLevel(actionLevel);
 			this.addGraphLevel(propositionLevel);
+			this.setIndexToPropositions(propositionLevel);
 			//Finally adding the proposition mutexes
 			this.mutexGenerator.addPropositionMutexes(actionLevel, propositionLevel);
 		} else {
@@ -271,6 +277,18 @@ public class PlanningGraph implements GraphElement {
 		return levelOff;
 	}
 	
+	public void setIndexToPropositions(PropositionLevel propositionLevel){
+		for (Iterator<Proposition> it = propositionLevel.iterator(); it.hasNext();) {
+			Proposition p = it.next();
+			if(this.propositions.contains(p)){
+				p.setIndex(this.propositions.get(p).getIndex());
+			} else {
+				p.setIndex(propositionLevel.getIndex());
+				this.propositions.add(p);
+			}
+		}
+	}
+	
 	public String toString() {
 		TextDrawVisitor visitor = new TextDrawVisitor();
 		if(this.accept(visitor)) {
@@ -278,5 +296,9 @@ public class PlanningGraph implements GraphElement {
 		} else {
 			return super.toString();
 		}
+	}
+
+	public PropositionSet<Proposition> getPropositions() {
+		return propositions;
 	}
 }

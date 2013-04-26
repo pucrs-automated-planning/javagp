@@ -26,7 +26,6 @@ package graphplan.graph.algorithm;
 import graphplan.PlanResult;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import graphplan.domain.jason.OperatorImpl;
 import graphplan.graph.ActionLevel;
 import graphplan.graph.GraphElement;
 import graphplan.graph.GraphElementVisitor;
@@ -35,6 +34,9 @@ import graphplan.graph.PlanningGraph;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.memo.MemoizationTable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -78,7 +80,6 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	public boolean visitElement(GraphElement element) {
 		if(element instanceof PlanningGraph) {
 			PlanningGraph planningGraph = (PlanningGraph) element;
-			
 			if(planningGraph.getLastGraphLevel().isPropositionLevel()) {
 				subGoalStack.clear();
 				supportActionStack.clear();
@@ -232,16 +233,20 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		public ActionSetIterator(Set<Proposition> subGoals, ActionLevel actionLevel) {
 			this.actionSet = new HashSet<Operator>(subGoals.size());
 			this.achievableGoals = new HashSet<Proposition>();
-			this.subGoals = subGoals.toArray(new Proposition[subGoals.size()]);
 			this.iterators = new Iterator[subGoals.size()];
 			this.actionLevel = actionLevel;
 			this.requiredOperators = new List[subGoals.size()];
 			this.selectedOperators = new Operator[subGoals.size()];
-			
-//			Proposition[] newSubGoals = this.subGoals.clone();
-//			for(int i=0; i< this.subGoals.length; i++) {
-//				this.subGoals[i] = newSubGoals[(this.subGoals.length-1)-i];
-//			}
+
+			//Heuristic
+			ArrayList<Proposition> newSubGoals = new ArrayList<Proposition>(subGoals);
+			Collections.sort(newSubGoals, new Comparator<Proposition>() {
+				public int compare(Proposition o1, Proposition o2) {
+					return (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
+				}
+			});
+
+			this.subGoals = newSubGoals.toArray(new Proposition[newSubGoals.size()]);
 			
 			for(int i=0; i< this.subGoals.length; i++) {
 				List<Operator> ops = actionLevel.getGeneratingActions(this.subGoals[i]);

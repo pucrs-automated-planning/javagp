@@ -23,11 +23,10 @@
  */
 package graphplan.domain;
 
+import graphplan.graph.GraphElement;
 import jason.asSemantics.Unifier;
 
 import java.util.List;
-
-import graphplan.graph.GraphElement;
 
 /**
  * The interface to a Proposition in the planning graph, this is a bridge
@@ -104,4 +103,7 @@ public interface Proposition extends GraphElement {
 	 * @return A deep copy of this operator.
 	 */
 	public Object clone();
+	
+	public void setIndex(int index);
+	public int getIndex();
 }
