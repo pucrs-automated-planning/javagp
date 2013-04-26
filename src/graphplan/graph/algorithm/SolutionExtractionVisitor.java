@@ -230,19 +230,6 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		protected final Set<Proposition> achievableGoals;
 		
 		public ActionSetIterator(Set<Proposition> subGoals, ActionLevel actionLevel) {
-			final ActionLevel newActionLevel = new ActionLevel();
-
-			@SuppressWarnings("rawtypes")
-			Iterator it =  actionLevel.getActions();
-			if(!supportActionStack.isEmpty()){
-				while(it.hasNext()){
-					OperatorImpl op = (OperatorImpl) it.next();
-					if(!supportActionStack.peek().contains(op)){
-						newActionLevel.addAction(op);
-					}
-				}
-			}
-
 			this.actionSet = new HashSet<Operator>(subGoals.size());
 			this.achievableGoals = new HashSet<Proposition>();
 			this.subGoals = subGoals.toArray(new Proposition[subGoals.size()]);
@@ -250,6 +237,11 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			this.actionLevel = actionLevel;
 			this.requiredOperators = new List[subGoals.size()];
 			this.selectedOperators = new Operator[subGoals.size()];
+			
+//			Proposition[] newSubGoals = this.subGoals.clone();
+//			for(int i=0; i< this.subGoals.length; i++) {
+//				this.subGoals[i] = newSubGoals[(this.subGoals.length-1)-i];
+//			}
 			
 			for(int i=0; i< this.subGoals.length; i++) {
 				List<Operator> ops = actionLevel.getGeneratingActions(this.subGoals[i]);
