@@ -18,12 +18,20 @@ public class GraphplanPDDLTest {
 	@Test
 	public void testGripperPDDL(){
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d", "pddl/gripper/gripper.pddl", "-p", "pddl/gripper/pb3.pddl"});
+			Graphplan.main(new String[] {"-pddl", "-d", "pddl/gripper/gripper.pddl", "-p", "pddl/gripper/pb2.pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}
 	
+	@Test
+	public void testHanoiPDDL(){
+		try {
+			Graphplan.main(new String[] {"-pddl", "-d", "pddl/hanoi/hanoi.pddl", "-p", "pddl/hanoi/pb2.pddl"});
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
 	
 	@Test
 	public void testDinnerPDDL() {
