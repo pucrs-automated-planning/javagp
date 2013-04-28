@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class StaticsMutexesTable {
 
-	private HashMap<String, HashMap<String, List<MutextCondition>>> mutexesTable = new HashMap<String, HashMap<String,List<MutextCondition>>>();
+	private HashMap<String, HashMap<String, List<MutexCondition>>> mutexesTable = new HashMap<String, HashMap<String,List<MutexCondition>>>();
 	private HashMap<String, Set<String>> tableMutexesHits = new HashMap<String, Set<String>>();
 	
 	public StaticsMutexesTable(List<Operator> operators){
@@ -69,14 +69,14 @@ public class StaticsMutexesTable {
 	
 	@SuppressWarnings("rawtypes")
 	private void populateStaticMutexTable(Proposition p1, Proposition p2, Operator op1, Operator op2){
-		HashMap<String, List<MutextCondition>> mutexOp = this.mutexesTable.get(op1.getFunctor());
-		if(mutexOp == null) mutexOp = new HashMap<String, List<MutextCondition>>();
+		HashMap<String, List<MutexCondition>> mutexOp = this.mutexesTable.get(op1.getFunctor());
+		if(mutexOp == null) mutexOp = new HashMap<String, List<MutexCondition>>();
 
-		List<MutextCondition> conditionOp = mutexOp.get(op2.getFunctor());
-		if(conditionOp == null) conditionOp = new ArrayList<MutextCondition>();
+		List<MutexCondition> conditionOp = mutexOp.get(op2.getFunctor());
+		if(conditionOp == null) conditionOp = new ArrayList<MutexCondition>();
 
 		
-		MutextCondition mutexCond = new MutextCondition();
+		MutexCondition mutexCond = new MutexCondition();
 		
 		Iterator itE1 = p1.getTerms().iterator();
 		while(itE1.hasNext()){
@@ -114,7 +114,7 @@ public class StaticsMutexesTable {
 	
 	@SuppressWarnings("unchecked")
 	public boolean isMutex(Operator op1, Operator op2) {
-		HashMap<String, List<MutextCondition>> hashOp1 = this.mutexesTable.get(op1.getFunctor());
+		HashMap<String, List<MutexCondition>> hashOp1 = this.mutexesTable.get(op1.getFunctor());
 		
 		if (hashOp1 != null ) {
 			Set<String> mutexes = this.tableMutexesHits.get(op1.toString());; 
@@ -124,9 +124,9 @@ public class StaticsMutexesTable {
 				}
 			}
 
-			List<MutextCondition> mutexConditions = hashOp1.get(op2.getFunctor());
+			List<MutexCondition> mutexConditions = hashOp1.get(op2.getFunctor());
 			if(mutexConditions != null){
-				for (MutextCondition mutextCondition : mutexConditions) {
+				for (MutexCondition mutextCondition : mutexConditions) {
 					if (mutextCondition.verifyConditionsByIndexes(op1.getTerms(), op2.getTerms())) {
 						if(mutexes == null) {
 							mutexes = new HashSet<String>();

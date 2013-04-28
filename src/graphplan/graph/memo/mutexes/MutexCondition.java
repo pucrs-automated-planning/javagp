@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MutextCondition {
+public class MutexCondition {
 
 	private List<Integer> op1Parameters;
 	private List<Integer> op2Parameters;
 	
-	public MutextCondition(){
+	public MutexCondition(){
 		this.op1Parameters = new ArrayList<Integer>();
 		this.op2Parameters = new ArrayList<Integer>();
 	}
