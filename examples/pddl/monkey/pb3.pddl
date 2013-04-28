@@ -8,7 +8,7 @@
 	 	(location p5) 
 		(location p6)
 	 	(at monkey p1)
-		(on-floor)
+		(onFloor)
 	 	(at box p2)
 	 	(at bananas p3)
 	 	(at knife p4)

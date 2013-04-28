@@ -23,8 +23,8 @@
  */
 package graphplan.graph;
 
+import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import graphplan.domain.set.PropositionSet;
 import graphplan.graph.algorithm.ActionLevelGenerator;
 import graphplan.graph.algorithm.MutexGenerator;
 import graphplan.graph.algorithm.PropositionLevelGenerator;
@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unchecked")
@@ -55,7 +56,8 @@ public class PlanningGraph implements GraphElement {
 	protected ActionLevelGenerator actionLevelGenerator = null;
 	protected PropositionLevelGenerator propositionLevelGenerator = null;
 	protected MutexGenerator mutexGenerator = null;
-	protected PropositionSet<Proposition> propositions;
+	protected TreeSet<Proposition> propositions;
+	protected TreeSet<Operator> operators;
 	
 	//The level in which the graph has levelled off
 	protected int levelOff = 0;
@@ -83,8 +85,10 @@ public class PlanningGraph implements GraphElement {
 		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl(types, parameterTypes);
 		this.actionLevelGenerator = levelGenerator;
 		this.propositionLevelGenerator = levelGenerator;
-		this.propositions = new PropositionSet();
 		this.mutexGenerator = new MutexGeneratorImpl(staticsMutexesTable);
+		
+		this.propositions = new TreeSet<Proposition>();
+		this.operators = new TreeSet<Operator>();
 		
 		this.addGraphLevel(initialState);
 		this.setIndexToPropositions(initialState);
@@ -218,6 +222,7 @@ public class PlanningGraph implements GraphElement {
 			//First we create a new action level from the last proposition level
 			ActionLevel actionLevel = actionLevelGenerator.createNextActionLevel(lastLevel);
 			this.addGraphLevel(actionLevel);
+			this.setIndexToOperators(actionLevel);
 			//Then we add the action mutexes for these actions
 			this.mutexGenerator.addActionMutexes(lastLevel, actionLevel);
 			//And then add the subsequent proposition level
@@ -280,12 +285,20 @@ public class PlanningGraph implements GraphElement {
 	public void setIndexToPropositions(PropositionLevel propositionLevel){
 		for (Iterator<Proposition> it = propositionLevel.iterator(); it.hasNext();) {
 			Proposition p = it.next();
-			if(this.propositions.contains(p)){
-				p.setIndex(this.propositions.get(p).getIndex());
-			} else {
+			if(!this.propositions.contains(p)){
 				p.setIndex(propositionLevel.getIndex());
 				this.propositions.add(p);
-			}
+			} else p.setIndex(this.propositions.ceiling(p).getIndex());
+		}
+	}
+	
+	public void setIndexToOperators(ActionLevel actionLevel){
+		for (Iterator<Operator> it = actionLevel.iterator(); it.hasNext();) {
+			Operator op = it.next();
+			if(!this.operators.contains(op)){
+				op.setIndex(actionLevel.getIndex());
+				this.operators.add(op);
+			} else op.setIndex(this.operators.ceiling(op).getIndex());
 		}
 	}
 	
@@ -298,7 +311,7 @@ public class PlanningGraph implements GraphElement {
 		}
 	}
 
-	public PropositionSet<Proposition> getPropositions() {
+	public TreeSet<Proposition> getPropositions() {
 		return propositions;
 	}
 }

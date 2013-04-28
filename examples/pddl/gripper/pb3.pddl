@@ -12,7 +12,7 @@
 		(ball Ball6)
 		(gripper left)
 		(gripper right)
-		(at-robby roomA) 
+		(atRobby roomA) 
 		(free left) 
 		(free right)  
 		(at Ball1 roomA)

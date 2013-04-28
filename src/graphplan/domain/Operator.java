@@ -129,4 +129,7 @@ public interface Operator extends GraphElement {
 	 * @return A deep copy of this operator.
 	 */
 	public Object clone();
+	
+	public void setIndex(int index);
+	public int getIndex();
 }

@@ -168,28 +168,87 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			return false;
 		}
 		
-		ActionLevel actionLevel = (ActionLevel) propositionLevel.getPrevLevel();
+		ArrayList<Proposition> subGoalsSorted = new ArrayList<Proposition>(subGoals);
+		Collections.sort(subGoalsSorted, new Comparator<Proposition>() {
+			public int compare(Proposition o1, Proposition o2) {
+				return (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
+			}
+		});
 		
-		//For each possible set of actions
-		for(ActionSetIterator iterator = new ActionSetIterator(subGoals, actionLevel); iterator.hasNext(); ) {
-			Set<Operator> selectedOperators = iterator.next();
-			if(selectedOperators != null) {
-				supportActionStack.push(selectedOperators);
-				Set<Proposition> newSubGoals = determineSubgoals(selectedOperators);
-				this.subGoalStack.push(newSubGoals);
+		boolean planFound = this.search(subGoalsSorted, new HashSet<Operator>(), (ActionLevel) propositionLevel.getPrevLevel(), new HashSet<Operator>());
+		if(!planFound) {
+			this.memoizationTable.addNoGood(subGoals, propositionLevel.getIndex()-2);
+			this.subGoalStack.pop();
+		} else return true;
+
+		return false;
+	}
+	
+	public boolean search(List<Proposition> subGoals, Set<Operator> operators, ActionLevel actionLevel, Set<Operator> mutex){
+		boolean planFound = false;
+		
+		if(subGoals.isEmpty()){
+			Set<Proposition> newSubGoals = determineSubgoals(operators);
+			this.subGoalStack.push(newSubGoals);
+			planFound = this.visitPropositionLevel((PropositionLevel) actionLevel.getPrevLevel(), newSubGoals);
+			if(planFound) this.supportActionStack.push(operators);
+		} else {
+			List<Operator> resolvers = actionLevel.getGeneratingActions(this.getGoal(subGoals));
+			resolvers = this.andNotMutexes(resolvers, mutex);
+			while(!resolvers.isEmpty() && !planFound){
+				Operator resolver = this.getResolver(resolvers);
+				Set<Operator> newOperators = new HashSet<Operator>(operators);
+				newOperators.add(resolver);
+				List<Proposition> newSubGoals = this.getSubGoals(resolver, subGoals);
+				Set<Operator> newMutex = new HashSet<Operator>(mutex);
+				if(actionLevel.getMutexes().get(resolver) != null) newMutex.addAll(actionLevel.getMutexes().get(resolver));
 				
-				boolean planFound = propositionLevel.getPrevLevel().accept(this);
-				if(!planFound) {
-					this.memoizationTable.addNoGood(newSubGoals, propositionLevel.getIndex()-2);
-					this.subGoalStack.pop();
-					this.supportActionStack.pop();
-				} else {
-					return true;
-				}
+				planFound = this.search(newSubGoals, newOperators, actionLevel, newMutex);
 			}
 		}
 		
-		return false;
+		return planFound;
+	}
+	
+	/**
+	 * andNot
+	 * @param resolvers
+	 * @param mutex
+	 * @return
+	 */
+	private List<Operator> andNotMutexes(List<Operator> resolvers, Set<Operator> mutex) {
+		List<Operator> andNot = new ArrayList<Operator>();
+
+		for(Operator op: resolvers){
+			if(!mutex.contains(op)) andNot.add(op);
+		}
+		
+		return andNot;
+	}
+
+	/**
+	 * andNot
+	 * @param resolver
+	 * @param subGoals
+	 * @return
+	 */
+	private List<Proposition> getSubGoals(Operator resolver, List<Proposition> subGoals) {
+		List<Proposition> andNot = new ArrayList<Proposition>();
+		
+		for(Proposition p: subGoals){
+			if(!resolver.getEffects().contains(p)) andNot.add(p);
+		}
+		return andNot;
+	}
+
+	private Proposition getGoal(List<Proposition> subGoals){
+		Proposition p = subGoals.get(0);
+		return p;
+	}
+	
+	private Operator getResolver(List<Operator> resolvers){
+		Operator op = resolvers.remove(0);
+		return op;
 	}
 	
 	/**
@@ -250,6 +309,8 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			
 			for(int i=0; i< this.subGoals.length; i++) {
 				List<Operator> ops = actionLevel.getGeneratingActions(this.subGoals[i]);
+//				System.out.println("\nProposition: " + this.subGoals[i]);
+//				System.out.println(ops);
 				this.requiredOperators[i] = ops;
 				this.iterators[i] = ops.iterator();
 				if(i>0) {
@@ -274,6 +335,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			//We only advance the next iterator if we had
 			//to reset the current one
 			while(advanceNext) {
+
 				if(iterators[i].hasNext()) {
 					advanceNext = false;
 					selectedOperators[i] = iterators[i].next();

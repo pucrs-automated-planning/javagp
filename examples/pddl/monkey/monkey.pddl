@@ -4,7 +4,7 @@
   (:constants monkey box knife bananas glass waterfountain)
  
   (:predicates (location ?x)
-	       (on-floor)
+	       (onFloor)
 	       (at ?m ?x)
 	       (hasknife)
 	       (onbox ?x)
@@ -14,30 +14,30 @@
   
 
   ;; movement and climbing
-  (:action GO-TO
+  (:action GOTO
 	     :parameters (?x ?y)
-	     :precondition (and (location ?x) (location ?y) (on-floor) (at monkey ?y))
+	     :precondition (and (location ?x) (location ?y) (onFloor) (at monkey ?y))
 	     :effect (and (at monkey ?x) (not (at monkey ?y))))
   
   (:action CLIMB
 	     :parameters (?x)
 	     :precondition (and (location ?x) (at box ?x) (at monkey ?x))
-	     :effect (and (onbox ?x) (not (on-floor))))
+	     :effect (and (onbox ?x) (not (onFloor))))
   
-  (:action PUSH-BOX
+  (:action PUSHBOX
 	     :parameters (?x ?y)
 	     :precondition (and (location ?x) (location ?y) (at box ?y) (at monkey ?y) 
-				 (on-floor))
+				 (onFloor))
 	     :effect (and (at monkey ?x) (not (at monkey ?y))
 			   (at box ?x)    (not (at box ?y))))
 
   ;; getting bananas
-  (:action GET-KNIFE
+  (:action GETKNIFE
 	     :parameters (?y)
 	     :precondition (and (location ?y) (at knife ?y) (at monkey ?y))
 	     :effect (and (hasknife) (not (at knife ?y))))
   
-  (:action GRAB-BANANAS
+  (:action GRABBANANAS
 	     :parameters (?y)
 	     :precondition (and (location ?y) (hasknife) 
                                  (at bananas ?y) (onbox ?y))

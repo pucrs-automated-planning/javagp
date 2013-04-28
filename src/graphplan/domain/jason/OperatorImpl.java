@@ -53,6 +53,7 @@ public class OperatorImpl extends Structure implements Operator {
 	
 	protected final List<Proposition> preconds;
 	protected final List<Proposition> effects;
+	private int index = -1;
 
 	public OperatorImpl(String declaration) {
 		super(Structure.parse(declaration));
@@ -233,5 +234,15 @@ public class OperatorImpl extends Structure implements Operator {
 
 	public final boolean isNoop() {
 		return this.getFunctor().startsWith(OperatorFactory.NOOP_FUNCTOR);
+	}
+
+	@Override
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	@Override
+	public int getIndex() {
+		return this.index;
 	}
 }

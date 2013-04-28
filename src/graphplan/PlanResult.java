@@ -58,7 +58,7 @@ public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
 	 */
 	public PlanResult(Stack<Set<Operator>> stack) {
 		this(true);
-		for(int i = stack.size()-1; i>=0; i--) {
+		for(int i = 0; i<stack.size(); i++) {
 			Collection<Operator> stepsInStack = stack.get(i);
 			List<Operator> mySteps = new ArrayList<Operator>(stepsInStack.size());
 			for(Operator step : stepsInStack) {
@@ -66,7 +66,6 @@ public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
 					mySteps.add(step);
 				}
 			}
-			
 			this.steps.add(mySteps);
 		}
 	}

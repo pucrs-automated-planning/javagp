@@ -133,21 +133,20 @@ public class ActionLevel implements GraphLevel<Operator> {
 	public List<Operator> getGeneratingActions(Proposition proposition) {
 		final List<Operator> generatingActions;
 		//A small caching strategy to speedup things
-		if(generatingActionsCache.containsKey(proposition)) {
-			generatingActions = generatingActionsCache.get(proposition);
+		if(this.generatingActionsCache.containsKey(proposition)) {
+			generatingActions = this.generatingActionsCache.get(proposition);
 		} else {
 			generatingActions = new ArrayList<Operator>();
 			
-			for (Iterator<Operator> iter = actions.iterator(); iter.hasNext();) {
+			for (Iterator<Operator> iter = this.actions.iterator(); iter.hasNext();) {
 				Operator oper = iter.next();
 				if(oper.getEffects().contains(proposition)) {
 					generatingActions.add(oper);
 				}
 			}
-			generatingActionsCache.put(proposition, generatingActions);
+			this.generatingActionsCache.put(proposition, generatingActions);
 		}
-		
-		this.sortByNoopsFirst(generatingActions);
+		this.sortByIndex(generatingActions);
 		return generatingActions;
 	}
 	
@@ -280,5 +279,17 @@ public class ActionLevel implements GraphLevel<Operator> {
 				return 0;
 			}
 		});
+	}
+	
+	private void sortByIndex(List<Operator> operators){
+		Collections.sort(operators, new Comparator<Operator>() {
+			public int compare(Operator o1, Operator o2) {
+				return (o1.getIndex() < o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
+			}
+		});
+	}
+
+	public HashMap<Operator, HashSet<Operator>> getMutexes() {
+		return mutexes;
 	}
 }
