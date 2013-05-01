@@ -177,7 +177,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		
 		boolean planFound = this.search(subGoalsSorted, new HashSet<Operator>(), (ActionLevel) propositionLevel.getPrevLevel(), new HashSet<Operator>());
 		if(!planFound) {
-			this.memoizationTable.addNoGood(subGoals, propositionLevel.getIndex()-2);
+			this.memoizationTable.addNoGood(subGoals, propositionLevel.getIndex());
 			this.subGoalStack.pop();
 		} else return true;
 
@@ -193,10 +193,10 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			planFound = this.visitPropositionLevel((PropositionLevel) actionLevel.getPrevLevel(), newSubGoals);
 			if(planFound) this.supportActionStack.push(operators);
 		} else {
-			List<Operator> resolvers = actionLevel.getGeneratingActions(this.getGoal(subGoals));
+			List<Operator> resolvers = actionLevel.getGeneratingActions(this.popGoal(subGoals));
 			resolvers = this.andNotMutexes(resolvers, mutex);
 			while(!resolvers.isEmpty() && !planFound){
-				Operator resolver = this.getResolver(resolvers);
+				Operator resolver = this.popResolver(resolvers);
 				Set<Operator> newOperators = new HashSet<Operator>(operators);
 				newOperators.add(resolver);
 				List<Proposition> newSubGoals = this.getSubGoals(resolver, subGoals);
@@ -241,12 +241,12 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		return andNot;
 	}
 
-	private Proposition getGoal(List<Proposition> subGoals){
+	private Proposition popGoal(List<Proposition> subGoals){
 		Proposition p = subGoals.get(0);
 		return p;
 	}
 	
-	private Operator getResolver(List<Operator> resolvers){
+	private Operator popResolver(List<Operator> resolvers){
 		Operator op = resolvers.remove(0);
 		return op;
 	}
