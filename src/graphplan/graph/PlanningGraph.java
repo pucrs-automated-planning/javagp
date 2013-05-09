@@ -41,18 +41,15 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class PlanningGraph implements GraphElement {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -941628537295487625L;
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PlanningGraph.class.getName());
 
 	protected List<GraphLevel> graphLevels = null;
-	
 	protected ActionLevelGenerator actionLevelGenerator = null;
 	protected PropositionLevelGenerator propositionLevelGenerator = null;
 	protected MutexGenerator mutexGenerator = null;
@@ -77,21 +74,23 @@ public class PlanningGraph implements GraphElement {
 		this();
 		this.addGraphLevel(initialState);
 	}
-
-	@SuppressWarnings("rawtypes")
-	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, StaticsMutexesTable staticsMutexesTable) {
-		this.graphLevels = new ArrayList<GraphLevel>();
-
-		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl(types, parameterTypes);
-		this.actionLevelGenerator = levelGenerator;
-		this.propositionLevelGenerator = levelGenerator;
+	
+	public PlanningGraph(PropositionLevel initialState, StaticsMutexesTable staticsMutexesTable) {
+		this();
 		this.mutexGenerator = new MutexGeneratorImpl(staticsMutexesTable);
 		
 		this.propositions = new TreeSet<Proposition>();
 		this.operators = new TreeSet<Operator>();
-		
 		this.addGraphLevel(initialState);
 		this.setIndexToPropositions(initialState);
+	}
+
+	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, StaticsMutexesTable staticsMutexesTable) {
+		this(initialState, staticsMutexesTable);
+
+		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl(types, parameterTypes);
+		this.actionLevelGenerator = levelGenerator;
+		this.propositionLevelGenerator = levelGenerator;
 	}
 
 	public boolean accept(GraphElementVisitor visitor) {
@@ -108,7 +107,6 @@ public class PlanningGraph implements GraphElement {
 			protected Iterator<GraphLevel> levelIterator = graphLevels
 					.iterator();
 
-			@SuppressWarnings("unchecked")
 			public boolean hasNext() {
 				if (elementIterator == null) {
 					if (levelIterator.hasNext()) {

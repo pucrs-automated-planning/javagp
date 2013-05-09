@@ -218,14 +218,8 @@ public class Graphplan {
 		this.solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
 
 		if(pddl) {
-			this.planningGraph = new PlanningGraph(initialLevel, 
-														domainDescription.getTypes(), 
-														domainDescription.getParameterTypes(), 
-														new StaticsMutexesTable( new ArrayList<Operator>(domainDescription.getOperators())));
-		}
-		else {
-			this.planningGraph = new PlanningGraph(initialLevel);
-		}
+			this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticsMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
+		} else this.planningGraph = new PlanningGraph(initialLevel, new StaticsMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 		
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
@@ -279,14 +273,13 @@ public class Graphplan {
 	 * @throws OperatorFactoryException
 	 * @throws TimeoutException
 	 */
-	public PlanResult plan(DomainDescription domainDescription, long timeout) 
-	       throws PlanningGraphException, OperatorFactoryException, TimeoutException {
+	public PlanResult plan(DomainDescription domainDescription, long timeout) throws PlanningGraphException, OperatorFactoryException, TimeoutException {
 		PropositionLevel initialLevel = new PropositionLevel();
 		initialLevel.addPropositions(domainDescription.getInitialState());
-		solutionExtraction = new TimeoutSolutionExtractionVisitor(domainDescription.getGoalState());
+		this.solutionExtraction = new TimeoutSolutionExtractionVisitor(domainDescription.getGoalState());
 		((TimeoutSolutionExtractionVisitor)solutionExtraction).setTimeout(timeout);
 		
-		planningGraph = new PlanningGraph(initialLevel);
+		this.planningGraph = new PlanningGraph(initialLevel, new StaticsMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
 		for(Operator operator:domainDescription.getOperators()) {

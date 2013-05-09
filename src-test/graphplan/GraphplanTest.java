@@ -96,10 +96,19 @@ public class GraphplanTest {
 	}
 
 	@Test
-	public void testMain() {
+	public void testBlocks() {
 		try {
 			for(int i=1;i<=7;i++)
-				Graphplan.main(new String[] {"-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem4.txt"});
+				Graphplan.main(new String[] {"-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem" + i + ".txt"});
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testDinner() {
+		try {
+			Graphplan.main(new String[] {"-d","examples/strips/dinner/domain.txt","-p","examples/strips/dinner/problem.txt"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
