@@ -35,7 +35,7 @@ import pddl4j.exp.action.ActionDef;
 import pddl4j.exp.term.Constant;
 import pddl4j.exp.term.Variable;
 
-public class PDDLPlannerParser {
+public class PDDLPlannerAdapter {
 	
 	private PDDLObject pddlObject;
 	
@@ -49,7 +49,7 @@ public class PDDLPlannerParser {
 	 * 
 	 * @param pddl4j.PDDLObject pddlObject
 	 */
-	public PDDLPlannerParser(PDDLObject pddlObject){
+	public PDDLPlannerAdapter(PDDLObject pddlObject){
 		this.pddlObject = pddlObject;
 	}
 
@@ -58,7 +58,7 @@ public class PDDLPlannerParser {
 	 * @param String domain
 	 * @param String problem
 	 */
-	public PDDLPlannerParser(String domain, String problem){
+	public PDDLPlannerAdapter(String domain, String problem){
 		this.domain = domain;
 		this.problem = problem;
 		
@@ -262,8 +262,9 @@ public class PDDLPlannerParser {
 	            NotExp notExp = (NotExp) exp;
 	            propositionImpls.addAll(getPropositionFromDomainExp(notExp.getExp(), true));
 	            break;
+		default:
+			break;
 		}
-		
 		return propositionImpls;
 	}
 
@@ -322,6 +323,8 @@ public class PDDLPlannerParser {
 	            NotExp notExp = (NotExp) exp;
 	            propositionImpls.addAll(getPropositionFromProblemExp(notExp.getExp(), true));
 	            break;
+		default:
+			break;
 		}
 		
 		return propositionImpls;

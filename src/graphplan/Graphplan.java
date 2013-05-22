@@ -35,7 +35,7 @@ import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.SolutionExtractionVisitor;
 import graphplan.graph.algorithm.TimeoutSolutionExtractionVisitor;
 import graphplan.graph.memo.mutexes.StaticsMutexesTable;
-import graphplan.parser.PDDLPlannerParser;
+import graphplan.parser.PDDLPlannerAdapter;
 import graphplan.parser.PlannerParser;
 
 import java.io.File;
@@ -146,7 +146,7 @@ public class Graphplan {
 			DomainDescription domain = null;
 			
 			if(pddl){
-				PDDLPlannerParser parserPDDL = new PDDLPlannerParser(pddlDomain, pddlProblem);
+				PDDLPlannerAdapter parserPDDL = new PDDLPlannerAdapter(pddlDomain, pddlProblem);
 				domain = parserPDDL.getDomainDescriptionFromPddlObject();
 			} else {
 				PlannerParser parser = new PlannerParser();
@@ -170,7 +170,8 @@ public class Graphplan {
 				logger.warning("No plan found");
 			}
 			long t2 = System.currentTimeMillis();
-			logger.info("Planning took "+((t2-t1)/1000)+"s");
+			long totalTime = (t2-t1); 
+			logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
 		} else {
 			logger.warning("Wrong parameters");
 			logger.info("Usage is java -jar JavaGP -p <problem> -d <domain> [-maxlevels <max_graph_levels>] [-timeout <planning_timeout>]");
