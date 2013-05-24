@@ -349,6 +349,7 @@ public class OperatorFactory {
 						PropositionImpl realProp = (PropositionImpl) proposition;
 						realProp.apply(unifier);
 						addInstance = preconds.contains(proposition);
+						if(proposition.negated() && !addInstance) addInstance = true;
 						if(!addInstance) {
 							break;
 						}
@@ -362,8 +363,6 @@ public class OperatorFactory {
 		}
 		return instances;
 	}
-	
-	
 	
 	protected Set<Term> getAllPossibleTerms(List<Proposition> propositions) {
 		Set<Term> possibleTerms = new HashSet<Term>();
