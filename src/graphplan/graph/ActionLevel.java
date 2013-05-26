@@ -37,17 +37,12 @@ import java.util.List;
 
 public class ActionLevel implements GraphLevel<Operator> {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -6424912652419709967L;
 
 	private static final Iterator<Operator> emptyIterator = OperatorFactory.getEmptyIterator();
-	
+	protected final HashMap<Proposition, List<Operator>> generatingActionsCache;
 	protected final List<Operator> actions;
 	protected final HashMap<Operator, HashSet<Operator>> mutexes;
-	
-	protected final HashMap<Proposition, List<Operator>> generatingActionsCache;
 	
 	protected PropositionLevel nextLevel = null;
 	protected PropositionLevel prevLevel = null;
@@ -144,9 +139,10 @@ public class ActionLevel implements GraphLevel<Operator> {
 					generatingActions.add(oper);
 				}
 			}
+			this.sortByIndex(generatingActions);
+			//this.sortByNoopsFirst(generatingActions);
 			this.generatingActionsCache.put(proposition, generatingActions);
 		}
-		this.sortByIndex(generatingActions);
 		return generatingActions;
 	}
 	
@@ -201,9 +197,7 @@ public class ActionLevel implements GraphLevel<Operator> {
 	public final Iterator<Operator> getMutexes(Operator operator) {
 		if(this.mutexes.containsKey(operator)) {
 			return this.mutexes.get(operator).iterator();
-		} else {
-			return emptyIterator;
-		}
+		} else return emptyIterator;
 	}
 	
 	public final boolean isActionLevel() {
@@ -214,10 +208,12 @@ public class ActionLevel implements GraphLevel<Operator> {
 		return false;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public final GraphLevel getNextLevel() {
 		return this.nextLevel;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public final GraphLevel getPrevLevel() {
 		return this.prevLevel;
 	}
@@ -252,6 +248,7 @@ public class ActionLevel implements GraphLevel<Operator> {
 	/**
 	 * @param prevLevel the prevLevel to set
 	 */
+	@SuppressWarnings("rawtypes")
 	public final void setPrevLevel(GraphLevel prevLevel) {
 		if(prevLevel.isPropositionLevel()) {
 			this.prevLevel = (PropositionLevel) prevLevel;

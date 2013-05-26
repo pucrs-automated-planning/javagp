@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -65,6 +64,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	protected Stack<Set<Operator>> supportActionStack;
 	
 	protected PlanResult planResult = null;
+	protected PlanningGraph planningGraph;
 	
 	public SolutionExtractionVisitor(List<Proposition> goals) {
 		this.goals = goals;
@@ -77,13 +77,14 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		memoizationTable = new MemoizationTable();
 	}
 
+	@SuppressWarnings("rawtypes")
 	public boolean visitElement(GraphElement element) {
 		if(element instanceof PlanningGraph) {
-			PlanningGraph planningGraph = (PlanningGraph) element;
-			if(planningGraph.getLastGraphLevel().isPropositionLevel()) {
-				subGoalStack.clear();
-				supportActionStack.clear();
-				subGoalStack.push(new TreeSet<Proposition>(goals));
+			this.planningGraph = (PlanningGraph) element;
+			if(this.planningGraph.getLastGraphLevel().isPropositionLevel()) {
+				this.subGoalStack.clear();
+				this.supportActionStack.clear();
+				this.subGoalStack.push(new TreeSet<Proposition>(this.goals));
 				
 				/*TextDrawVisitor visitor = new TextDrawVisitor();
 				planningGraph.accept(visitor);
@@ -94,10 +95,10 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 				//the no goods table to match the size of the graph
 				memoizationTable.ensureCapacity(planningGraph.size()/2);
 				
-				if(planningGraph.getLastGraphLevel().accept(this)) {
-					planResult = new PlanResult(this.supportActionStack);
+				if(this.planningGraph.getLastGraphLevel().accept(this)) {
+					this.planResult = new PlanResult(this.supportActionStack);
 				} else {
-					planResult = new PlanResult(false);
+					this.planResult = new PlanResult(false);
 				}
 				
 				//logger.info("Table size is: "+noGoodTableSize());
@@ -112,6 +113,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		return false;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public boolean visitGraphLevel(GraphLevel graphLevel) {
 		if(graphLevel.isActionLevel()) {
 			//For every action level we visit, we add a list
@@ -125,10 +127,10 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 				return true;
 			}
 			PropositionLevel propositionLevel = (PropositionLevel) graphLevel;
-			Set<Proposition> subGoals = new TreeSet<Proposition>(subGoalStack.peek());
+			Set<Proposition> subGoals = new TreeSet<Proposition>(this.subGoalStack.peek());
 			
 			//First, check the no goods table
-			if(memoizationTable.isNoGood(subGoalStack.peek(), propositionLevel.getIndex())) {
+			if(this.memoizationTable.isNoGood(this.subGoalStack.peek(), propositionLevel.getIndex())) {
 				//And not even creep if the goals are no good
 				return false;
 			}
@@ -164,7 +166,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			return true;
 		}
 		
-		if(memoizationTable.isNoGood(subGoals, propositionLevel.getIndex())) {
+		if(this.memoizationTable.isNoGood(subGoals, propositionLevel.getIndex())) {
 			return false;
 		}
 		
@@ -174,7 +176,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 				return (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
 			}
 		});
-		
+
 		boolean planFound = this.search(subGoalsSorted, new HashSet<Operator>(), (ActionLevel) propositionLevel.getPrevLevel(), new HashSet<Operator>());
 		if(!planFound) {
 			this.memoizationTable.addNoGood(subGoals, propositionLevel.getIndex());
@@ -206,7 +208,6 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 				planFound = this.search(newSubGoals, newOperators, actionLevel, newMutex);
 			}
 		}
-		
 		return planFound;
 	}
 	
@@ -263,191 +264,6 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 				return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * An iterator over the set of all possible combinations of operators
-	 * needed to satisfy the specified set of subgoals in the specified
-	 * action level.
-	 * @author Felipe Meneguzzi
-	 *
-	 */
-	public class ActionSetIterator implements Iterator<Set<Operator>> {
-		//The current actions selected by this iterator
-		private final Set<Operator> actionSet;
-		//The subgoals for which action sets are trying to satisfy
-		private final Proposition[] subGoals;
-		//A reference to the action level used in this iterator
-		private final ActionLevel actionLevel;
-		//The iterators over the possible operators for each proposition
-		private final Iterator<Operator>[] iterators;
-		//A cache of the required operators list
-		private final List<Operator>[] requiredOperators;
-		//The operators selected so far
-		private final Operator[] selectedOperators;
-		
-		//Temp variable
-		protected final Set<Proposition> achievableGoals;
-		
-		public ActionSetIterator(Set<Proposition> subGoals, ActionLevel actionLevel) {
-			this.actionSet = new HashSet<Operator>(subGoals.size());
-			this.achievableGoals = new HashSet<Proposition>();
-			this.iterators = new Iterator[subGoals.size()];
-			this.actionLevel = actionLevel;
-			this.requiredOperators = new List[subGoals.size()];
-			this.selectedOperators = new Operator[subGoals.size()];
-
-			//Heuristic
-			ArrayList<Proposition> newSubGoals = new ArrayList<Proposition>(subGoals);
-			Collections.sort(newSubGoals, new Comparator<Proposition>() {
-				public int compare(Proposition o1, Proposition o2) {
-					return (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
-				}
-			});
-
-			this.subGoals = newSubGoals.toArray(new Proposition[newSubGoals.size()]);
-			
-			for(int i=0; i< this.subGoals.length; i++) {
-				List<Operator> ops = actionLevel.getGeneratingActions(this.subGoals[i]);
-//				System.out.println("\nProposition: " + this.subGoals[i]);
-//				System.out.println(ops);
-				this.requiredOperators[i] = ops;
-				this.iterators[i] = ops.iterator();
-				if(i>0) {
-					selectedOperators[i] = iterators[i].next();
-				}
-			}
-		}
-
-		public boolean hasNext() {
-			for(Iterator<Operator> iterator : iterators) {
-				if(iterator.hasNext()) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public Set<Operator> next() {
-			boolean advanceNext = true;
-			
-			int i=0;
-			//We only advance the next iterator if we had
-			//to reset the current one
-			while(advanceNext) {
-
-				if(iterators[i].hasNext()) {
-					advanceNext = false;
-					selectedOperators[i] = iterators[i].next();
-				} else {
-					iterators[i] = requiredOperators[i].iterator();
-					selectedOperators[i] = iterators[i].next();
-					i++;
-				}
-			}
-			
-			achievableGoals.clear();
-			actionSet.clear();
-			
-			for(i=0; i<selectedOperators.length; i++) {
-				//Maybe we don't need to do all these checks
-				//Make sure we did not select the same operator twice
-				if(actionSet.contains(selectedOperators[i])) {
-					//return null;
-					continue;
-				}
-				//If the selected operator is not already in the set
-				//And the proposition it is supposed to achieve
-				//has already been achieved through some other operator
-				//Then this set is not minimal
-				if(achievableGoals.contains(subGoals[i])) {
-					return null;
-				}
-				//Make sure this operator is not inconsistent with the 
-				//ones selected
-				for(int j=0; j<i; j++) {
-					if(actionLevel.isMutex(selectedOperators[i], selectedOperators[j])) {
-						//continue;
-						return null;
-					}
-				}
-				actionSet.add(selectedOperators[i]);
-				for(Proposition prop : selectedOperators[i].getEffects()) {
-					achievableGoals.add(prop);
-				}
-			}
-			
-			return actionSet;
-		}
-		
-		/**
-		 * Verifies if the selected operators are consistent among themselves
-		 * @return
-		 */
-		private final boolean isConsistent() {
-			for(int i=0; i<selectedOperators.length; i++) {
-				for(int j=i+1; j<selectedOperators.length; j++) {
-					if(actionLevel.isMutex(selectedOperators[i], selectedOperators[j])) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-		
-		/**
-		 * Determines if the action set contained in the referred plan level 
-		 * is minimal, given the set of goals supplied
-		 * @param actions
-		 * @param subGoals
-		 * 
-		 * @return
-		 */
-		private final boolean isMinimalActionSet() {
-			//Select one action and check if the goals can be achieved without it
-			//operatorOut is the action being taken out from the vector of selected
-			//actions
-			for(Operator operatorOut : selectedOperators) {
-				//We store the possible goals in this list
-				achievableGoals.clear();
-				for(Proposition proposition : subGoals) {
-					achievableGoals.add(proposition);
-				}
-				
-				for(Operator operator: selectedOperators) {
-					//We jump the removed operator
-					if(operator == operatorOut) {
-						continue;
-					}
-					//And check if the goals are still achievable
-					
-					//By getting the action's effects
-					//List<Proposition> effects = (List<Proposition>) operator.getEffects();
-					//And removing them from the list of achievable ones
-					//achievableGoals.removeAll(effects);
-					for(Proposition effect:operator.getEffects()) {
-						achievableGoals.remove(effect);
-					}
-					if(achievableGoals.isEmpty()) {
-						//If we manage to achieve them all, this set is not minimal
-						return false;
-					}
-				}
-				//If the goals achievable with the removal of the action "i", are different
-				//than the goals achievable otherwise, then the goal list will have different sizes
-				/*bRes = achievableGoals.size() != subGoals.size();
-				if(!bRes) {
-					return bRes;
-				}*/
-			}
-			
-			return true;
-		}
-
-		public void remove() {
-			// TODO Auto-generated method stub
-		}
-		
 	}
 	
 	/**

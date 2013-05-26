@@ -82,7 +82,7 @@ public class PlanningGraph implements GraphElement {
 		this.propositions = new TreeSet<Proposition>();
 		this.operators = new TreeSet<Operator>();
 		this.addGraphLevel(initialState);
-		this.setIndexToPropositions(initialState);
+		this.setIndexForPropositions(initialState);
 	}
 
 	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, StaticsMutexesTable staticsMutexesTable) {
@@ -220,13 +220,13 @@ public class PlanningGraph implements GraphElement {
 			//First we create a new action level from the last proposition level
 			ActionLevel actionLevel = actionLevelGenerator.createNextActionLevel(lastLevel);
 			this.addGraphLevel(actionLevel);
-			this.setIndexToOperators(actionLevel);
+			this.setIndexForOperators(actionLevel);
 			//Then we add the action mutexes for these actions
 			this.mutexGenerator.addActionMutexes(lastLevel, actionLevel);
 			//And then add the subsequent proposition level
 			PropositionLevel propositionLevel = propositionLevelGenerator.createNextPropositionLevel(actionLevel);
 			this.addGraphLevel(propositionLevel);
-			this.setIndexToPropositions(propositionLevel);
+			this.setIndexForPropositions(propositionLevel);
 			//Finally adding the proposition mutexes
 			this.mutexGenerator.addPropositionMutexes(actionLevel, propositionLevel);
 		} else {
@@ -280,7 +280,7 @@ public class PlanningGraph implements GraphElement {
 		return levelOff;
 	}
 	
-	public void setIndexToPropositions(PropositionLevel propositionLevel){
+	public void setIndexForPropositions(PropositionLevel propositionLevel){
 		for (Iterator<Proposition> it = propositionLevel.iterator(); it.hasNext();) {
 			Proposition p = it.next();
 			if(!this.propositions.contains(p)){
@@ -290,7 +290,7 @@ public class PlanningGraph implements GraphElement {
 		}
 	}
 	
-	public void setIndexToOperators(ActionLevel actionLevel){
+	public void setIndexForOperators(ActionLevel actionLevel){
 		for (Iterator<Operator> it = actionLevel.iterator(); it.hasNext();) {
 			Operator op = it.next();
 			if(!this.operators.contains(op)){
