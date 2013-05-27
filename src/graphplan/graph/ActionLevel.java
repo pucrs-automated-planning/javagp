@@ -139,7 +139,10 @@ public class ActionLevel implements GraphLevel<Operator> {
 					generatingActions.add(oper);
 				}
 			}
+			/*Heuristic: select actions that appears latest in the planning graph*/
 			this.sortByIndex(generatingActions);
+			
+			/*Heuristic: select noops first*/
 			//this.sortByNoopsFirst(generatingActions);
 			this.generatingActionsCache.put(proposition, generatingActions);
 		}
