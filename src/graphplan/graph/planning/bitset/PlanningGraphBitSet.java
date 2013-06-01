@@ -1,4 +1,4 @@
-package graphplan.graph.planning;
+package graphplan.graph.planning.bitset;
 
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;

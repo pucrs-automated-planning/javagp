@@ -24,8 +24,8 @@
 package graphplan.graph.algorithm;
 
 import graphplan.graph.ActionLevel;
-import graphplan.graph.PlanningGraphException;
 import graphplan.graph.PropositionLevel;
+import graphplan.graph.planning.PlanningGraphException;
 
 public interface ActionLevelGenerator {
 	/**

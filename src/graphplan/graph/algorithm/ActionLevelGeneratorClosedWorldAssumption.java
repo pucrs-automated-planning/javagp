@@ -24,15 +24,17 @@
 package graphplan.graph.algorithm;
 
 import graphplan.graph.ActionLevel;
+import graphplan.graph.GraphLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.planning.PlanningGraphException;
 
-public interface PropositionLevelGenerator {
+public interface ActionLevelGeneratorClosedWorldAssumption {
 	/**
-	 * Creates a new proposition level to succeed the action level specified.
-	 * @param actionLevel The preceding action level from which new propositions will be generated.
-	 * @return A new proposition level for the graph.
+	 * Creates a new action level to succeed the proposition level specified.
+	 * @param propositionLevel The preceding proposition level from which new actions will be generated.
+	 * @return A new action level for the graph.
 	 * @throws PlanningGraphException
 	 */
-	public PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) throws PlanningGraphException;
+	@SuppressWarnings("rawtypes")
+	public ActionLevel createNextActionLevel(PropositionLevel propositionLevel, GraphLevel initialState) throws PlanningGraphException;
 }

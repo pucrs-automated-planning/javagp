@@ -47,6 +47,8 @@ public class DomainDescription {
 	
 	protected Map<String, List<String>> parameterTypes;
 	
+	protected boolean negativePreconditions = false;
+	
 	/**
 	 * Instantiate a domain description with the supplied  
 	 * <code>initialState</code> and <code>goalState</code>.
@@ -81,11 +83,12 @@ public class DomainDescription {
 	 * @param parametertypes
 	 */
 	public DomainDescription(List<Operator> operators,
-			List<Proposition> initialState, List<Proposition> goalState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes) {
+			List<Proposition> initialState, List<Proposition> goalState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, boolean negativePreconditions) {
 		this(initialState, goalState);
 		this.operators = new ArrayList<Operator>(operators);
 		this.types = types;
 		this.parameterTypes = parameterTypes;
+		this.negativePreconditions = negativePreconditions;
 	}
 
 	/**
@@ -129,5 +132,9 @@ public class DomainDescription {
 
 	public Map<String, List<String>> getParameterTypes() {
 		return parameterTypes;
+	}
+
+	public boolean isNegativePreconditions() {
+		return negativePreconditions;
 	}
 }

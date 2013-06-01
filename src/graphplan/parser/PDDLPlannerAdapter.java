@@ -103,7 +103,19 @@ public class PDDLPlannerAdapter {
 			System.out.println("+ PROBLEM: " + this.problem);
 			
 			System.out.println("\nPDDL Parser\n");
+			
+			boolean negativePreconditions = false;
+			
+			Iterator<RequireKey> requirements = this.pddlObject.requirementsIterator();
+			while(requirements.hasNext()){
+				RequireKey requireKey = requirements.next();
+				if(requireKey == RequireKey.NEGATIVE_PRECONDITIONS){
+					negativePreconditions = true;
+				}
+			}
+			
 			Iterator<ActionDef> actionsIterator = this.pddlObject.actionsIterator();
+			
 			
 			List<Operator>    operators    = new ArrayList<Operator>();
 			List<Proposition> initialState = new ArrayList<Proposition>();
@@ -201,7 +213,7 @@ public class PDDLPlannerAdapter {
 			
 			System.out.println("\nPDDL Parser\n");
 
-			DomainDescription domainDescription = new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes);
+			DomainDescription domainDescription = new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes, negativePreconditions);
 			return domainDescription;
 		}
 		

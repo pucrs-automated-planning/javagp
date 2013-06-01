@@ -27,6 +27,8 @@ import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.domain.jason.OperatorImpl;
 import graphplan.domain.jason.PropositionImpl;
+import graphplan.graph.GraphLevel;
+import graphplan.graph.PropositionLevel;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
@@ -166,6 +168,7 @@ public class OperatorFactory {
 	 * @return
 	 * @throws OperatorFactoryException
 	 */
+	@SuppressWarnings("rawtypes")
 	public Operator getOperator(String operatorSignature) throws OperatorFactoryException {
 		//If this operator has been used before, retrieve it from the flyweights
 		if(operatorInstances.containsKey(operatorSignature)) {
@@ -271,6 +274,10 @@ public class OperatorFactory {
 		return templates;
 	}
 	
+	public Set<Operator> getAllPossibleInstantiations(List<Operator> operators, List<Proposition> preconds) throws OperatorFactoryException {
+		return this.getAllPossibleInstantiations(operators, preconds, null);
+	}
+	
 	/**
 	 * Returns all possible instantiations of the supplied operators, given
 	 * the supplied preconditions.
@@ -280,7 +287,8 @@ public class OperatorFactory {
 	 * @return
 	 * @throws OperatorFactoryException 
 	 */
-	public Set<Operator> getAllPossibleInstantiations(List<Operator> operators, List<Proposition> preconds) throws OperatorFactoryException {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Set<Operator> getAllPossibleInstantiations(List<Operator> operators, List<Proposition> preconds, GraphLevel initialState) throws OperatorFactoryException {
 		final Set<Operator> instances = new HashSet<Operator>();
 		final Set<Term> terms = getAllPossibleTerms(preconds);
 		//For each operator template 
@@ -349,7 +357,20 @@ public class OperatorFactory {
 						PropositionImpl realProp = (PropositionImpl) proposition;
 						realProp.apply(unifier);
 						addInstance = preconds.contains(proposition);
-						if(proposition.negated() && !addInstance) addInstance = true;
+						
+						if(proposition.negated() && !addInstance) {
+							/*Closed World Assumption*/
+							if(initialState != null && initialState.isPropositionLevel()){
+								PropositionLevel initial = (PropositionLevel) initialState;
+								PropositionImpl positiveProposition = new PropositionImpl(proposition.getFunctor());
+								positiveProposition.setTerms(proposition.getTerms());
+
+								if(!initial.hasProposition(positiveProposition)){
+									initial.addProposition(proposition);
+								}
+							}
+							addInstance = true;
+						}
 						if(!addInstance) {
 							break;
 						}
@@ -364,6 +385,7 @@ public class OperatorFactory {
 		return instances;
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected Set<Term> getAllPossibleTerms(List<Proposition> propositions) {
 		Set<Term> possibleTerms = new HashSet<Term>();
 		
@@ -405,6 +427,7 @@ public class OperatorFactory {
 		protected final Term[] currentTerms;
 		protected final Set<Term> terms;
 		
+		@SuppressWarnings("unchecked")
 		public TermInstanceIterator(Set<Term> terms, int size) {
 			iterators = new Iterator[size];
 			currentTerms = new Term[size];

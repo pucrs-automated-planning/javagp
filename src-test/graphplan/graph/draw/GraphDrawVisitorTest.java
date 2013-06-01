@@ -29,8 +29,8 @@ import graphplan.domain.Proposition;
 import graphplan.flyweight.OperatorFactory;
 import graphplan.flyweight.PropositionFactory;
 import graphplan.graph.ActionLevel;
-import graphplan.graph.PlanningGraph;
 import graphplan.graph.PropositionLevel;
+import graphplan.graph.planning.PlanningGraph;
 
 import org.junit.After;
 import org.junit.Before;

@@ -21,7 +21,7 @@
  * http://www.meneguzzi.eu/felipe/contact.html
  * ---------------------------------------------------------------------------
  */
-package graphplan.graph;
+package graphplan.graph.planning;
 
 /**
  * A class representing planning graph exceptions

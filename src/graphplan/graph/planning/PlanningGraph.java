@@ -21,17 +21,22 @@
  * http://www.meneguzzi.eu/felipe/contact.html
  * ---------------------------------------------------------------------------
  */
-package graphplan.graph;
+package graphplan.graph.planning;
 
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
+import graphplan.graph.ActionLevel;
+import graphplan.graph.GraphElement;
+import graphplan.graph.GraphElementVisitor;
+import graphplan.graph.GraphLevel;
+import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.ActionLevelGenerator;
 import graphplan.graph.algorithm.MutexGenerator;
 import graphplan.graph.algorithm.PropositionLevelGenerator;
 import graphplan.graph.algorithm.impl.LevelGeneratorImpl;
 import graphplan.graph.algorithm.impl.MutexGeneratorImpl;
 import graphplan.graph.draw.TextDrawVisitor;
-import graphplan.graph.memo.mutexes.StaticsMutexesTable;
+import graphplan.graph.memo.mutexes.StaticMutexesTable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -75,7 +80,7 @@ public class PlanningGraph implements GraphElement {
 		this.addGraphLevel(initialState);
 	}
 	
-	public PlanningGraph(PropositionLevel initialState, StaticsMutexesTable staticsMutexesTable) {
+	public PlanningGraph(PropositionLevel initialState, StaticMutexesTable staticsMutexesTable) {
 		this();
 		this.mutexGenerator = new MutexGeneratorImpl(staticsMutexesTable);
 		
@@ -85,7 +90,7 @@ public class PlanningGraph implements GraphElement {
 		this.setIndexForPropositions(initialState);
 	}
 
-	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, StaticsMutexesTable staticsMutexesTable) {
+	public PlanningGraph(PropositionLevel initialState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, StaticMutexesTable staticsMutexesTable) {
 		this(initialState, staticsMutexesTable);
 
 		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl(types, parameterTypes);

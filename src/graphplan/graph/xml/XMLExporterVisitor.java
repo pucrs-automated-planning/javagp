@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 import graphplan.graph.GraphElement;
 import graphplan.graph.GraphElementVisitor;
 import graphplan.graph.GraphLevel;
-import graphplan.graph.PlanningGraph;
+import graphplan.graph.planning.PlanningGraph;
 
 public class XMLExporterVisitor implements GraphElementVisitor {
 	protected Document document;

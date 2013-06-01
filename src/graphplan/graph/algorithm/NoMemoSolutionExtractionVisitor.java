@@ -30,8 +30,9 @@ import graphplan.graph.ActionLevel;
 import graphplan.graph.GraphElement;
 import graphplan.graph.GraphElementVisitor;
 import graphplan.graph.GraphLevel;
-import graphplan.graph.PlanningGraph;
 import graphplan.graph.PropositionLevel;
+import graphplan.graph.planning.PlanningGraph;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

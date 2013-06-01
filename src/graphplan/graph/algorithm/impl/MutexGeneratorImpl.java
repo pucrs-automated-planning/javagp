@@ -29,17 +29,17 @@ import graphplan.graph.ActionLevel;
 import graphplan.graph.GraphLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.MutexGenerator;
-import graphplan.graph.memo.mutexes.StaticsMutexesTable;
+import graphplan.graph.memo.mutexes.StaticMutexesTable;
 
 import java.util.Iterator;
 
 public class MutexGeneratorImpl implements MutexGenerator {
 	
-	private StaticsMutexesTable staticsMutexesTable;
+	private StaticMutexesTable staticsMutexesTable;
 
 	public MutexGeneratorImpl(){}
 	
-	public MutexGeneratorImpl(StaticsMutexesTable staticsMutexesTable){
+	public MutexGeneratorImpl(StaticMutexesTable staticsMutexesTable){
 		this.staticsMutexesTable = staticsMutexesTable; 
 	}
 

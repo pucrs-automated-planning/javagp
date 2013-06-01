@@ -39,6 +39,8 @@ import graphplan.flyweight.OperatorFactory;
 import graphplan.flyweight.OperatorFactoryException;
 import graphplan.flyweight.PropositionFactory;
 import graphplan.graph.draw.TextDrawVisitor;
+import graphplan.graph.planning.PlanningGraph;
+import graphplan.graph.planning.PlanningGraphException;
 
 import org.junit.After;
 import org.junit.Before;

@@ -12,12 +12,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class StaticsMutexesTable {
+public class StaticMutexesTable {
 
 	private HashMap<String, HashMap<String, List<MutexCondition>>> mutexesTable = new HashMap<String, HashMap<String,List<MutexCondition>>>();
 	private HashMap<String, Set<String>> tableMutexesHits = new HashMap<String, Set<String>>();
 	
-	public StaticsMutexesTable(List<Operator> operators){
+	public StaticMutexesTable(List<Operator> operators){
 		this.initializeConstructor(operators);
 	}
 
