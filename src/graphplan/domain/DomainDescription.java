@@ -68,7 +68,8 @@ public class DomainDescription {
 	 * @param goalState
 	 */
 	public DomainDescription(List<Operator> operators,
-			List<Proposition> initialState, List<Proposition> goalState) {
+							 List<Proposition> initialState, 
+							 List<Proposition> goalState) {
 		this(initialState, goalState);
 		this.operators = new ArrayList<Operator>(operators);
 	}
@@ -83,9 +84,12 @@ public class DomainDescription {
 	 * @param parametertypes
 	 */
 	public DomainDescription(List<Operator> operators,
-			List<Proposition> initialState, List<Proposition> goalState, Map<String, Set<String>> types, Map<String, List<String>> parameterTypes, boolean negativePreconditions) {
-		this(initialState, goalState);
-		this.operators = new ArrayList<Operator>(operators);
+							 List<Proposition> initialState, 
+							 List<Proposition> goalState, 
+							 Map<String, Set<String>> types, 
+							 Map<String, List<String>> parameterTypes, 
+							 boolean negativePreconditions) {
+		this(operators,initialState, goalState);
 		this.types = types;
 		this.parameterTypes = parameterTypes;
 		this.negativePreconditions = negativePreconditions;
