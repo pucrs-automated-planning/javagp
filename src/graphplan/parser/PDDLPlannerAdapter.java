@@ -111,6 +111,7 @@ public class PDDLPlannerAdapter {
 				RequireKey requireKey = requirements.next();
 				if(requireKey == RequireKey.NEGATIVE_PRECONDITIONS){
 					negativePreconditions = true;
+					System.out.println("--> The Problem has Negative Preconditions\n");
 				}
 			}
 			
