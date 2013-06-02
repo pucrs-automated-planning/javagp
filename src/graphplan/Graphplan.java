@@ -174,6 +174,7 @@ public class Graphplan {
 			}
 			long t2 = System.currentTimeMillis();
 			long totalTime = (t2-t1); 
+			logger.info("Plan length: " + result.getPlanLength());
 			logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
 		} else {
 			logger.warning("Wrong parameters");

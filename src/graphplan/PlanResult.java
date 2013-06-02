@@ -40,10 +40,11 @@ import java.util.Stack;
  *
  */
 public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
-	protected boolean value = false;
 	//The steps are a list of list, since we can have multiple operators
 	//at any given step
 	protected List<List<Operator>> steps;
+	protected boolean value = false;
+	private int planLength = 0;
 	
 	public PlanResult(boolean value) {
 		this.value = value;
@@ -152,7 +153,6 @@ public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
 			}
 
 			public void remove() {
-				// TODO Auto-generated method stub				
 			}
 			
 		};
@@ -168,10 +168,15 @@ public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
 		StringBuilder builder = new StringBuilder();
 		
 		for (Operator step : this) {
+			this.planLength++;
 			builder.append(step);
 			builder.append(System.getProperty("line.separator"));
 		}
 		
 		return builder.toString();
+	}
+
+	public int getPlanLength() {
+		return planLength;
 	}
 }

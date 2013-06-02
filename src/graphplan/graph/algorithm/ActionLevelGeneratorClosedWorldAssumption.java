@@ -29,10 +29,12 @@ import graphplan.graph.PropositionLevel;
 import graphplan.graph.planning.PlanningGraphException;
 
 public interface ActionLevelGeneratorClosedWorldAssumption {
+	
 	/**
 	 * Creates a new action level to succeed the proposition level specified.
-	 * @param propositionLevel The preceding proposition level from which new actions will be generated.
-	 * @return A new action level for the graph.
+	 * @param propositionLevel
+	 * @param initialState
+	 * @return ActionLevel
 	 * @throws PlanningGraphException
 	 */
 	@SuppressWarnings("rawtypes")
