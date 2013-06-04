@@ -6,7 +6,7 @@
 		(location p3)
 		(location p4)
 	 	(at monkey p1)
-		(on-floor)
+		(onfloor)
 		(at box p2)
 		(at bananas p3)
 	 	(at knife p4)

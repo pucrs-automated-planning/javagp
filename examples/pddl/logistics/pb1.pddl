@@ -16,10 +16,10 @@
 	    lisa - package
 	    airplane1 - airplane
 	    airplane2 - airplane
-	    lon-airport - airport
-	    par-airport -  airport
-	    jfk-airport -  airport
-	    bos-airport -  airport)
+	    lonairport - airport
+	    parairport -  airport
+	    jfkairport -  airport
+	    bosairport -  airport)
   (:init (at airplane1 jfk-airport)
 	 (at airplane2 bos-airport)
 	 (at mxf par-airport)

@@ -1,0 +1,61 @@
+
+parsing domain "dwr" done successfully ...
+parsing problem "pb5" done successfully ...
+
+preprocessing ...
+
+number of instantiated actions :         9780
+number of instantiated facts   :          241
+
+time:    0,       41 facts,          0 and exlusive pairs (0.0303s)
+                  46 ops,           13 exlusive pairs
+time:    1,       55 facts,         40 and exlusive pairs (0.0250s)
+                  71 ops,          240 exlusive pairs
+time:    2,       61 facts,        105 and exlusive pairs (0.0522s)
+                  84 ops,          572 exlusive pairs
+time:    3,       63 facts,        113 and exlusive pairs (0.0087s)
+                  90 ops,          718 exlusive pairs
+time:    4,       66 facts,        162 and exlusive pairs (0.0098s)
+                 101 ops,         1182 exlusive pairs
+time:    5,       75 facts,        308 and exlusive pairs (0.0126s)
+                 125 ops,         2429 exlusive pairs
+time:    6,       88 facts,        684 and exlusive pairs (0.0153s)
+                 153 ops,         4495 exlusive pairs
+time:    7,       98 facts,        976 and exlusive pairs (0.0184s)
+                 177 ops,         6377 exlusive pairs
+time:    8,      108 facts,       1338 and exlusive pairs (0.0171s)
+                 201 ops,         8671 exlusive pairs
+time:    9,      117 facts,       1676 and exlusive pairs (0.0264s)
+                 234 ops,        12525 exlusive pairs
+time:   10,      128 facts,       2017 and exlusive pairs (0.0319s)
+                 271 ops,        17260 exlusive pairs
+time:   11,      137 facts,       2395 and exlusive pairs (0.0205s)
+                 309 ops,        23176 exlusive pairs
+time:   12,      142 facts,       2191 and exlusive pairs (0.1757s)
+                 348 ops,        28723 exlusive pairs
+time:   13,      151 facts,       2467 and exlusive pairs (0.0192s)
+                 387 ops,        35753 exlusive pairs
+time:   14,      155 facts,       2233 and exlusive pairs (0.0248s)
+                 419 ops,        40430 exlusive pairs
+time:   15,      157 facts,       1994 and exlusive pairs (0.0203s)
+                 443 ops,        43348 exlusive pairs
+time:   16,      157 facts,       1638 and exlusive pairs (0.0238s)
+                 464 ops,        45478 exlusive pairs
+time:   17,      157 facts,       1410 and exlusive pairs (0.0224s)
+                 484 ops,        48023 exlusive pairs
+
+goals first reachable in 18 times steps
+
+time:   18,      157 facts,       1275 and exlusive pairs (0.7107s)
+                 499 ops,        50003 exlusive pairs
+time:   19,      157 facts,       1239 and exlusive pairs (0.0314s)
+                 505 ops,        50828 exlusive pairs
+time:   20,      157 facts,       1236 and exlusive pairs (0.0286s)
+                 507 ops,        51343 exlusive pairs
+time:   21,      157 facts,       1236 and exlusive pairs (0.0320s)
+                 507 ops,        51343 exlusive pairs
+Exception in thread "Solver Thread" java.lang.OutOfMemoryError: Java heap space
+        at pddl4j.graphplan.UBTree.<init>(UBTree.java:84)
+        at pddl4j.graphplan.Graphplan.extract(Graphplan.java:439)
+        at pddl4j.graphplan.Graphplan.solve(Graphplan.java:382)
+        at pddl4j.graphplan.Graphplan$Solver.run(Graphplan.java:523)

@@ -1,0 +1,139 @@
+parsing domain "dwr" done successfully ...
+parsing problem "pb3" done successfully ...
+
+preprocessing ...
+
+number of instantiated actions :         3712
+number of instantiated facts   :          171
+
+time:    0,       31 facts,          0 and exlusive pairs (0.0156s)
+                  35 ops,           11 exlusive pairs
+time:    1,       41 facts,         28 and exlusive pairs (0.0083s)
+                  52 ops,          129 exlusive pairs
+time:    2,       45 facts,         61 and exlusive pairs (0.0128s)
+                  60 ops,          269 exlusive pairs
+time:    3,       47 facts,         71 and exlusive pairs (0.0106s)
+                  65 ops,          358 exlusive pairs
+time:    4,       49 facts,         97 and exlusive pairs (0.0148s)
+                  73 ops,          603 exlusive pairs
+time:    5,       55 facts,        177 and exlusive pairs (0.0129s)
+                  91 ops,         1328 exlusive pairs
+time:    6,       67 facts,        465 and exlusive pairs (0.0072s)
+                 114 ops,         2658 exlusive pairs
+time:    7,       72 facts,        563 and exlusive pairs (0.0084s)
+                 129 ops,         3572 exlusive pairs
+time:    8,       81 facts,        858 and exlusive pairs (0.0077s)
+                 148 ops,         5066 exlusive pairs
+time:    9,       86 facts,        997 and exlusive pairs (0.0116s)
+                 169 ops,         6980 exlusive pairs
+time:   10,       98 facts,       1459 and exlusive pairs (0.0116s)
+                 197 ops,         9985 exlusive pairs
+time:   11,      101 facts,       1488 and exlusive pairs (0.0131s)
+                 220 ops,        12660 exlusive pairs
+time:   12,      109 facts,       1651 and exlusive pairs (0.0215s)
+                 251 ops,        16492 exlusive pairs
+time:   13,      112 facts,       1561 and exlusive pairs (0.0245s)
+                 275 ops,        19619 exlusive pairs
+time:   14,      120 facts,       1734 and exlusive pairs (0.0285s)
+                 306 ops,        24163 exlusive pairs
+time:   15,      122 facts,       1554 and exlusive pairs (0.0250s)
+                 327 ops,        26702 exlusive pairs
+time:   16,      123 facts,       1284 and exlusive pairs (0.0118s)
+                 344 ops,        28180 exlusive pairs
+time:   17,      123 facts,       1096 and exlusive pairs (0.0175s)
+                 359 ops,        29616 exlusive pairs
+
+goals first reachable in 18 times steps
+
+time:   18,      123 facts,        952 and exlusive pairs (0.0107s)
+                 372 ops,        30789 exlusive pairs
+time:   19,      123 facts,        914 and exlusive pairs (0.0118s)
+                 378 ops,        31253 exlusive pairs
+time:   20,      123 facts,        906 and exlusive pairs (0.0109s)
+                 381 ops,        31803 exlusive pairs
+time:   21,      123 facts,        906 and exlusive pairs (0.0129s)
+                 381 ops,        31803 exlusive pairs
+time:   22,      123 facts,        906 and exlusive pairs (0.0101s)
+                 381 ops,        31803 exlusive pairs
+
+graph has leveled off! wave front mechanism is taking over
+
+expanding wave front to level   23
+expanding wave front to level   24
+expanding wave front to level   25
+expanding wave front to level   26
+expanding wave front to level   27
+expanding wave front to level   28
+expanding wave front to level   29
+expanding wave front to level   30
+expanding wave front to level   31
+expanding wave front to level   32
+expanding wave front to level   33
+expanding wave front to level   34
+expanding wave front to level   35
+expanding wave front to level   36
+expanding wave front to level   37
+expanding wave front to level   38
+expanding wave front to level   39
+
+found plan as follows:
+
+time step    0: MOVE R1 L2 L3
+                TAKE CE CD K1 P1 L1
+time step    1: LOAD CF K2 R1 L3
+time step    2: MOVE R1 L3 L4
+time step    3: UNLOAD CF K3 R1 L4
+time step    4: MOVE R1 L4 L3
+                PUTDOWN CF PALLET K3 P3 L4
+time step    5: MOVE R1 L3 L2
+time step    6: MOVE R1 L2 L1
+time step    7: LOAD CE K1 R1 L1
+time step    8: MOVE R1 L1 L2
+                TAKE CD CC K1 P1 L1
+time step    9: MOVE R1 L2 L3
+time step   10: UNLOAD CE K2 R1 L3
+time step   11: MOVE R1 L3 L2
+                PUTDOWN CE PALLET K2 P2 L3
+time step   12: MOVE R1 L2 L1
+time step   13: LOAD CD K1 R1 L1
+time step   14: MOVE R1 L1 L2
+                TAKE CC CB K1 P1 L1
+time step   15: MOVE R1 L2 L3
+time step   16: UNLOAD CD K2 R1 L3
+time step   17: MOVE R1 L3 L2
+                PUTDOWN CD CE K2 P2 L3
+time step   18: MOVE R1 L2 L1
+time step   19: LOAD CC K1 R1 L1
+time step   20: MOVE R1 L1 L2
+                TAKE CB CA K1 P1 L1
+time step   21: MOVE R1 L2 L3
+time step   22: MOVE R1 L3 L4
+time step   23: UNLOAD CC K3 R1 L4
+time step   24: MOVE R1 L4 L3
+                PUTDOWN CC CF K3 P3 L4
+time step   25: MOVE R1 L3 L2
+time step   26: MOVE R1 L2 L1
+time step   27: LOAD CB K1 R1 L1
+time step   28: MOVE R1 L1 L2
+                TAKE CA PALLET K1 P1 L1
+time step   29: MOVE R1 L2 L3
+time step   30: MOVE R1 L3 L4
+time step   31: UNLOAD CB K3 R1 L4
+time step   32: MOVE R1 L4 L3
+                PUTDOWN CB CC K3 P3 L4
+time step   33: MOVE R1 L3 L2
+time step   34: MOVE R1 L2 L1
+time step   35: LOAD CA K1 R1 L1
+time step   36: MOVE R1 L1 L2
+time step   37: MOVE R1 L2 L3
+time step   38: UNLOAD CA K2 R1 L3
+time step   39: PUTDOWN CA CD K2 P2 L3
+
+number of actions tried :      7544421
+number of noops tried   :     29382828
+
+Time spent :     0.77 seconds preprocessing
+                 0.32 seconds build graph
+                 0.21 seconds calculating exclusions
+                22.16 seconds searching graph
+                23.25 seconds total time
