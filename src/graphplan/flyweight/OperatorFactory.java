@@ -369,7 +369,7 @@ public class OperatorFactory {
 									initial.addProposition(proposition);
 								}
 							}
-							addInstance = true;
+							//addInstance = true;
 						}
 						if(!addInstance) {
 							break;

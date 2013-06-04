@@ -41,17 +41,18 @@ public class PlanningGraphClosedWorldAssumption extends PlanningGraph {
 			this.graphLevels.add(initialState);
 			this.closedWorldAssumption = true;
 			this.expandGraph();
+		} else {
+			this.addGraphLevel(actionLevel);
+			this.setIndexForOperators(actionLevel);
+			//Then we add the action mutexes for these actions
+			this.mutexGenerator.addActionMutexes(lastLevel, actionLevel);
+			//And then add the subsequent proposition level
+			PropositionLevel propositionLevel = this.propositionLevelGenerator.createNextPropositionLevel(actionLevel);
+			this.addGraphLevel(propositionLevel);
+			this.setIndexForPropositions(propositionLevel);
+			//Finally adding the proposition mutexes
+			this.mutexGenerator.addPropositionMutexes(actionLevel, propositionLevel);
 		}
-		this.addGraphLevel(actionLevel);
-		this.setIndexForOperators(actionLevel);
-		//Then we add the action mutexes for these actions
-		this.mutexGenerator.addActionMutexes(lastLevel, actionLevel);
-		//And then add the subsequent proposition level
-		PropositionLevel propositionLevel = this.propositionLevelGenerator.createNextPropositionLevel(actionLevel);
-		this.addGraphLevel(propositionLevel);
-		this.setIndexForPropositions(propositionLevel);
-		//Finally adding the proposition mutexes
-		this.mutexGenerator.addPropositionMutexes(actionLevel, propositionLevel);
 	}
 	
 	@SuppressWarnings("rawtypes")

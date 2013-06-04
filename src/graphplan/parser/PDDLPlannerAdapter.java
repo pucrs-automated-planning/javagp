@@ -29,6 +29,8 @@ import pddl4j.exp.AndExp;
 import pddl4j.exp.AtomicFormula;
 import pddl4j.exp.Exp;
 import pddl4j.exp.InitEl;
+import pddl4j.exp.Literal;
+import pddl4j.exp.NotAtomicFormula;
 import pddl4j.exp.NotExp;
 import pddl4j.exp.action.Action;
 import pddl4j.exp.action.ActionDef;
@@ -161,9 +163,14 @@ public class PDDLPlannerAdapter {
 			
 			for(InitEl init: this.pddlObject.getInit()){
 				System.out.println(init);
-				
-                AtomicFormula p = (AtomicFormula) init;
-				PropositionImpl proposition = new PropositionImpl(p.getPredicate());
+				boolean negated = false;
+				Literal p = null;
+
+				if(init instanceof NotAtomicFormula){
+					p = (NotAtomicFormula) init;
+					negated = true;
+				} else p = (AtomicFormula) init;
+				PropositionImpl proposition = new PropositionImpl(!negated, p.getPredicate());
 				Iterator variables = p.iterator();
 				
 				List<Term> terms = new ArrayList<Term>();

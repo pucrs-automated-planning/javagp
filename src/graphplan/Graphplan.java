@@ -26,6 +26,7 @@ package graphplan;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
+import graphplan.domain.jason.PropositionImpl;
 import graphplan.flyweight.OperatorFactory;
 import graphplan.flyweight.OperatorFactoryException;
 import graphplan.graph.ActionLevel;
@@ -223,14 +224,14 @@ public class Graphplan {
 		this.solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
 		
 		/*Closed World Assumption - Simple Implementation by goals*/
-//		for(Proposition g: domainDescription.getGoalState()){
-//			if(!initialLevel.hasProposition(g)){
-//				//Add negative for proposition g
-//				PropositionImpl p = new PropositionImpl(g.negated(), g.getFunctor());
-//				p.setTerms(g.getTerms());
-//				initialLevel.addProposition(p);
-//			}
-//		}
+		for(Proposition g: domainDescription.getGoalState()){
+			if(!initialLevel.hasProposition(g)){
+				//Add negative for proposition g
+				PropositionImpl p = new PropositionImpl(g.negated(), g.getFunctor());
+				p.setTerms(g.getTerms());
+				initialLevel.addProposition(p);
+			}
+		}
 
 		if(this.pddl) {
 			//If domain has negative preconditions, the planner will use the closed world assumption 
