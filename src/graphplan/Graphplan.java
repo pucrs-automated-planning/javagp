@@ -225,7 +225,8 @@ public class Graphplan {
 		/*Closed World Assumption - Simple Implementation by goals*/
 //		for(Proposition g: domainDescription.getGoalState()){
 //			if(!initialLevel.hasProposition(g)){
-//				PropositionImpl p = new PropositionImpl(false, g.getFunctor());
+//				//Add negative for proposition g
+//				PropositionImpl p = new PropositionImpl(g.negated(), g.getFunctor());
 //				p.setTerms(g.getTerms());
 //				initialLevel.addProposition(p);
 //			}
@@ -233,8 +234,10 @@ public class Graphplan {
 
 		if(this.pddl) {
 			//If domain has negative preconditions, the planner will use the closed world assumption 
-			if(domainDescription.isNegativePreconditions()) this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
-			else this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
+			if(domainDescription.isNegativePreconditions()) {
+				System.out.println("OPTIMIZATION: JavaGP using Closed World Assumption");
+				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
+			} else this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 		} else this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 		
 		OperatorFactory.getInstance().resetOperatorTemplates();

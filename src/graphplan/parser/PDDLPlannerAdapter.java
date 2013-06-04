@@ -117,7 +117,6 @@ public class PDDLPlannerAdapter {
 			
 			Iterator<ActionDef> actionsIterator = this.pddlObject.actionsIterator();
 			
-			
 			List<Operator>    operators    = new ArrayList<Operator>();
 			List<Proposition> initialState = new ArrayList<Proposition>();
 			List<Proposition> goalState    = new ArrayList<Proposition>();
