@@ -193,12 +193,13 @@
 	                                    <param name="-link" value="http://java.sun.com/j2se/1.5/docs/api"/-->
 	                </doclet>           
 	        </javadoc>
+	    	<echo>Building SVG</echo>
 	    	<apply executable="dot" dest="${doc.api.dir}" parallel="false">
 	    		    	         <arg value="-Tsvg"/>
 	    		    	         <arg value="-o"/>
 	    		    	         <targetfile/>
 	    		    	         <srcfile/>
-	    		    	         <fileset dir="${doc.api.dir}" includes="*.dot"/>
+	    		    	         <fileset dir="${doc.api.dir}" includes="**/*.dot"/>
 	    		    	         <mapper type="glob" from="*.dot" to="*.svg"/>
 	    		    	     </apply>
 	    </target>
