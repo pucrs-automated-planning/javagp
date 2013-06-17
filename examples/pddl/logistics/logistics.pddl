@@ -12,9 +12,9 @@
   	city airport - location)
   
   (:predicates 	
-		(at ?vehicle-or-package - (either vehicle package)  ?location - location)
+		(at ?vehicleOrPackage - (either vehicle package)  ?location - location)
 		(in ?package - package ?vehicle - vehicle)
-		(in-city ?loc-or-truck - (either location truck) ?citys - city))
+		(inCity ?locOrTruck - (either location truck) ?citys - city))
 		
   (:action loadtruck
 	:parameters
@@ -69,25 +69,25 @@
   (:action drivetruck
 	:parameters
 		(?truck - truck
-		 ?loc-from - location
-		 ?loc-to - location
+		 ?locFrom - location
+		 ?locTo - location
 		 ?city - city)
 	:precondition
-		(and 	(at ?truck ?loc-from)
-			(in-city ?loc-from ?city)
-			(in-city ?loc-to ?city))
+		(and 	(at ?truck ?locFrom)
+			(incity ?locFrom ?city)
+			(incity ?locTo ?city))
 	:effect
-		(and 	(not (at ?truck ?loc-from)) 
-			(at ?truck ?loc-to)))
+		(and 	(not (at ?truck ?locFrom)) 
+			(at ?truck ?locTo)))
 
   (:action flyairplane
 	:parameters
 		(?airplane - airplane
-		 ?loc-from - airport
-		 ?loc-to - airport)
+		 ?locFrom - airport
+		 ?locTo - airport)
 	:precondition
-		(at ?airplane ?loc-from)
+		(at ?airplane ?locFrom)
 	:effect
-		(and 	(not (at ?airplane ?loc-from)) 
-		(at ?airplane ?loc-to)))
+		(and 	(not (at ?airplane ?locFrom)) 
+		(at ?airplane ?locTo)))
 )

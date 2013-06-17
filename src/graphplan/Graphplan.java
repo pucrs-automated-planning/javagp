@@ -82,10 +82,6 @@ public class Graphplan {
 		boolean argsOk = true;
 		boolean pddl = false;
 		
-		System.out.println("##########################################################################################################################");
-		System.out.println("### NEWS: Now you can use the PDDL planning language.");
-		System.out.println("### EXAMPLE: java -jar JavaGP -pddl -d <domain> -p <problem> [-maxlevels <max_graph_levels>] [-timeout <planning_timeout>]");
-		System.out.println("##########################################################################################################################\n");
 		for(int i=0; i<args.length && argsOk; i++) {
 			if(args[i].equals("-d")) { /* The domain argument */
 				if(++i < args.length && !args[i].startsWith("-")) {
@@ -184,9 +180,9 @@ public class Graphplan {
 			
 			System.out.println("HEURISTICS SELECTED: ");
 			if(Graphplan.noopsFirst) System.out.println("\t+ Heuristic for actions: Select Noops first");
-			if(Graphplan.operatorsLatest) System.out.println("\t+ Heuristic for actions: select actions that appears latest in the Planning Graph.");
-			if(Graphplan.propositionsSmallest) System.out.println("\t+ Heuristic for subgoals: select firstly propositions that leads to the smallest set of resolvers.");
-			if(Graphplan.sortGoals) System.out.println("\t+ Heuristic for subgoals: sort goals by proposition that appears earliest in the Planning Graph.");
+			if(Graphplan.operatorsLatest) System.out.println("\t+ Heuristic for actions: Select actions that appears latest in the Planning Graph.");
+			if(Graphplan.propositionsSmallest) System.out.println("\t+ Heuristic for subgoals: Select firstly propositions that leads to the smallest set of resolvers.");
+			if(Graphplan.sortGoals) System.out.println("\t+ Heuristic for subgoals: Sort goals by proposition that appears earliest in the Planning Graph.");
 			System.out.println();
 			
 			if(timeout > 0) {
@@ -209,7 +205,7 @@ public class Graphplan {
 			logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
 		} else {
 			logger.warning("Wrong parameters");
-			logger.info("Usage is java -jar JavaGP -p <problem> -d <domain> [-maxlevels <max_graph_levels>] [-timeout <planning_timeout>]");
+			logger.info("Usage is java -jar JavaGP [-pddl <pddl_language>] -p <problem> -d <domain> [-maxlevels <max_graph_levels>] [-timeout <planning_timeout>] [-noopsFirst <select_noops_first>] [-operatorsLatest <select_actions_that_appears_latest_planning_graph>] [-propositionsSmallest <select_firstly_propositions_that_leads_to_the_smallest_set_of_resolvers>] [-sortGoals <sort_goals_by_proposition_that_appears_earliest_in_the_planning_graph>]");
 			System.exit(1);
 		}
 	}

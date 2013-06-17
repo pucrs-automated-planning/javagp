@@ -1,0 +1,18 @@
+---------------------------
+version 1.0.0
+
+revision $Rev$ on SVN
+---------------------------
+
+Changes:
+- Updated usage instructions in the executable
+- Added a basic README describing usage
+- Added RELEASE-NOTES
+- Added Optimizations: Static Mutexes Table, Memoization, Types (with PDDL), and Closed World Assumption Lazily (with PDDL negative preconditions)
+- Added Heuristics: Now is possible select heuristics
+
+---------------------------
+version 1.0
+---------------------------
+
+The release of JavaGP, with a few examples of domains and problems (STRIPS and PDDL).

@@ -1,4 +1,3 @@
-;; a simple DWR problem with 1 robot and 2 locations
 (define (problem pb1)
   (:domain dwr)
   (:requirements :strips :typing :negative-preconditions)

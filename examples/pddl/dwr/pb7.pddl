@@ -1,4 +1,4 @@
-(define (problem pb4)
+(define (problem pb7)
   (:domain dwr)
   (:requirements :strips :typing :negative-preconditions)
   (:objects
