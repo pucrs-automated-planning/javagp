@@ -20,7 +20,7 @@
 	<property name="debug" value="false"/>
 
 
-	<property name="version" value="0.9.2" />
+	<property name="version" value="1.0" />
 	<property name="release" value="2" />
 	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
 	<property name="dist.file" value="${basedir}/javagp-src-${version}.zip" />
