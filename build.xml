@@ -109,7 +109,7 @@
 				<include name="release-notes.txt" />
 				<include name="LICENSE" />
 				<include name="README" />
-				<include name="src-test/*.txt" />
+				<include name="examples/**/*" />
 				<include name="doc/getting-started.pdf" />
 				<include name="lib/jason.jar" />
 				<include name="lib/LGPL.txt" />
