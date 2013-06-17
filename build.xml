@@ -82,7 +82,7 @@
          ================================= -->
     <target name="parser" depends="init" description="Compiles the planner parser with JavaCC">
         <delete failonerror="no">
-			<fileset dir="${basedir}/src/graphplan/parser" includes="*.java"/>
+			<fileset dir="${basedir}/src/graphplan/parser" includes="*.java" excludes="PDDLPlannerAdapter.java"/>
 		</delete>
     	<java dir="${basedir}/src/graphplan/parser" classname="javacc" fork="yes">
     		<classpath refid="project.classpath"/>
@@ -113,8 +113,11 @@
 				<include name="doc/getting-started.pdf" />
 				<include name="lib/jason.jar" />
 				<include name="lib/LGPL.txt" />
-				<include name="lib/LICENSE" />
-				<include name="lib/README" />
+				<include name="lib/LICENSE.jason" />
+				<include name="lib/README.jason" />
+				<include name="lib/pddl4j.jar" />
+				<include name="lib/LICENSE.pddl4j" />
+				<include name="lib/README.pddl4j" />
 			</fileset>
 		</zip>
 	</target>
