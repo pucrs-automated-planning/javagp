@@ -41,7 +41,7 @@
 		<jar destfile="${javagp.jar}">
 			<manifest>
 				<attribute name="Main-Class" value="graphplan.Graphplan" />
-				<attribute name="Class-Path" value="lib/jason.jar:lib/pddl4j.jar"/>
+				<attribute name="Class-Path" value="lib/jason.jar lib/pddl4j.jar"/>
 			</manifest>
 			<fileset dir="${basedir}/bin">
 				<include name="**/*.class" />
