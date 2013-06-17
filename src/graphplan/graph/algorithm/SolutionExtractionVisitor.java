@@ -23,6 +23,7 @@
  */
 package graphplan.graph.algorithm;
 
+import graphplan.Graphplan;
 import graphplan.PlanResult;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
@@ -175,20 +176,24 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		ArrayList<Proposition> subGoalsSorted = new ArrayList<Proposition>(subGoals);
 		
 		/* Heuristic: sort goals by proposition that appears earliest in the planning graph */
-//		Collections.sort(subGoalsSorted, new Comparator<Proposition>() {
-//			public int compare(Proposition o1, Proposition o2) {
-//				return (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
-//			}
-//		});
+		if(Graphplan.sortGoals){
+			Collections.sort(subGoalsSorted, new Comparator<Proposition>() {
+				public int compare(Proposition o1, Proposition o2) {
+					return (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
+				}
+			});
+		}
 
 		/* Heuristic: select firstly propositions that leads to the smallest set of resolvers */
-		Collections.sort(subGoalsSorted, new Comparator<Proposition>() {
-			public int compare(Proposition o1, Proposition o2) {
-				int o1Size = actionLevel.getGeneratingActions(o1).size();
-				int o2Size = actionLevel.getGeneratingActions(o2).size();
-				return (o1Size < o2Size ? -1: (o1Size == o2Size ? 0 : 1));
-			}
-		});
+		if(Graphplan.propositionsSmallest){
+			Collections.sort(subGoalsSorted, new Comparator<Proposition>() {
+				public int compare(Proposition o1, Proposition o2) {
+					int o1Size = actionLevel.getGeneratingActions(o1).size();
+					int o2Size = actionLevel.getGeneratingActions(o2).size();
+					return (o1Size < o2Size ? -1: (o1Size == o2Size ? 0 : 1));
+				}
+			});
+		}
 		
 		boolean planFound = this.search(subGoalsSorted, new HashSet<Operator>(), actionLevel, new HashSet<Operator>());
 		if(!planFound) {

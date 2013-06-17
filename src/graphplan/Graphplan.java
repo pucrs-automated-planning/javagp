@@ -26,7 +26,6 @@ package graphplan;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import graphplan.domain.jason.PropositionImpl;
 import graphplan.flyweight.OperatorFactory;
 import graphplan.flyweight.OperatorFactoryException;
 import graphplan.graph.ActionLevel;
@@ -64,6 +63,11 @@ public class Graphplan {
 	private PlanningGraph planningGraph;
 	private SolutionExtractionVisitor solutionExtraction;
 	private boolean pddl = false;
+
+	public static boolean noopsFirst = false;
+	public static boolean operatorsLatest = true;
+	public static boolean propositionsSmallest = true;
+	public static boolean sortGoals = false;
 	
 	public static void main(String[] args) throws Exception {
 		setupLogger();
@@ -77,7 +81,11 @@ public class Graphplan {
 		long timeout = 0;
 		boolean argsOk = true;
 		boolean pddl = false;
-
+		
+		System.out.println("##########################################################################################################################");
+		System.out.println("### NEWS: Now you can use the PDDL planning language.");
+		System.out.println("### EXAMPLE: java -jar JavaGP -pddl -d <domain> -p <problem> [-maxlevels <max_graph_levels>] [-timeout <planning_timeout>]");
+		System.out.println("##########################################################################################################################\n");
 		for(int i=0; i<args.length && argsOk; i++) {
 			if(args[i].equals("-d")) { /* The domain argument */
 				if(++i < args.length && !args[i].startsWith("-")) {
@@ -140,6 +148,21 @@ public class Graphplan {
 					logger.warning("-timeout argument requires a positive integer amount of time");
 					argsOk = false;
 				}
+			} else if(args[i].equals("-noopsFirst")) {
+				noopsFirst = true;
+				operatorsLatest = false;
+			} else if(args[i].equals("-operatorsLatest")) {
+				operatorsLatest = true;
+			} else if(args[i].equals("-propositionsSmallest")) {
+				propositionsSmallest = true;
+			} else if(args[i].equals("-sortGoals")) {
+				sortGoals = true;
+				propositionsSmallest = false;
+			}  else if(args[i].equals("-noHeuristics")) {
+				sortGoals = false;
+				propositionsSmallest = false;
+				noopsFirst = false;
+				operatorsLatest = false;
 			}
 		}
 		
@@ -158,6 +181,13 @@ public class Graphplan {
 			}
 			
 			PlanResult result = null;
+			
+			System.out.println("HEURISTICS SELECTED: ");
+			if(Graphplan.noopsFirst) System.out.println("\t+ Heuristic for actions: Select Noops first");
+			if(Graphplan.operatorsLatest) System.out.println("\t+ Heuristic for actions: select actions that appears latest in the Planning Graph.");
+			if(Graphplan.propositionsSmallest) System.out.println("\t+ Heuristic for subgoals: select firstly propositions that leads to the smallest set of resolvers.");
+			if(Graphplan.sortGoals) System.out.println("\t+ Heuristic for subgoals: sort goals by proposition that appears earliest in the Planning Graph.");
+			System.out.println();
 			
 			if(timeout > 0) {
 				result = graphplan.plan(domain, timeout);
@@ -224,22 +254,28 @@ public class Graphplan {
 		this.solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
 		
 		/*Closed World Assumption - Simple Implementation by goals*/
-		for(Proposition g: domainDescription.getGoalState()){
-			if(!initialLevel.hasProposition(g)){
-				//Add negative for proposition g
-				PropositionImpl p = new PropositionImpl(g.negated(), g.getFunctor());
-				p.setTerms(g.getTerms());
-				initialLevel.addProposition(p);
-			}
-		}
+//		for(Proposition g: domainDescription.getGoalState()){
+//			if(!initialLevel.hasProposition(g)){
+//				//Add negative for proposition g
+//				PropositionImpl p = new PropositionImpl(g.negated(), g.getFunctor());
+//				p.setTerms(g.getTerms());
+//				initialLevel.addProposition(p);
+//			}
+//		}
 
+		System.out.println("OPTIMIZATION: JavaGP using Static Mutexes Table");
+		System.out.println("OPTIMIZATION: JavaGP using Memoization");
+		
 		if(this.pddl) {
+			System.out.println("OPTIMIZATION: JavaGP using Types");
 			//If domain has negative preconditions, the planner will use the closed world assumption 
 			if(domainDescription.isNegativePreconditions()) {
-				System.out.println("OPTIMIZATION: JavaGP using Closed World Assumption");
+				System.out.println("OPTIMIZATION: JavaGP using Closed World Assumption (Lazily)");
 				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 			} else this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 		} else this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
+		
+		System.out.println();
 		
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		

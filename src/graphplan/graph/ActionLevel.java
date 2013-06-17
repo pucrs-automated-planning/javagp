@@ -23,6 +23,7 @@
  */
 package graphplan.graph;
 
+import graphplan.Graphplan;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.OperatorFactory;
@@ -140,10 +141,13 @@ public class ActionLevel implements GraphLevel<Operator> {
 				}
 			}
 			/*Heuristic: select actions that appears latest in the planning graph*/
-			this.sortByIndex(generatingActions);
+			if(Graphplan.operatorsLatest)
+				this.sortByIndex(generatingActions);
 			
 			/*Heuristic: select noops first*/
-			//this.sortByNoopsFirst(generatingActions);
+			if(Graphplan.noopsFirst)
+				this.sortByNoopsFirst(generatingActions);
+			
 			this.generatingActionsCache.put(proposition, generatingActions);
 		}
 		return generatingActions;
