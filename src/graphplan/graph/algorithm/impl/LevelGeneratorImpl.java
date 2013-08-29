@@ -54,9 +54,19 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		this.types = types;
 		this.parameterTypes = parameterTypes;
 		this.usingTypes = true;
+		// Felipe: Moved the code here
+		OperatorFactory opFactory = OperatorFactory.getInstance();
+		opFactory.setTypes(this.types);
+		opFactory.setParameterTypes(this.parameterTypes);
 	}
 	
-	public LevelGeneratorImpl(){}
+	public LevelGeneratorImpl(){
+		if (usingTypes) {
+			OperatorFactory opFactory = OperatorFactory.getInstance();
+			opFactory.setTypes(this.types);
+			opFactory.setParameterTypes(this.parameterTypes);
+		}		
+	}
 	
 	/*
 	 * TODO Optimize this method
@@ -87,6 +97,7 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 			preconds.add(proposition);
 		}
 		
+		// XXX Why the hell do we use a null parameter here?
 		opTemplateSet.addAll(opFactory.getRequiringOperatorTemplates(null));
 
 		/*for (Proposition proposition : propositionLevel) {
@@ -94,12 +105,9 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		}*/
 		
 		//Piece of crap algorithm used before has been replaced by this call
+		
 		try {
-			if(this.usingTypes)	{
-				opFactory.setTypes(this.types);
-				opFactory.setParameterTypes(this.parameterTypes);
-				opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
-			} else opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
+			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
 		} catch (OperatorFactoryException e) {
 			throw new PlanningGraphException(e.getMessage(),propositionLevel.getIndex()+1);
 		}

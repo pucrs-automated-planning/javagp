@@ -79,11 +79,11 @@ public class PDDLPlannerAdapter {
         options.put(RequireKey.CONDITIONAL_EFFECTS, true);
 
 		try {
-			Parser parserPDDL = new Parser(options);
-			PDDLObject domainPDDL = parserPDDL.parse(new File(domain));
-			PDDLObject problemPDDL = parserPDDL.parse(new File(problem));
-			if (domainPDDL != null && problemPDDL != null) {
-				this.pddlObject = parserPDDL.link(domainPDDL, problemPDDL);
+			Parser pddlParser = new Parser(options);
+			PDDLObject pddlDomain = pddlParser.parse(new File(domain));
+			PDDLObject pddlProblem = pddlParser.parse(new File(problem));
+			if (pddlDomain != null && pddlProblem != null) {
+				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
