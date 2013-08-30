@@ -7,6 +7,16 @@ import org.junit.Test;
 public class GraphplanPDDLTest {
 
 	@Test
+	public void testRobbyPDDL() {
+		try {
+			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/robby/robby.pddl", "-p", "examples/pddl/robby/pb1.pddl"});
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
 	public void testBlocksWorldPDDL() {
 		try {
 			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/blockworld/blocksworld.pddl", "-p", "examples/pddl/blockworld/pb10.pddl"});
@@ -29,7 +39,7 @@ public class GraphplanPDDLTest {
 	@Test
 	public void testHanoiPDDL(){
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/hanoi/hanoi.pddl", "-p", "examples/pddl/hanoi/pb2.pddl"});
+			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/hanoi/hanoi.pddl", "-p", "examples/pddl/hanoi/pb3.pddl"});
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -48,7 +58,7 @@ public class GraphplanPDDLTest {
 	@Test
 	public void testDockWorkerRobotsPDDL() {
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d","examples/pddl/dwr/dwr.pddl", "-p", "examples/pddl/dwr/pb8.pddl"});
+			Graphplan.main(new String[] {"-pddl", "-d","examples/pddl/dwr/dwr.pddl", "-p", "examples/pddl/dwr/pb3.pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -57,7 +67,7 @@ public class GraphplanPDDLTest {
 	@Test
 	public void testAbstractPDDLAll(){
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/abstract/abstract.pddl", "-p", "examples/pddl/abstract/abstract-pb.pddl"});
+			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/abstract/abstract.pddl", "-p", "examples/pddl/abstract/pb1.pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -74,9 +84,10 @@ public class GraphplanPDDLTest {
 	}
 	
 	@Test
-	public void testBriefcasePDDLAll(){
+	public void testDockWorkerRobotsPDDLAll() {
 		try {
-			Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/briefcase/briefcase.pddl", "-p", "examples/pddl/briefcase/pb1.pddl"});
+			for(int i=1;i<=8;i++)
+				Graphplan.main(new String[] {"-pddl", "-d","examples/pddl/dwr/dwr.pddl", "-p", "examples/pddl/dwr/pb" + i + ".pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -87,16 +98,6 @@ public class GraphplanPDDLTest {
 		try {
 			for(int i=1;i<=1;i++)
 				Graphplan.main(new String[] {"-pddl", "-d","examples/pddl/dinner/dinner.pddl", "-p", "examples/pddl/dinner/pb" + i + ".pddl"});
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testFerryPDDLAll(){
-		try {
-			for(int i=1;i<=2;i++)
-				Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/ferry/ferry.pddl", "-p", "examples/pddl/ferry/pb" + i + ".pddl"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -125,44 +126,21 @@ public class GraphplanPDDLTest {
 	@Test
 	public void testLogisticsPDDLAll(){
 		try {
-			for(int i=1;i<=5;i++)
+			for(int i=1;i<=2;i++)
 				Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/logistics/logistics.pddl", "-p", "examples/pddl/logistics/pb" + i + ".pddl"});
 		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testMonkeyPDDLAll(){
-		try {
-			for(int i=1;i<=3;i++)
-				Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/monkey/monkey.pddl", "-p", "examples/pddl/monkey/pb" + i + ".pddl"});
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testTravelPDDLAll(){
-		try {
-			for(int i=1;i<=9;i++)
-				Graphplan.main(new String[] {"-pddl", "-d", "examples/pddl/travel/travel.pddl", "-p", "examples/pddl/travel/pb" + i + ".pddl"});
-		} catch (Exception e) {
-			fail(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
 	@Test
 	public void testPDDLAll(){
-			this.testAbstractPDDLAll();
-			this.testBlocksWorldPDDLAll();
-			this.testBriefcasePDDLAll();
-			this.testDinnerPDDLAll();
-			this.testFerryPDDLAll();
-			this.testGripperPDDLAll();
-			this.testHanoiPDDLAll();
-			this.testLogisticsPDDLAll();
-			this.testMonkeyPDDLAll();
-			this.testTravelPDDLAll();
+		this.testAbstractPDDLAll();
+		this.testBlocksWorldPDDLAll();
+		this.testDockWorkerRobotsPDDLAll();
+		this.testDinnerPDDLAll();
+		this.testGripperPDDLAll();
+		this.testHanoiPDDLAll();
+		this.testLogisticsPDDLAll();
 	}
 }
