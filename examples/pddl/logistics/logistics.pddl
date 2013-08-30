@@ -1,9 +1,3 @@
-;; logistics domain
-;;
-;; logistics-typed-length: strips + simple types
-;;    based on logistics-strips-length.
-;; Tue Dec  1 16:10:25 EST 1998 Henry Kautz
-
 (define (domain logistics)
   (:requirements :strips :typing) 
   (:types 

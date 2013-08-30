@@ -1,9 +1,4 @@
-;; original name rocket_ext.b
-;; (:length (:parallel 7))
-;; optimal
-;;
-
-(define (problem pb4)
+(define (problem pb2)
   (:domain logistics)
   (:requirements :strips :typing)
   (:objects mxf - package

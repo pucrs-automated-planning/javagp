@@ -1,6 +1,3 @@
-;; original name rocket_ext.a
-;;
-
 (define (problem pb1)
   (:domain logistics)
   (:requirements :strips :typing) 
