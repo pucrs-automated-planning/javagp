@@ -142,11 +142,13 @@ public class PDDLPlannerAdapter {
 					
 					Set<String> setVar = this.types.get(term.getTypeSet().toString());
 					
-					if(setVar == null){
-						setVar = new HashSet<String>();
-						setVar.add(term.getImage().replace("?", ""));
-						this.types.put(term.getTypeSet().toString(), setVar);
-					} else setVar.add(term.getImage().replace("?", ""));
+					for(Constant c: this.pddlObject.getTypedDomain(term.getTypeSet())){
+						if(setVar == null){
+							setVar = new HashSet<String>();
+							setVar.add(c.toString());
+							this.types.put(term.getTypeSet().toString(), setVar);
+						} else setVar.add(c.toString());
+					}
 				}
 
 				this.parameterTypes.put(actionDef.getName(), parameterTypes);
@@ -188,38 +190,11 @@ public class PDDLPlannerAdapter {
 			}
 			
 			System.out.println("\n--> Goal\n");
-			
 			System.out.println(this.pddlObject.getGoal());
-			
-			/*
-		
-			ListExp list = (ListExp) this.pddlObject.getGoal();
-			AndExp andGoal = (AndExp) this.pddlObject.getGoal();
-			
-			
-			for(Exp goal:andGoal){
-				
-				AtomicFormula p = (AtomicFormula) goal;
-                PropositionImpl	proposition = new PropositionImpl(p.getPredicate());
-				
-                Iterator variables = p.iterator();
-				List<Term> terms = new ArrayList<Term>();
 
-				while(variables.hasNext()){
-					Constant var = (Constant) variables.next();
-					Atom term = new Atom(var.getImage());
-					terms.add(term);
-				}
-				proposition.addTerms(terms);
-				goalState.add(proposition);
-			}
-			*/
-			//ArrayList<E> lista = this.getPropositionFromDomainExp(this.pddlObject.getInit());
-			
 			goalState.addAll(this.getPropositionFromProblemExp(this.pddlObject.getGoal()));
-			
-			System.out.println("\nPDDL Parser\n");
 
+			System.out.println("\nPDDL Parser\n");
 			DomainDescription domainDescription = new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes, negativePreconditions);
 			return domainDescription;
 		}
@@ -266,11 +241,13 @@ public class PDDLPlannerAdapter {
 					
 					Set<String> setVar = this.types.get(var.getTypeSet().toString());
 					
-					if(setVar == null){
-						setVar = new HashSet<String>();
-						setVar.add(var.getImage().replace("?", ""));
-						this.types.put(var.getTypeSet().toString(), setVar);
-					} else setVar.add(var.getImage().replace("?", ""));
+					for(Constant c: this.pddlObject.getTypedDomain(var.getTypeSet())){
+						if(setVar == null){
+							setVar = new HashSet<String>();
+							setVar.add(c.toString());
+							this.types.put(var.getTypeSet().toString(), setVar);
+						} else setVar.add(c.toString());
+					}
 				}
 				
 				proposition.addTerms(terms);
@@ -327,11 +304,13 @@ public class PDDLPlannerAdapter {
 					
 					Set<String> setCon = this.types.get(con.getTypeSet().toString());
 					
-					if(setCon == null){
-						setCon = new HashSet<String>();
-						setCon.add(con.getImage());
-						this.types.put(con.getTypeSet().toString(), setCon);
-					} else setCon.add(con.getImage());
+					for(Constant c: this.pddlObject.getTypedDomain(con.getTypeSet())){
+						if(setCon == null){
+							setCon = new HashSet<String>();
+							setCon.add(c.toString());
+							this.types.put(con.getTypeSet().toString(), setCon);
+						} else setCon.add(c.toString());
+					}
 				}
 				
 				proposition.addTerms(terms);
@@ -348,7 +327,4 @@ public class PDDLPlannerAdapter {
 		
 		return propositionImpls;
 	}
-
 }
-
-
