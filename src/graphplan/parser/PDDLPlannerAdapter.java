@@ -21,8 +21,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import pddl4j.ErrorManager;
+import pddl4j.ErrorManager.Message;
 import pddl4j.PDDLObject;
 import pddl4j.Parser;
+import pddl4j.ParserException;
 import pddl4j.RequireKey;
 import pddl4j.Source;
 import pddl4j.exp.AndExp;
@@ -59,8 +62,9 @@ public class PDDLPlannerAdapter {
 	 * 
 	 * @param String domain
 	 * @param String problem
+	 * @throws ParserException 
 	 */
-	public PDDLPlannerAdapter(String domain, String problem){
+	public PDDLPlannerAdapter(String domain, String problem) throws ParserException{
 		this.domain = domain;
 		this.problem = problem;
 		
@@ -71,19 +75,30 @@ public class PDDLPlannerAdapter {
         options.put("source", Source.V3_0);
         options.put(RequireKey.STRIPS, true);
         options.put(RequireKey.TYPING, true);
-        options.put(RequireKey.EQUALITY, true);
+        options.put(RequireKey.EQUALITY, false);
         options.put(RequireKey.NEGATIVE_PRECONDITIONS, true);
-        options.put(RequireKey.DISJUNCTIVE_PRECONDITIONS, true);
-        options.put(RequireKey.EXISTENTIAL_PRECONDITIONS, true);
-        options.put(RequireKey.UNIVERSAL_PRECONDITIONS, true);
-        options.put(RequireKey.CONDITIONAL_EFFECTS, true);
+        options.put(RequireKey.DISJUNCTIVE_PRECONDITIONS, false);
+        options.put(RequireKey.EXISTENTIAL_PRECONDITIONS, false);
+        options.put(RequireKey.UNIVERSAL_PRECONDITIONS, false);
+        options.put(RequireKey.CONDITIONAL_EFFECTS, false);
 
 		try {
 			Parser pddlParser = new Parser(options);
 			PDDLObject pddlDomain = pddlParser.parse(new File(domain));
 			PDDLObject pddlProblem = pddlParser.parse(new File(problem));
+			ErrorManager mgr = pddlParser.getErrorManager();
+			// If the parser produces errors we print it and stop
+			if (mgr.contains(Message.ERROR)) {
+				mgr.print(Message.ALL);
+			} else {// else we print the warnings
+				mgr.print(Message.WARNING);
+			}
 			if (pddlDomain != null && pddlProblem != null) {
 				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
+			} else if (pddlDomain == null ){
+				throw new pddl4j.ParserException("Parse error in PDDL Domain");
+			} else if (pddlProblem == null){
+				throw new pddl4j.ParserException("Parse error in PDDL Problem");
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

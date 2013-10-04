@@ -75,46 +75,28 @@ public class Graphplan {
 		InputStream operators = null;
 		InputStream problem = null;
 		
-		String pddlProblem = null;
-		String pddlDomain = null;
+		String problemFilename = null;
+		String domainFilename = null;
 		
 		long timeout = 0;
 		boolean argsOk = true;
-		boolean pddl = false;
+		boolean pddl = true;
 		
 		for(int i=0; i<args.length && argsOk; i++) {
+			if(args[i].equals("-nopddl")) {
+				pddl = false;
+				graphplan.setPddl(pddl);
+			}
 			if(args[i].equals("-d")) { /* The domain argument */
 				if(++i < args.length && !args[i].startsWith("-")) {
-					if(args[0].equals("-pddl")) {
-						pddl = true;
-						graphplan.setPddl(pddl);
-						pddlDomain = args[i];  
-					} else {
-						try {
-							operators = new FileInputStream(args[i]);
-						} catch (FileNotFoundException e) {
-							logger.warning(e.toString());
-							argsOk = false;
-						}
-					}
+					domainFilename = args[i];
 				} else {
 					logger.warning("-d argument requires a filename with the domain");
 					argsOk = false;
 				}
 			} else if(args[i].equals("-p")) { /* The problem argument */
 				if(++i < args.length && !args[i].startsWith("-")) {
-					if(args[0].equals("-pddl")) {
-						pddl = true;
-						graphplan.setPddl(pddl);
-						pddlProblem = args[i];  
-					} else {
-						try {
-							problem = new FileInputStream(args[i]);
-						} catch (FileNotFoundException e) {
-							logger.warning(e.toString());
-							argsOk = false;
-						}
-					}
+					problemFilename = args[i];
 				} else {
 					logger.warning("-p argument requires a filename with the problem");
 					argsOk = false;
@@ -162,14 +144,23 @@ public class Graphplan {
 			}
 		}
 		
-		if(!pddl) argsOk = (operators != null) && (problem != null);
+		if(!pddl) {
+			try {
+				operators = new FileInputStream(domainFilename);
+				problem = new FileInputStream(problemFilename);
+			} catch (FileNotFoundException e) {
+				logger.warning(e.toString());
+				argsOk = false;
+			}
+			argsOk = (operators != null) && (problem != null);
+		}
 		
 		if(argsOk) {
 			long t1 = System.currentTimeMillis();
 			DomainDescription domain = null;
 			
 			if(pddl){
-				PDDLPlannerAdapter parserPDDL = new PDDLPlannerAdapter(pddlDomain, pddlProblem);
+				PDDLPlannerAdapter parserPDDL = new PDDLPlannerAdapter(domainFilename, problemFilename);
 				domain = parserPDDL.getDomainDescriptionFromPddlObject();
 			} else {
 				PlannerParser parser = new PlannerParser();
@@ -205,7 +196,16 @@ public class Graphplan {
 			logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
 		} else {
 			logger.warning("Wrong parameters");
-			logger.info("Usage is java -jar JavaGP [-pddl <pddl_language>] -p <problem> -d <domain> [-maxlevels <max_graph_levels>] [-timeout <planning_timeout>] [-noopsFirst <select_noops_first>] [-operatorsLatest <select_actions_that_appears_latest_planning_graph>] [-propositionsSmallest <select_firstly_propositions_that_leads_to_the_smallest_set_of_resolvers>] [-sortGoals <sort_goals_by_proposition_that_appears_earliest_in_the_planning_graph>]");
+			logger.info("Usage is java -jar JavaGP " +
+					"\n\t[-pddl <pddl_language>] " +
+					"-p <problem> " +
+					"\n\t-d <domain> " +
+					"\n\t[-maxlevels <max_graph_levels>] " +
+					"\n\t[-timeout <planning_timeout>] " +
+					"\n\t[-noopsFirst <select_noops_first>] " +
+					"\n\t[-operatorsLatest <select_actions_that_appears_latest_planning_graph>] " +
+					"\n\t[-propositionsSmallest <select_firstly_propositions_that_leads_to_the_smallest_set_of_resolvers>] " +
+					"\n\t[-sortGoals <sort_goals_by_proposition_that_appears_earliest_in_the_planning_graph>]");
 			System.exit(1);
 		}
 	}

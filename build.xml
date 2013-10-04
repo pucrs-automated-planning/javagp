@@ -21,7 +21,7 @@
 
 
 	<property name="version" value="1.0" />
-	<property name="release" value="2" />
+	<property name="release" value="4" />
 	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
 	<property name="dist.file" value="${basedir}/javagp-src-${version}.zip" />
 	<property name="javagp.jar" value="${basedir}/javagp.jar" />
@@ -110,6 +110,7 @@
 				<include name="LICENSE" />
 				<include name="README" />
 				<include name="examples/**/*" />
+				<exclude name="examples/pddl/robby/*" />
 				<include name="doc/getting-started.pdf" />
 				<include name="lib/jason.jar" />
 				<include name="lib/LGPL.txt" />

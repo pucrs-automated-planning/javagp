@@ -1,7 +1,28 @@
 ---------------------------
-version 1.0.0
+version 1.0
+Release 4
 
-revision $Rev$ on SVN
+revision $Revision$ on SVN
+---------------------------
+
+Changes:
+- Added proper error reporting when parsing PDDL
+- Made PDDL the default language
+
+---------------------------
+version 1.0
+Release 3
+
+revision 240 on SVN
+---------------------------
+
+Changes:
+- Fixed a bug with subtypes in PDDL
+
+---------------------------
+version 1.0
+Release 2
+
 ---------------------------
 
 Changes:
