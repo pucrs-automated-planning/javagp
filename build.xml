@@ -105,6 +105,7 @@
 		<delete file="${bin.dist.file}" />
 		<zip destfile="${bin.dist.file}">
 			<fileset dir="${basedir}">
+				<include name="javagp" />
 				<include name="javagp.jar" />
 				<include name="release-notes.txt" />
 				<include name="LICENSE" />

@@ -32,6 +32,7 @@ import graphplan.graph.ActionLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.SolutionExtractionVisitor;
 import graphplan.graph.algorithm.TimeoutSolutionExtractionVisitor;
+import graphplan.graph.draw.DotGraphDrawVisitor;
 import graphplan.graph.memo.mutexes.StaticMutexesTable;
 import graphplan.graph.planning.PlanningGraph;
 import graphplan.graph.planning.PlanningGraphException;
@@ -43,6 +44,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -78,6 +80,8 @@ public class Graphplan {
 		String problemFilename = null;
 		String domainFilename = null;
 		
+		String graphDrawFile = null;
+		
 		long timeout = 0;
 		boolean argsOk = true;
 		boolean pddl = true;
@@ -86,8 +90,7 @@ public class Graphplan {
 			if(args[i].equals("-nopddl")) {
 				pddl = false;
 				graphplan.setPddl(pddl);
-			}
-			if(args[i].equals("-d")) { /* The domain argument */
+			}else if(args[i].equals("-d")) { /* The domain argument */
 				if(++i < args.length && !args[i].startsWith("-")) {
 					domainFilename = args[i];
 				} else {
@@ -141,13 +144,31 @@ public class Graphplan {
 				propositionsSmallest = false;
 				noopsFirst = false;
 				operatorsLatest = false;
+			} else if(args[i].equals("-draw")) {
+				if(++i < args.length && !args[i].startsWith("-")) {
+					graphDrawFile = args[i];
+				} else {
+					logger.warning("-draw argument requires a valid filename");
+					argsOk = false;
+				}
 			}
 		}
 		
+		File opFile = new File(domainFilename);
+		File probFile = new File(problemFilename);
+		if(!opFile.exists()) {
+			logger.warning("Domain file \'"+domainFilename+"\' does not exist");
+			argsOk = false;
+		} 
+		if(!probFile.exists()){
+			logger.warning("Problem file \'"+problemFilename+"\' does not exist");
+			argsOk = false;
+		} 
+		
 		if(!pddl) {
 			try {
-				operators = new FileInputStream(domainFilename);
-				problem = new FileInputStream(problemFilename);
+				operators = new FileInputStream(opFile);
+				problem = new FileInputStream(probFile);
 			} catch (FileNotFoundException e) {
 				logger.warning(e.toString());
 				argsOk = false;
@@ -194,6 +215,16 @@ public class Graphplan {
 			long totalTime = (t2-t1); 
 			logger.info("Plan length: " + result.getPlanLength());
 			logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
+			if(graphDrawFile != null) {
+				logger.info("Drawing planning graph to "+graphDrawFile);
+				DotGraphDrawVisitor drawVisitor = new DotGraphDrawVisitor();
+				if(graphplan.planningGraph.accept(drawVisitor)) {
+					PrintWriter writer = new PrintWriter(new File(graphDrawFile));
+					writer.println(drawVisitor.toString());
+					writer.flush();
+					writer.close();
+				}
+			}
 		} else {
 			logger.warning("Wrong parameters");
 			logger.info("Usage is java -jar JavaGP " +
