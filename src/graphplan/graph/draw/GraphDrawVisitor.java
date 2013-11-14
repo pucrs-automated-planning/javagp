@@ -66,7 +66,7 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 	}
 	
 	protected void initialize() {
-		Element element = graphDoc.createElement("GraphXML");
+		Element element = graphDoc.createElement("graphml");
 		graphDoc.appendChild(element);
 		graphElement = graphDoc.createElement("graph");
 		element.appendChild(graphElement);
@@ -141,7 +141,7 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 	
 	protected Element createNode(String id, String label) {
 		Element nodeElement = graphDoc.createElement("node");
-		nodeElement.setAttribute("name", id);
+		nodeElement.setAttribute("id", id);
 		
 		Element labelElement = graphDoc.createElement("label");
 		Text labelText = graphDoc.createTextNode(label);
