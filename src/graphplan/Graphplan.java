@@ -64,7 +64,7 @@ public class Graphplan {
 	protected int maxLevels = Integer.MAX_VALUE;
 	private PlanningGraph planningGraph;
 	private SolutionExtractionVisitor solutionExtraction;
-	private boolean pddl = false;
+	private boolean pddl = true;
 
 	public static boolean noopsFirst = false;
 	public static boolean operatorsLatest = true;

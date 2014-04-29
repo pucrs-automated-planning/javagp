@@ -4,10 +4,10 @@
 * Build the project (ant)
 *
 >>> STRIPS Language
-Run "java -jar javagp.jar -d examples/strips/ma-prodcell/domain.txt -p examples/strips/ma-prodcell/problem.txt"
+Run "java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p examples/strips/ma-prodcell/problem.txt"
  
 >>> PDDL Language
-Run "java -jar javagp.jar -pddl -d examples/pddl/blockworld/blockworlds.pddl -p examples/pddl/blockworld/pb1.pddl"
+Run "java -jar javagp.jar -d examples/pddl/blockworld/blockworlds.pddl -p examples/pddl/blockworld/pb1.pddl"
 
 >>> Max Graph levels
 -maxlevels <NUMBER>

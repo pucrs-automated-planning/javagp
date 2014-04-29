@@ -97,10 +97,12 @@ public class GraphplanTest {
 
 	@Test
 	public void testBlocks() {
+		int i=1;
 		try {
-			for(int i=1;i<=7;i++)
-				Graphplan.main(new String[] {"-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem" + i + ".txt"});
+			for(i=1;i<=7;i++)
+				Graphplan.main(new String[] {"-nopddl", "-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem" + i + ".txt"});
 		} catch (Exception e) {
+			System.out.println(i);
 			fail(e.getMessage());
 		}
 	}
@@ -108,7 +110,7 @@ public class GraphplanTest {
 	@Test
 	public void testDinner() {
 		try {
-			Graphplan.main(new String[] {"-d","examples/strips/dinner/domain.txt","-p","examples/strips/dinner/problem.txt"});
+			Graphplan.main(new String[] {"-nopddl", "-d","examples/strips/dinner/domain.txt","-p","examples/strips/dinner/problem.txt"});
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
