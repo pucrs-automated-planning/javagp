@@ -1,8 +1,18 @@
 ---------------------------
 version 1.0
+Release 5
+
+revision 265 on SVN
+---------------------------
+
+Changes:
+- Fixed problems with types in PDDL
+
+---------------------------
+version 1.0
 Release 4
 
-revision $Revision$ on SVN
+revision 262 on SVN
 ---------------------------
 
 Changes:
