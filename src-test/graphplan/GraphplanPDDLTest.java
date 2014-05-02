@@ -7,6 +7,16 @@ import org.junit.Test;
 public class GraphplanPDDLTest {
 
 	@Test
+	public void testRubiksPDDL() {
+		try {
+			Graphplan.main(new String[] {"-d", "examples/pddl/rubiks/rubiks.pddl", "-p", "examples/pddl/rubiks/pb5.pddl"});
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
 	public void testRushPDDL() {
 		try {
 			Graphplan.main(new String[] {"-d", "examples/pddl/rush/rush.pddl", "-p", "examples/pddl/rush/pb0.pddl"});
@@ -140,6 +150,17 @@ public class GraphplanPDDLTest {
 				Graphplan.main(new String[] {"-d", "examples/pddl/logistics/logistics.pddl", "-p", "examples/pddl/logistics/pb" + i + ".pddl"});
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testRubiksPDDLAll() {
+		try {
+			for(int i=1;i<=5;i++)
+				Graphplan.main(new String[] {"-d", "examples/pddl/rubiks/rubiks.pddl", "-p", "examples/pddl/rubiks/pb"+ i +".pddl"});
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 	
