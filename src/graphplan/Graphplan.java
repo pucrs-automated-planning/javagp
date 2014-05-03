@@ -38,6 +38,7 @@ import graphplan.graph.planning.PlanningGraph;
 import graphplan.graph.planning.PlanningGraphException;
 import graphplan.graph.planning.cwa.PlanningGraphClosedWorldAssumption;
 import graphplan.parser.PDDLPlannerAdapter;
+import graphplan.parser.ParseException;
 import graphplan.parser.PlannerParser;
 
 import java.io.File;
@@ -51,6 +52,8 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
+import pddl4j.ParserException;
 
 /**
  * Main class and accessor for the Graphplan algorithm
@@ -71,7 +74,7 @@ public class Graphplan {
 	public static boolean propositionsSmallest = true;
 	public static boolean sortGoals = false;
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		setupLogger();
 		Graphplan graphplan = new Graphplan();
 		InputStream operators = null;
@@ -154,6 +157,9 @@ public class Graphplan {
 			}
 		}
 		
+		if(domainFilename == null || problemFilename == null)
+			Graphplan.wrongParametersMessage();
+		
 		File opFile = new File(domainFilename);
 		File probFile = new File(problemFilename);
 		if(!opFile.exists()) {
@@ -179,66 +185,115 @@ public class Graphplan {
 		if(argsOk) {
 			long t1 = System.currentTimeMillis();
 			DomainDescription domain = null;
-			
-			if(pddl){
-				PDDLPlannerAdapter parserPDDL = new PDDLPlannerAdapter(domainFilename, problemFilename);
-				domain = parserPDDL.getDomainDescriptionFromPddlObject();
-			} else {
-				PlannerParser parser = new PlannerParser();
-				domain = parser.parseProblem(operators, problem);
+			try {
+				if(pddl){
+					System.out.println("JavaGP - PDDL\n");
+					System.out.println("+ DOMAIN: " + domainFilename);
+					System.out.println("+ PROBLEM: " + problemFilename);
+					PDDLPlannerAdapter parserPDDL = new PDDLPlannerAdapter(domainFilename, problemFilename);
+					domain = parserPDDL.getDomainDescriptionFromPddlObject();
+				} else {
+					System.out.println("JavaGP - STRIPS\n");
+					System.out.println("+ DOMAIN: " + domainFilename);
+					System.out.println("+ PROBLEM: " + problemFilename);
+					System.out.println();
+					PlannerParser parser = new PlannerParser();
+					domain = parser.parseProblem(operators, problem);
+				}
+			} catch (ParserException e) {
+				e.printStackTrace();
+				System.exit(1);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				System.exit(1);
 			}
 			
 			PlanResult result = null;
 			
 			System.out.println("HEURISTICS SELECTED: ");
-			if(Graphplan.noopsFirst) System.out.println("\t+ Heuristic for actions: Select Noops first");
-			if(Graphplan.operatorsLatest) System.out.println("\t+ Heuristic for actions: Select actions that appears latest in the Planning Graph.");
-			if(Graphplan.propositionsSmallest) System.out.println("\t+ Heuristic for subgoals: Select firstly propositions that leads to the smallest set of resolvers.");
-			if(Graphplan.sortGoals) System.out.println("\t+ Heuristic for subgoals: Sort goals by proposition that appears earliest in the Planning Graph.");
+			if(Graphplan.noopsFirst) 
+				System.out.println("\t+ Heuristic for actions: Select Noops first");
+			
+			if(Graphplan.operatorsLatest) 
+				System.out.println("\t+ Heuristic for actions: Select actions that appears latest in the Planning Graph.");
+			
+			if(Graphplan.propositionsSmallest) 
+				System.out.println("\t+ Heuristic for subgoals: Select firstly propositions that leads to the smallest set of resolvers.");
+			
+			if(Graphplan.sortGoals) 
+				System.out.println("\t+ Heuristic for subgoals: Sort goals by proposition that appears earliest in the Planning Graph.");
+			
 			System.out.println();
 			
-			if(timeout > 0) {
-				result = graphplan.plan(domain, timeout);
-			} else {
-				result = graphplan.plan(domain); 
+			try {
+				if(timeout > 0) {
+					result = graphplan.plan(domain, timeout);
+				} else {
+					result = graphplan.plan(domain); 
+				}
+				if(result.isTrue()) {
+					logger.info("Plan found");
+					System.out.println(result.toString());
+					long t2 = System.currentTimeMillis();
+					long totalTime = (t2-t1); 
+					logger.info("Plan length: " + result.getPlanLength());
+					logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
+					if(graphDrawFile != null) {
+						logger.info("Drawing planning graph to "+graphDrawFile);
+						DotGraphDrawVisitor drawVisitor = new DotGraphDrawVisitor();
+						if(graphplan.planningGraph.accept(drawVisitor)) {
+							PrintWriter writer = new PrintWriter(new File(graphDrawFile));
+							writer.println(drawVisitor.toString());
+							writer.flush();
+							writer.close();
+						}
+					}
+				} else {
+					logger.warning("No plan found");
+				}
+			} catch (PlanningGraphException e) {
+				e.printStackTrace();
+				System.exit(1);
+			} catch (OperatorFactoryException e) {
+				e.printStackTrace();
+				System.exit(1);
+			} catch (TimeoutException e) {
+				e.printStackTrace();
+				System.exit(1);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				System.exit(1);
 			}
 			
-			if(result.isTrue()) {
-				logger.info("Plan found");
-				//logger.info(result.toString());
-				//Change plan output to standard output for easier redirection.
-				System.out.println(result.toString());
-			} else {
-				logger.warning("No plan found");
-			}
-			long t2 = System.currentTimeMillis();
-			long totalTime = (t2-t1); 
-			logger.info("Plan length: " + result.getPlanLength());
-			logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
-			if(graphDrawFile != null) {
-				logger.info("Drawing planning graph to "+graphDrawFile);
-				DotGraphDrawVisitor drawVisitor = new DotGraphDrawVisitor();
-				if(graphplan.planningGraph.accept(drawVisitor)) {
-					PrintWriter writer = new PrintWriter(new File(graphDrawFile));
-					writer.println(drawVisitor.toString());
-					writer.flush();
-					writer.close();
-				}
-			}
 		} else {
-			logger.warning("Wrong parameters");
-			logger.info("Usage is java -jar JavaGP " +
-					"\n\t[-pddl <pddl_language>] " +
-					"-p <problem> " +
-					"\n\t-d <domain> " +
-					"\n\t[-maxlevels <max_graph_levels>] " +
-					"\n\t[-timeout <planning_timeout>] " +
-					"\n\t[-noopsFirst <select_noops_first>] " +
-					"\n\t[-operatorsLatest <select_actions_that_appears_latest_planning_graph>] " +
-					"\n\t[-propositionsSmallest <select_firstly_propositions_that_leads_to_the_smallest_set_of_resolvers>] " +
-					"\n\t[-sortGoals <sort_goals_by_proposition_that_appears_earliest_in_the_planning_graph>]");
-			System.exit(1);
+			Graphplan.wrongParametersMessage();
 		}
+	}
+	
+	private static void wrongParametersMessage(){
+		logger.warning("Wrong parameters");
+		logger.info("Usage is java -jar JavaGP " +
+				"\n\t>>> STRIPS Language: " +
+				"\n\t\t" + "java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p examples/strips/ma-prodcell/problem.txt" +
+				"\n\n\t>>> PDDL Language: " +
+				"\n\t\t" + "java -jar javagp.jar -d examples/pddl/blockworld/blockworlds.pddl -p examples/pddl/blockworld/pb1.pddl" +
+				"\n\n\t>>> Planner arguments: " +
+				"\n\t-maxlevels <NUMBER>, " + "\tMax Graph levels."+
+				"\n\t-timeout <NUMBER>, " + "\tPlanning timeout." +
+				"\n\n\t-noHeuristics, " + "\t\tNo Heuristics." +
+				"\n\n\t[Heuristics for actions]" +
+				"\n\t-operatorsLatest, " + "\tSelect actions that appears latest in the Planning Graph." +
+				"\n\tor" +
+				"\n\t-noopsFirst, " + "\t\tSelect Noops first." +
+				"\n\n\t[Heuristic for propositions]" +
+				"\n\t-propositionsSmallest,	Select firstly propositions that leads to the smallest set of resolvers." +
+				"\n\tor" +
+				"\n\t-sortGoals,		Sort goals by proposition that appears earliest in the Planning Graph." +
+				"\n\n\t[JavaGP Default Heuristics]" +
+				"\n\t-operatorsLatest"+
+				"\n\t-propositionsSmallest"
+				);
+		System.exit(1);
 	}
 	
 	public static void setupLogger() {
@@ -249,7 +304,6 @@ public class Graphplan {
 				LogManager.getLogManager().readConfiguration(Graphplan.class.getResourceAsStream("/" + LOGGER_FILE));
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
 			System.err.println("Error setting up logger:" + e);
 		}
 	}
@@ -323,7 +377,7 @@ public class Graphplan {
 				return new PlanResult(false);
 			}
 			if(this.planningGraph.goalsPossible(domainDescription.getGoalState(), this.planningGraph.size()-1)) {
-				//extract solution
+				//Extract solution
 				logger.info("Extracting solution");
 				planFound = this.planningGraph.accept(this.solutionExtraction);
 				if(planFound) {
@@ -382,7 +436,7 @@ public class Graphplan {
 				return new PlanResult(false);
 			}
 			if(planningGraph.goalsPossible(domainDescription.getGoalState(), this.planningGraph.size()-1)) {
-				//extract solution
+				//Extract solution
 				logger.info("Extracting solution");
 				planFound = this.planningGraph.accept(this.solutionExtraction);
 				if(planFound) {

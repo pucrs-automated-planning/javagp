@@ -9,25 +9,22 @@ Run "java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p e
 >>> PDDL Language
 Run "java -jar javagp.jar -d examples/pddl/blockworld/blockworlds.pddl -p examples/pddl/blockworld/pb1.pddl"
 
->>> Max Graph levels
--maxlevels <NUMBER>
+>>> Planner arguments
+-maxlevels <NUMBER>,	Max Graph levels.
+-timeout <NUMBER>,		Planning timeout.
 
->>> Planning timeout
--timeout <NUMBER>
+-noHeuristics,			No Heuristics.
 
->>> No Heuristics
--noHeuristics
-
->>> Heuristics for actions
--operatorsLatest [Select actions that appears latest in the Planning Graph.]
+[Heuristics for actions]
+-operatorsLatest,	Select actions that appears latest in the Planning Graph.
 or
--noopsFirst [Select Noops first.]
+-noopsFirst, 		Select Noops first.
 
->>> Heuristic for propositions
--propositionsSmallest [Select firstly propositions that leads to the smallest set of resolvers.]
+[Heuristic for propositions]
+-propositionsSmallest,	Select firstly propositions that leads to the smallest set of resolvers.
 or
--sortGoals [Sort goals by proposition that appears earliest in the Planning Graph.]
+-sortGoals,				Sort goals by proposition that appears earliest in the Planning Graph.
 
->>> JavaGP Default Heuristics
+[JavaGP Default Heuristics]
 -operatorsLatest
 -propositionsSmallest

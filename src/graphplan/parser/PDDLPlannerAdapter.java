@@ -89,9 +89,13 @@ public class PDDLPlannerAdapter {
 			ErrorManager mgr = pddlParser.getErrorManager();
 			// If the parser produces errors we print it and stop
 			if (mgr.contains(Message.ERROR)) {
-				mgr.print(Message.ALL);
+				System.out.println();
+				for(String m : mgr.getMessages(Message.ALL))
+					System.err.println(m);
 			} else {// else we print the warnings
-				mgr.print(Message.WARNING);
+				System.out.println();
+				for(String m : mgr.getMessages(Message.WARNING))
+					System.err.println(m);
 			}
 			if (pddlDomain != null && pddlProblem != null) {
 				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
@@ -114,11 +118,6 @@ public class PDDLPlannerAdapter {
 	@SuppressWarnings("rawtypes")
 	public DomainDescription getDomainDescriptionFromPddlObject(){
 		if(this.pddlObject != null){
-			System.out.println("JavaGP with PDDL\n");
-			
-			System.out.println("+ DOMAIN: " + this.domain);
-			System.out.println("+ PROBLEM: " + this.problem);
-			
 			System.out.println("\nPDDL Parser\n");
 			
 			boolean negativePreconditions = false;
