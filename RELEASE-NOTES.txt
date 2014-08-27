@@ -6,6 +6,15 @@ revision 265 on SVN
 ---------------------------
 
 Changes:
+- Improved error messages for command line interface and parser errors
+---------------------------
+version 1.0
+Release 5
+
+revision 265 on SVN
+---------------------------
+
+Changes:
 - Fixed problems with types in PDDL
 
 ---------------------------
