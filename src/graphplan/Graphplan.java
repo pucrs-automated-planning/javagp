@@ -232,11 +232,11 @@ public class Graphplan {
 					result = graphplan.plan(domain); 
 				}
 				if(result.isTrue()) {
-					logger.info("Plan found\n");
-					System.out.println(result.toString());
+					logger.info("Plan found:\n");
+					System.out.println(result.toString() + "\n");
 					long t2 = System.currentTimeMillis();
 					long totalTime = (t2-t1); 
-					logger.info("\nPlan length: " + result.getPlanLength());
+					logger.info("Plan length: " + result.getPlanLength());
 					logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
 					if(graphDrawFile != null) {
 						logger.info("Drawing planning graph to "+graphDrawFile);
