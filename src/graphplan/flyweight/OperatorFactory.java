@@ -331,7 +331,7 @@ public class OperatorFactory {
 						
 						for(int i=0; i<n; i++){
 							Set<String> tTypes = this.types.get(pTypes.get(i));
-							if(tTypes != null && !tTypes.contains(((Atom)termInstances[i]).getFunctor())) {
+							if(tTypes == null || !tTypes.contains(((Atom)termInstances[i]).getFunctor())) {
 								addInstance = false;
 								break;
 							}
