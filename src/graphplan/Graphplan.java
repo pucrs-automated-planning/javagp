@@ -233,7 +233,7 @@ public class Graphplan {
 				}
 				if(result.isTrue()) {
 					logger.info("Plan found:\n");
-					System.out.println(result.toString() + "\n");
+					System.out.println(result.toString());
 					long t2 = System.currentTimeMillis();
 					long totalTime = (t2-t1); 
 					logger.info("Plan length: " + result.getPlanLength());
