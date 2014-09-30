@@ -1,6 +1,16 @@
 ---------------------------
 version 1.0
-Release 5
+Release 7
+
+revision 274 on SVN
+---------------------------
+
+Changes:
+- Fixed build script to build project in Homebrew
+
+---------------------------
+version 1.0
+Release 6
 
 revision 271 on SVN
 ---------------------------
