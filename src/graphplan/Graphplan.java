@@ -46,6 +46,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -187,16 +189,15 @@ public class Graphplan {
 			DomainDescription domain = null;
 			try {
 				if(pddl){
-					System.out.println("JavaGP - PDDL\n");
-					System.out.println("+ DOMAIN: " + domainFilename);
-					System.out.println("+ PROBLEM: " + problemFilename);
+					logger.finest("JavaGP - PDDL\n");
+					logger.finest("+ DOMAIN: " + domainFilename);
+					logger.finest("+ PROBLEM: " + problemFilename);
 					PDDLPlannerAdapter parserPDDL = new PDDLPlannerAdapter(domainFilename, problemFilename);
 					domain = parserPDDL.getDomainDescriptionFromPddlObject();
 				} else {
-					System.out.println("JavaGP - STRIPS\n");
-					System.out.println("+ DOMAIN: " + domainFilename);
-					System.out.println("+ PROBLEM: " + problemFilename);
-					System.out.println();
+					logger.finest("JavaGP - STRIPS\n");
+					logger.finest("+ DOMAIN: " + domainFilename);
+					logger.finest("+ PROBLEM: " + problemFilename);
 					PlannerParser parser = new PlannerParser();
 					domain = parser.parseProblem(operators, problem);
 				}
@@ -210,34 +211,38 @@ public class Graphplan {
 			
 			PlanResult result = null;
 			
-			System.out.println("HEURISTICS SELECTED: ");
+			logger.fine("Selected Heuristics: ");
 			if(Graphplan.noopsFirst) 
-				System.out.println("\t+ Heuristic for actions: Select Noops first");
+				logger.fine("\t+ Heuristic for actions: Select Noops first");
 			
 			if(Graphplan.operatorsLatest) 
-				System.out.println("\t+ Heuristic for actions: Select actions that appears latest in the Planning Graph.");
+				logger.fine("\t+ Heuristic for actions: Select actions that appears latest in the Planning Graph.");
 			
 			if(Graphplan.propositionsSmallest) 
-				System.out.println("\t+ Heuristic for subgoals: Select firstly propositions that leads to the smallest set of resolvers.");
+				logger.fine("\t+ Heuristic for subgoals: Select firstly propositions that leads to the smallest set of resolvers.");
 			
 			if(Graphplan.sortGoals) 
-				System.out.println("\t+ Heuristic for subgoals: Sort goals by proposition that appears earliest in the Planning Graph.");
+				logger.fine("\t+ Heuristic for subgoals: Sort goals by proposition that appears earliest in the Planning Graph.");
 			
-			System.out.println();
 			
 			try {
+				Runtime runtime = Runtime.getRuntime();
+				NumberFormat fm = DecimalFormat.getInstance();
+				fm.setMaximumFractionDigits(2);
+				
+				logger.info("Running planner, maximum memory: "+fm.format(runtime.maxMemory()/Math.pow(1024, 2))+"MB");
 				if(timeout > 0) {
 					result = graphplan.plan(domain, timeout);
 				} else {
 					result = graphplan.plan(domain); 
 				}
+				long t2 = System.currentTimeMillis();
+				long totalTime = (t2-t1);
+				logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
+				logger.info("Total memory used: "+fm.format(runtime.totalMemory()/Math.pow(1024, 2))+"MB");
 				if(result.isTrue()) {
-					logger.info("Plan found:\n");
-					System.out.println(result.toString());
-					long t2 = System.currentTimeMillis();
-					long totalTime = (t2-t1); 
+					logger.info("Plan found:\n"+result.toString()); 
 					logger.info("Plan length: " + result.getPlanLength());
-					logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
 					if(graphDrawFile != null) {
 						logger.info("Drawing planning graph to "+graphDrawFile);
 						DotGraphDrawVisitor drawVisitor = new DotGraphDrawVisitor();
@@ -263,6 +268,14 @@ public class Graphplan {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				System.exit(1);
+			} catch (OutOfMemoryError e) {
+				e.printStackTrace();
+				Runtime runtime = Runtime.getRuntime();
+				logger.severe("Memory use exceeded maximum allocated for VM");
+				long t2 = System.currentTimeMillis();
+				long totalTime = (t2-t1);
+				logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s ) before error");
+				logger.severe("Current maximum memory: "+runtime.maxMemory()/1024+"kb");
 			}
 			
 		} else {
@@ -272,7 +285,7 @@ public class Graphplan {
 	
 	private static void wrongParametersMessage(){
 		logger.warning("Wrong parameters");
-		logger.info("Usage is java -jar JavaGP " +
+		logger.info("Usage: \'java -jar JavaGP \'" +
 				"\n\t>>> STRIPS Language: " +
 				"\n\t\t" + "java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p examples/strips/ma-prodcell/problem.txt" +
 				"\n\n\t>>> PDDL Language: " +
@@ -292,6 +305,7 @@ public class Graphplan {
 				"\n\n\t[JavaGP Default Heuristics]" +
 				"\n\t-operatorsLatest"+
 				"\n\t-propositionsSmallest"
+				+ "\n\n -v write verbose output"
 				);
 		System.exit(1);
 	}

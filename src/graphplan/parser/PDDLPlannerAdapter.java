@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import pddl4j.ErrorManager;
 import pddl4j.ErrorManager.Message;
@@ -41,6 +42,8 @@ import pddl4j.exp.term.Constant;
 import pddl4j.exp.term.Variable;
 
 public class PDDLPlannerAdapter {
+	
+	private static final Logger logger = Logger.getLogger(PDDLPlannerAdapter.class.getName());
 	
 	private PDDLObject pddlObject;
 	
@@ -89,13 +92,11 @@ public class PDDLPlannerAdapter {
 			ErrorManager mgr = pddlParser.getErrorManager();
 			// If the parser produces errors we print it and stop
 			if (mgr.contains(Message.ERROR)) {
-				System.out.println();
 				for(String m : mgr.getMessages(Message.ALL))
-					System.err.println(m);
+					logger.severe(m);
 			} else {// else we print the warnings
-				System.out.println();
 				for(String m : mgr.getMessages(Message.WARNING))
-					System.err.println(m);
+					logger.severe(m);
 			}
 			if (pddlDomain != null && pddlProblem != null) {
 				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
@@ -118,7 +119,7 @@ public class PDDLPlannerAdapter {
 	@SuppressWarnings("rawtypes")
 	public DomainDescription getDomainDescriptionFromPddlObject(){
 		if(this.pddlObject != null){
-			System.out.println("\nPDDL Parser\n");
+			logger.finest("\nPDDL Parser\n");
 			
 			boolean negativePreconditions = false;
 			
@@ -127,7 +128,7 @@ public class PDDLPlannerAdapter {
 				RequireKey requireKey = requirements.next();
 				if(requireKey == RequireKey.NEGATIVE_PRECONDITIONS){
 					negativePreconditions = true;
-					System.out.println("--> The Problem has Negative Preconditions\n");
+					logger.severe("--> The Problem has Negative Preconditions\n");
 				}
 			}
 			
@@ -137,11 +138,11 @@ public class PDDLPlannerAdapter {
 			List<Proposition> initialState = new ArrayList<Proposition>();
 			List<Proposition> goalState    = new ArrayList<Proposition>();
 			
-			System.out.println("--> Actions\n");
+			logger.finest("--> Actions\n");
 			
 			while(actionsIterator.hasNext()){
 				ActionDef actionDef = actionsIterator.next();
-				System.out.println(actionDef);
+				logger.finest(actionDef.toString());
 				
 				Exp precontidion = (Exp) ((Action)actionDef).getPrecondition();
 				Exp effect = (Exp) ((Action)actionDef).getEffect();
@@ -175,10 +176,10 @@ public class PDDLPlannerAdapter {
 				operators.add(operatorImpl);
 			}
 			
-			System.out.println("\n--> Init\n");
+			logger.finest("\n--> Init\n");
 			
 			for(InitEl init: this.pddlObject.getInit()){
-				System.out.println(init);
+				logger.finest(init.toString());
 				boolean negated = false;
 				Literal p = null;
 
@@ -203,12 +204,12 @@ public class PDDLPlannerAdapter {
 				initialState.add(proposition);
 			}
 			
-			System.out.println("\n--> Goal\n");
-			System.out.println(this.pddlObject.getGoal());
+			logger.finest("\n--> Goal\n");
+			logger.finest(this.pddlObject.getGoal().toString());
 
 			goalState.addAll(this.getPropositionFromProblemExp(this.pddlObject.getGoal()));
 
-			System.out.println("\nPDDL Parser\n");
+			logger.finest("\nPDDL Parser\n");
 			DomainDescription domainDescription = new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes, negativePreconditions);
 			return domainDescription;
 		}

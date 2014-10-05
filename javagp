@@ -3,4 +3,4 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #echo ${DIR}
 echo "${@:1}"
 CLASSPATH=${DIR}/javagp.jar:${DIR}/lib/jason.jar:${DIR}/lib/pddl4j.jar
-java -classpath "${CLASSPATH}" -jar "${DIR}/javagp.jar" "${@:1}"
+java -classpath "${CLASSPATH}" -Xmx1g -jar "${DIR}/javagp.jar" "${@:1}"

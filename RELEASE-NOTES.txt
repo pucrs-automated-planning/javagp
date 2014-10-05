@@ -2,6 +2,15 @@
 version 1.0
 Release 7
 
+revision 275 on SVN
+---------------------------
+Changes:
+- Tidied up messages during runtime and error reporting for failed plans
+
+---------------------------
+version 1.0
+Release 7
+
 revision 274 on SVN
 ---------------------------
 
