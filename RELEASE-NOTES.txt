@@ -1,8 +1,8 @@
 ---------------------------
 version 1.0
-Release 7
+Release 8
 
-revision 275 on SVN
+revision 276 on SVN
 ---------------------------
 Changes:
 - Tidied up messages during runtime and error reporting for failed plans
