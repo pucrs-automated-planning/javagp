@@ -1,5 +1,16 @@
 ---------------------------
 version 1.0
+Release 9
+
+revision 278 on SVN
+---------------------------
+Changes:
+- Fixed bug whereby constants did not work for the parser
+- Removed garbage from sloppy testing implementation
+- Cleaned up System.out messages that were used instead of the proper logger
+
+---------------------------
+version 1.0
 Release 8
 
 revision 276 on SVN

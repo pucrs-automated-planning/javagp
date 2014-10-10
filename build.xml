@@ -114,6 +114,7 @@
 				<include name="README" />
 				<include name="examples/**/*" />
 				<exclude name="examples/pddl/robby/*" />
+				<exclude name="examples/pddl/constants/*" />
 				<include name="doc/getting-started.pdf" />
 				<include name="lib/jason.jar" />
 				<include name="lib/LGPL.txt" />
