@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class PlanningGraphClosedWorldAssumption extends PlanningGraph {
+	private static final Logger logger = Logger.getLogger(PlanningGraph.class.getName());
 
 	private static final long serialVersionUID = 5132706449924120949L;
 	
@@ -36,7 +38,7 @@ public class PlanningGraphClosedWorldAssumption extends PlanningGraph {
 		ActionLevel actionLevel = this.actionLevelGeneratorCwa.createNextActionLevel(lastLevel, initialState);
 		
 		if(initialStateSize != initialState.size()) {
-			System.out.println("-> Initial State was changed: Maintenance Actions and Mutexes from Level 0 until current Level");
+			logger.info("-> Initial State was changed: Maintenance Actions and Mutexes from Level 0 until current Level");
 			this.graphLevels = new ArrayList<GraphLevel>();
 			this.graphLevels.add(initialState);
 			this.closedWorldAssumption = true;

@@ -105,7 +105,7 @@ public class OperatorFactory {
 	public void addOperatorTemplate(Operator operator) throws OperatorFactoryException {
 		//We check if the operator has no arguments, or if it is not ground
 		//Operators with arguments should not be ground
-		if(operator.getTerms() == null || !operator.isGround()) {
+		if(operator.getTerms() == null || operator.getTerms().size() == 0 || !operator.isGround()) {
 			//TODO this cast to OperatorImpl has to be reviewed, since it violates the Bridge pattern 
 			this.operatorTemplates.put(operator.getOperatorIndicator(), (OperatorImpl)operator);
 		} else {

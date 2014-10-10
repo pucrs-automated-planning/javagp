@@ -289,7 +289,7 @@ public class Graphplan {
 				"\n\t>>> STRIPS Language: " +
 				"\n\t\t" + "java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p examples/strips/ma-prodcell/problem.txt" +
 				"\n\n\t>>> PDDL Language: " +
-				"\n\t\t" + "java -jar javagp.jar -d examples/pddl/blockworld/blockworlds.pddl -p examples/pddl/blockworld/pb1.pddl" +
+				"\n\t\t" + "java -jar javagp.jar -d examples/pddl/blocksworld/blocksworld.pddl -p examples/pddl/blocksworld/pb1.pddl" +
 				"\n\n\t>>> Planner arguments: " +
 				"\n\t-maxlevels <NUMBER>, " + "\tMax Graph levels."+
 				"\n\t-timeout <NUMBER>, " + "\tPlanning timeout." +
@@ -358,19 +358,19 @@ public class Graphplan {
 //			}
 //		}
 
-		System.out.println("OPTIMIZATION: JavaGP using Static Mutexes Table");
-		System.out.println("OPTIMIZATION: JavaGP using Memoization");
+		logger.fine("OPTIMIZATION: JavaGP using Static Mutexes Table");
+		logger.fine("OPTIMIZATION: JavaGP using Memoization");
 		
 		if(this.pddl) {
-			System.out.println("OPTIMIZATION: JavaGP using Types");
+			logger.fine("OPTIMIZATION: JavaGP using Types");
 			//If domain has negative preconditions, the planner will use the closed world assumption 
 			if(domainDescription.isNegativePreconditions()) {
-				System.out.println("OPTIMIZATION: JavaGP using Closed World Assumption (Lazily)");
+				logger.fine("OPTIMIZATION: JavaGP using Closed World Assumption (Lazily)");
 				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 			} else this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 		} else this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
 		
-		System.out.println();
+//		System.out.println();
 		
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		

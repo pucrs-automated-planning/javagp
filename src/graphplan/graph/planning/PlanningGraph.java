@@ -73,6 +73,8 @@ public class PlanningGraph implements GraphElement {
 		this.propositionLevelGenerator = levelGenerator;
 		//And the mutex generator
 		this.mutexGenerator = new MutexGeneratorImpl();
+		this.propositions = new TreeSet<Proposition>();
+		this.operators = new TreeSet<Operator>();
 	}
 
 	public PlanningGraph(PropositionLevel initialState) {
@@ -83,9 +85,6 @@ public class PlanningGraph implements GraphElement {
 	public PlanningGraph(PropositionLevel initialState, StaticMutexesTable staticsMutexesTable) {
 		this();
 		this.mutexGenerator = new MutexGeneratorImpl(staticsMutexesTable);
-		
-		this.propositions = new TreeSet<Proposition>();
-		this.operators = new TreeSet<Operator>();
 		this.addGraphLevel(initialState);
 		this.setIndexForPropositions(initialState);
 	}

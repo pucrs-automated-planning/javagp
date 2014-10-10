@@ -24,6 +24,9 @@
 package graphplan.graph.draw;
 
 import static org.junit.Assert.fail;
+
+import java.util.logging.Logger;
+
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.OperatorFactory;
@@ -37,6 +40,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class GraphDrawVisitorTest {
+	private static final Logger logger = Logger.getLogger(GraphDrawVisitorTest.class.getName());
+	
 	private PlanningGraph planningGraph = null;
 
 	private PropositionLevel initialState = null;
@@ -86,7 +91,7 @@ public class GraphDrawVisitorTest {
 		}
 		
 		this.planningGraph.accept(drawVisitor);
-		System.out.println(drawVisitor);
+		logger.info(drawVisitor.toString());
 	}
 
 }

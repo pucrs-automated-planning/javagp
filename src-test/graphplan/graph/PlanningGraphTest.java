@@ -23,6 +23,8 @@
  */
 package graphplan.graph;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -129,7 +131,8 @@ public class PlanningGraphTest {
 		try {
 			for (Iterator<GraphElement> i = planningGraph.iterator();i.hasNext();) {
 				GraphElement element = i.next();
-				System.out.println(element);
+//				System.out.println(element);
+				assertNotNull(element);
 			}
 			
 		} catch (Exception e) {
@@ -141,9 +144,7 @@ public class PlanningGraphTest {
 	@Test
 	public void testGetGraphLevel() {
 		GraphLevel level = planningGraph.getGraphLevel(0);
-		if(level == null) {
-			fail("Graph level at 0 should not be null");
-		}
+		assertNotNull("Graph level at 0 should not be null",level);
 	}
 
 	@Test
@@ -159,9 +160,7 @@ public class PlanningGraphTest {
 		}
 		
 		actionLevel.addAction(operator);
-		if(!planningGraph.addGraphLevel(actionLevel)) {
-			fail("Failed to add action level "+actionLevel);
-		}
+		assertTrue(planningGraph.addGraphLevel(actionLevel));
 		
 		TextDrawVisitor visitor = new TextDrawVisitor();
 		planningGraph.accept(visitor);
@@ -172,9 +171,7 @@ public class PlanningGraphTest {
 		for (Proposition proposition : initialPropositions) {
 			level.addProposition(proposition);
 		}
-		if(!planningGraph.addGraphLevel(level)){
-			fail("Failed to add proposition level "+level);
-		}
+		assertTrue("Failed to add proposition level "+level,planningGraph.addGraphLevel(level));
 		
 
 		visitor = new TextDrawVisitor();
@@ -184,16 +181,13 @@ public class PlanningGraphTest {
 	
 	@Test
 	public void testGoalsPossible() {
-		if(planningGraph.goalsPossible(initialPropositions, 0)) {
+		assertTrue("Same goals not possible",planningGraph.goalsPossible(initialPropositions, 0));
 			logger.info("*************************************************");
 			logger.info("Goals: "+initialPropositions+" possible in graph");
 			TextDrawVisitor visitor = new TextDrawVisitor();
 			planningGraph.accept(visitor);
 			logger.info(visitor.toString());
 			logger.info("*************************************************");
-		} else {
-			fail("Same goals not possible");
-		}
 	}
 
 	@Test

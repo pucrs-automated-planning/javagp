@@ -3,11 +3,11 @@ start (
 	onTable(b),
 	clear(a),
 	on(c, d),
-	onTable(c),
-	clear(d),
+	onTable(d),
+	clear(c),
 	on(e, f),
-	onTable(e),
-	clear(f)
+	onTable(f),
+	clear(e)
 )
 
 goal(

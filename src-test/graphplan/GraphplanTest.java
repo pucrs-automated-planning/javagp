@@ -23,7 +23,9 @@
  */
 package graphplan;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
@@ -33,12 +35,14 @@ import graphplan.flyweight.PropositionFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class GraphplanTest {
+	private static final Logger logger = Logger.getLogger(GraphplanTest.class.getName());
 	
 	Graphplan graphplan = null;
 	List<Operator> operators;
@@ -99,11 +103,12 @@ public class GraphplanTest {
 	public void testBlocks() {
 		int i=1;
 		try {
-			for(i=1;i<=7;i++)
+			for(i=1;i<=7;i++) {
+				logger.info("Testing Blocksworld STRIPS problem"+i);
 				Graphplan.main(new String[] {"-nopddl", "-d","examples/strips/blocksworld/domain.txt","-p","examples/strips/blocksworld/problem" + i + ".txt"});
+			}
 		} catch (Exception e) {
-			System.out.println(i);
-			fail(e.getMessage());
+			assertTrue(e.getMessage(),false);
 		}
 	}
 	
@@ -112,7 +117,7 @@ public class GraphplanTest {
 		try {
 			Graphplan.main(new String[] {"-nopddl", "-d","examples/strips/dinner/domain.txt","-p","examples/strips/dinner/problem.txt"});
 		} catch (Exception e) {
-			fail(e.getMessage());
+			assertTrue(e.getMessage(),false);
 		}
 	}
 	
@@ -125,30 +130,19 @@ public class GraphplanTest {
 			graphplan.setMaxLevels(6);
 			planResult = graphplan.plan(domainDescriptions[0]);
 		} catch (Exception e) {
-			fail(e.getMessage());
+			assertTrue(e.getMessage(),false);
 		}
-		
-		if(planResult.isTrue()) {
-			System.out.println("Plan succeeded");
-			System.out.println(planResult);
-		} else {
-			fail("Plan failed");
-		}
+		assertTrue(planResult.isTrue());
 		
 		//Another domain
 		try {
 			graphplan.setMaxLevels(30);
 			planResult = graphplan.plan(domainDescriptions[1]);
 		} catch (Exception e) {
-			fail(e.getMessage());
+			assertTrue(e.getMessage(),false);
 		}
 		
-		if(planResult.isTrue()) {
-			System.out.println("Plan succeeded");
-			System.out.println(planResult);
-		} else {
-			fail("Plan failed");
-		}
+		assertTrue(planResult.isTrue());
 	}
 
 	public void testGetPlanPreconditions() {
@@ -185,14 +179,10 @@ public class GraphplanTest {
 		signatures = new String[] {"over(b1,pu1)","empty(pu2)","empty(pu3)","empty(depositBelt)"};
 		propositions = PropositionFactory.getInstance().getPropositions(signatures);
 		
-		if(propositions.length != planPreconds.size()) {
-			fail("Preconditions are not minimal");
-		}
+		assertEquals(planPreconds.size(),propositions.length);//"Preconditions are not minimal"
 		
 		for (int i = 0; i < propositions.length; i++) {
-			if(!planPreconds.contains(propositions[i])) {
-				fail("Missing precondition "+propositions[i]);
-			}
+			assertTrue("Missing precondition "+propositions[i],planPreconds.contains(propositions[i]));
 		}
 		
 		//Third test
@@ -214,14 +204,10 @@ public class GraphplanTest {
 								"empty(depositBelt)"};
 		propositions = PropositionFactory.getInstance().getPropositions(signatures);
 		
-		if(propositions.length != planPreconds.size()) {
-			fail("Preconditions are not minimal");
-		}
+		assertEquals(planPreconds.size(),propositions.length);//"Preconditions are not minimal"
 		
 		for (int i = 0; i < propositions.length; i++) {
-			if(!planPreconds.contains(propositions[i])) {
-				fail("Missing precondition "+propositions[i]);
-			}
+			assertTrue("Missing precondition "+propositions[i],planPreconds.contains(propositions[i]));
 		}
 		
 		//Fourth test
@@ -245,14 +231,10 @@ public class GraphplanTest {
 								"empty(depositBelt)"};
 		propositions = PropositionFactory.getInstance().getPropositions(signatures);
 		
-		if(propositions.length != planPreconds.size()) {
-			fail("Preconditions are not minimal");
-		}
+		assertEquals(planPreconds.size(),propositions.length);//"Preconditions are not minimal"
 		
 		for (int i = 0; i < propositions.length; i++) {
-			if(!planPreconds.contains(propositions[i])) {
-				fail("Missing precondition "+propositions[i]);
-			}
+			assertTrue("Missing precondition "+propositions[i],planPreconds.contains(propositions[i]));
 		}
 	}
 

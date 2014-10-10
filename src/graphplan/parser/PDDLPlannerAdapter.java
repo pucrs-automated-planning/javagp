@@ -246,11 +246,11 @@ public class PDDLPlannerAdapter {
 	            AtomicFormula p = (AtomicFormula) exp;
 				PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, p.getPredicate()));
 				
-				Iterator variables = p.iterator();
+				Iterator pddlTerms = p.iterator();
 				
 				List<Term> terms = new ArrayList<Term>();
-				while(variables.hasNext()){
-					Variable var = (Variable) variables.next();
+				while(pddlTerms.hasNext()){
+					pddl4j.exp.term.Term var = (pddl4j.exp.term.Term) pddlTerms.next();
 					VarTerm term = new VarTerm(var.getImage().replace("?", "").toUpperCase());
 					terms.add(term);
 					
