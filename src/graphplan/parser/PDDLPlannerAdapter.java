@@ -78,12 +78,12 @@ public class PDDLPlannerAdapter {
         options.put("source", Source.V3_0);
         options.put(RequireKey.STRIPS, true);
         options.put(RequireKey.TYPING, true);
-        options.put(RequireKey.EQUALITY, false);
+//        options.put(RequireKey.EQUALITY, false);
         options.put(RequireKey.NEGATIVE_PRECONDITIONS, true);
-        options.put(RequireKey.DISJUNCTIVE_PRECONDITIONS, false);
-        options.put(RequireKey.EXISTENTIAL_PRECONDITIONS, false);
-        options.put(RequireKey.UNIVERSAL_PRECONDITIONS, false);
-        options.put(RequireKey.CONDITIONAL_EFFECTS, false);
+//        options.put(RequireKey.DISJUNCTIVE_PRECONDITIONS, false);
+//        options.put(RequireKey.EXISTENTIAL_PRECONDITIONS, false);
+//        options.put(RequireKey.UNIVERSAL_PRECONDITIONS, false);
+//        options.put(RequireKey.CONDITIONAL_EFFECTS, false);
 
 		try {
 			Parser pddlParser = new Parser(options);
