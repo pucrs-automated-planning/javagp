@@ -88,22 +88,26 @@ public class PDDLPlannerAdapter {
 		try {
 			Parser pddlParser = new Parser(options);
 			PDDLObject pddlDomain = pddlParser.parse(new File(domain));
+			boolean domainParseError = pddlParser.getErrorManager().contains(Message.ERROR);
 			PDDLObject pddlProblem = pddlParser.parse(new File(problem));
+			boolean problemParseError = pddlParser.getErrorManager().contains(Message.ERROR);
 			ErrorManager mgr = pddlParser.getErrorManager();
 			// If the parser produces errors we print it and stop
 			if (mgr.contains(Message.ERROR)) {
-				for(String m : mgr.getMessages(Message.ALL))
+				for(String m : mgr.getMessages(Message.ALL)) {
 					logger.severe(m);
+				}
 			} else {// else we print the warnings
-				for(String m : mgr.getMessages(Message.WARNING))
+				for(String m : mgr.getMessages(Message.WARNING)) {
 					logger.severe(m);
-			}
-			if (pddlDomain != null && pddlProblem != null) {
-				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
-			} else if (pddlDomain == null ){
+				}
+			} 
+			if (pddlDomain == null || domainParseError){
 				throw new pddl4j.ParserException("Parse error in PDDL Domain");
-			} else if (pddlProblem == null){
+			} else if (pddlProblem == null || problemParseError){
 				throw new pddl4j.ParserException("Parse error in PDDL Problem");
+			} else if (pddlDomain != null && pddlProblem != null) {
+				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

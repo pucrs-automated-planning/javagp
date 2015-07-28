@@ -1,5 +1,13 @@
 ---------------------------
 version 1.0
+Release 11
+
+revision 279 on SVN
+---------------------------
+Changes:
+- Fixed PDDJ4J parser handling to generate an error when a :requires key is unsupported
+---------------------------
+version 1.0
 Release 10
 
 revision 279 on SVN
