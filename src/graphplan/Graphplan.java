@@ -306,6 +306,7 @@ public class Graphplan {
 				"\n\t-operatorsLatest"+
 				"\n\t-propositionsSmallest"
 				+ "\n\n -v write verbose output"
+				+ "\n\n -draw <filename> draws the planning graph (for debugging)"
 				);
 		System.exit(1);
 	}

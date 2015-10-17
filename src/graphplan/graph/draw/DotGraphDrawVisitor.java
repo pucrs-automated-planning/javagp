@@ -33,6 +33,7 @@ public class DotGraphDrawVisitor implements GraphElementVisitor {
 	
 	protected void initialize() {
 		writer.println("digraph g{");
+//		writer.println("orientation = landscape;");
 		
 	}
 
@@ -62,6 +63,7 @@ public class DotGraphDrawVisitor implements GraphElementVisitor {
 		writer.println("subgraph cluster_action"+actionLevel.getIndex()+" {");
 		String comment = "Action Level "+actionLevel.getIndex();
 		writer.println("label=\""+comment+"\";");
+		writer.println("rankdir=TB;");
 		for (Iterator<Operator> iter = actionLevel.getActions(); iter.hasNext();) {
 			Operator operator = iter.next();
 			
@@ -69,10 +71,30 @@ public class DotGraphDrawVisitor implements GraphElementVisitor {
 			String id = actionLevel.getIndex()+label;
 			this.createNode(id, label,"box");
 			
+//			for(Iterator<Proposition> iterPre = operator.getPreconds().iterator(); iterPre.hasNext(); ){
+//				Proposition prop = iterPre.next();
+//				String target = (actionLevel.getIndex()-1)+prop.getSignature();
+//				createEdge(target,id);
+//			}
+//			
+//			for(Iterator<Proposition> iterEff = operator.getEffects().iterator(); iterEff.hasNext(); ){
+//				Proposition prop = iterEff.next();
+//				String target = (actionLevel.getIndex()+1)+prop.getSignature();
+//				createEdge(id, target);
+//			}
+		}
+		writer.println("}");
+		for (Iterator<Operator> iter = actionLevel.getActions(); iter.hasNext();) {
+			Operator operator = iter.next();
+			
+			String label = operator.getSignature();
+			String id = actionLevel.getIndex()+label;
+//			this.createNode(id, label,"box");
+			
 			for(Iterator<Proposition> iterPre = operator.getPreconds().iterator(); iterPre.hasNext(); ){
 				Proposition prop = iterPre.next();
 				String target = (actionLevel.getIndex()-1)+prop.getSignature();
-				createEdge(id, target);
+				createEdge(target,id);
 			}
 			
 			for(Iterator<Proposition> iterEff = operator.getEffects().iterator(); iterEff.hasNext(); ){
@@ -81,7 +103,6 @@ public class DotGraphDrawVisitor implements GraphElementVisitor {
 				createEdge(id, target);
 			}
 		}
-		writer.println("}");
 		return true;
 	}
 	
@@ -90,7 +111,8 @@ public class DotGraphDrawVisitor implements GraphElementVisitor {
 		writer.println("subgraph cluster_proposition"+propositionLevel.getIndex()+" {");
 		String comment = "Proposition Level "+propositionLevel.getIndex();
 		writer.println("label=\""+comment+"\";");
-		writer.println("a"+propositionLevel.getIndex()+" -> b"+propositionLevel.getIndex());
+		writer.println("rankdir=TB;");
+//		writer.println("a"+propositionLevel.getIndex()+" -> b"+propositionLevel.getIndex());
 		
 		for (Iterator<Proposition> iter = propositionLevel.getPropositions(); iter.hasNext();) {
 			Proposition proposition = iter.next();
