@@ -1,0 +1,7 @@
+start(
+	at(a)
+)
+
+goal(
+	at(b)
+)

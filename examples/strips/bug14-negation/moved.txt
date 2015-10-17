@@ -1,0 +1,3 @@
+operator move(From, To)
+pre: at(From)
+post: at(To), ~at(From)
