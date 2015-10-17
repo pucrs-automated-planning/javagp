@@ -22,7 +22,7 @@
 
 
 	<property name="version" value="1.0" />
-	<property name="release" value="11" />
+	<property name="release" value="12" />
 	<property name="dist.properties" value="${basedir}/bin/dist.properties" />
 	<property name="dist.file" value="${basedir}/javagp-src-${version}.${release}.zip" />
 	<property name="javagp.jar" value="${basedir}/javagp.jar" />

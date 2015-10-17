@@ -1,5 +1,13 @@
 ---------------------------
 version 1.0
+Release 12
+
+revision 283 on SVN
+---------------------------
+Changes:
+- Fixed problem in graph generation algorithm (https://sourceforge.net/p/emplan/bugs/11/)
+---------------------------
+version 1.0
 Release 11
 
 revision 281 on SVN
