@@ -76,6 +76,7 @@ public class PDDLPlannerAdapter {
 		
         Properties options = new Properties();
         options.put("source", Source.V3_0);
+        options.put("debug", true);
         options.put(RequireKey.STRIPS, true);
         options.put(RequireKey.TYPING, true);
 //        options.put(RequireKey.EQUALITY, false);

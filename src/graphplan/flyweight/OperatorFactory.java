@@ -274,6 +274,7 @@ public class OperatorFactory {
 		return templates;
 	}
 	
+	@Deprecated
 	public Set<Operator> getAllPossibleInstantiations(List<Operator> operators, List<Proposition> preconds) throws OperatorFactoryException {
 		return this.getAllPossibleInstantiations(operators, preconds, null);
 	}
@@ -350,6 +351,7 @@ public class OperatorFactory {
 					if(unifier.unifies(copy, struct)) {
 						copy.apply(unifier);
 					} else {
+						///TODO Check this messy code
 						System.err.println("Big mess!");
 					}
 					

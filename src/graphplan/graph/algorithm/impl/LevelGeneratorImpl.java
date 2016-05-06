@@ -107,7 +107,8 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		//Piece of crap algorithm used before has been replaced by this call
 		
 		try {
-			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
+//			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
+			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds,propositionLevel));
 		} catch (OperatorFactoryException e) {
 			throw new PlanningGraphException(e.getMessage(),propositionLevel.getIndex()+1);
 		}
