@@ -1,0 +1,4 @@
+meneguzzi = Felipe Meneguzzi <felipe.meneguzzi@gmail.com>
+dregoth = Felipe Meneguzzi <felipe.meneguzzi@gmail.com>
+ramonpereira = Ramon Fraga Pereira <ramonfpereira@gmail.com>
+ffg91 = Fernando Fuentes Giroleti <fernando.giroleti@gmail.com>
