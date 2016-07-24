@@ -40,12 +40,9 @@ import graphplan.graph.planning.cwa.PlanningGraphClosedWorldAssumption;
 import graphplan.parser.PDDLPlannerAdapter;
 import graphplan.parser.ParseException;
 import graphplan.parser.PlannerParser;
+import pddl4j.ParserException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -54,8 +51,6 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import pddl4j.ParserException;
 
 /**
  * Main class and accessor for the Graphplan algorithm
@@ -77,6 +72,12 @@ public class Graphplan {
 	public static boolean sortGoals = false;
 	
 	public static void main(String[] args) {
+		getPlanResult(args);
+	}
+
+	public static PlanResult getPlanResult(String[] args) {
+		PlanResult result = null;
+
 		setupLogger();
 		Graphplan graphplan = new Graphplan();
 		InputStream operators = null;
@@ -209,8 +210,6 @@ public class Graphplan {
 				System.exit(1);
 			}
 			
-			PlanResult result = null;
-			
 			logger.fine("Selected Heuristics: ");
 			if(Graphplan.noopsFirst) 
 				logger.fine("\t+ Heuristic for actions: Select Noops first");
@@ -281,6 +280,7 @@ public class Graphplan {
 		} else {
 			Graphplan.wrongParametersMessage();
 		}
+		return result;
 	}
 	
 	private static void wrongParametersMessage(){
