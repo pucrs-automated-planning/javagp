@@ -1,4 +1,4 @@
-# javagp
+# javagp [![Build Status](https://travis-ci.org/guilhermekrz/javagp.svg?branch=master)](https://travis-ci.org/guilhermekrz/javagp)
 Java Implementation of Graphplan
 
 In order to use JavaGP you need to have Java (http://java.sun.com) Ant (http://ant.apache.org/) configured in your system, to run the build script build.xml. Then, in order to run the planner you need to follow these steps:
