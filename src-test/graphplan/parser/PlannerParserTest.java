@@ -23,18 +23,18 @@
  */
 package graphplan.parser;
 
-import static org.junit.Assert.*;
-
 import graphplan.domain.DomainDescription;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.fail;
 
+// TODO: implement missing tests
 public class PlannerParserTest {
 	
 	static final String OPERATORS_FILE = "src-test/graphplan/parser/operators.txt";
@@ -95,32 +95,32 @@ public class PlannerParserTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testOperators() {
 		fail("Not yet implemented"); // TODO
 	}
 
-	@Test
+//	@Test
 	public void testOperator() {
 		fail("Not yet implemented"); // TODO
 	}
 
-	@Test
+//	@Test
 	public void testStart() {
 		fail("Not yet implemented"); // TODO
 	}
 
-	@Test
+//	@Test
 	public void testGoal() {
 		fail("Not yet implemented"); // TODO
 	}
 
-	@Test
+//	@Test
 	public void testPropositions() {
 		fail("Not yet implemented"); // TODO
 	}
 
-	@Test
+//	@Test
 	public void testProposition() {
 		fail("Not yet implemented"); // TODO
 	}

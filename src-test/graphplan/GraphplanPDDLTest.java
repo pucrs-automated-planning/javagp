@@ -1,15 +1,16 @@
 package graphplan;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.logging.Logger;
 
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
+// TODO: implement missing tests
 public class GraphplanPDDLTest {
 
 	private static final Logger logger = Logger.getLogger(GraphplanPDDLTest.class.getName());
-			
+
 	@Test
 	public void testRubiksPDDL() {
 		logger.info("Testing Rubiks problem in PDDL");
@@ -31,7 +32,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 	@Test
 	public void testRobbyPDDL() {
 		logger.info("Testing Robby problem in PDDL");
@@ -42,7 +43,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 	@Test
 	public void testBlocksWorldPDDL() {
 		try {
@@ -53,7 +54,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 	@Test
 	public void testGripperPDDL(){
 		try {
@@ -64,7 +65,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 	@Test
 	public void testHanoiPDDL(){
 		try {
@@ -75,8 +76,8 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
-	@Test
+
+//	@Test
 	public void testDinnerPDDL() {
 		try {
 			logger.info("Testing Dinner Date problem in PDDL");
@@ -85,7 +86,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 	@Test
 	public void testDockWorkerRobotsPDDL() {
 		try {
@@ -96,7 +97,7 @@ public class GraphplanPDDLTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testAbstractPDDL(){
 		try {
 			logger.info("Testing Abstract problem in PDDL");
@@ -105,7 +106,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 //	@Test
 	public void testBlocksWorldPDDLAll(){
 		try {
@@ -116,7 +117,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 //	@Test
 	public void testDockWorkerRobotsPDDLAll() {
 		try {
@@ -127,7 +128,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 //	@Test
 	public void testDinnerPDDLAll() {
 		try {
@@ -138,7 +139,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 //	@Test
 	public void testGripperPDDLAll(){
 		try {
@@ -149,7 +150,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 //	@Test
 	public void testHanoiPDDLAll(){
 		try {
@@ -160,7 +161,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 //	@Test
 	public void testLogisticsPDDLAll(){
 		try {
@@ -171,7 +172,7 @@ public class GraphplanPDDLTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 //	@Test
 	public void testRubiksPDDLAll() {
 		try {
@@ -183,7 +184,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 	@Test
 	public void testConstantsPDDL() {
 		try {
@@ -194,7 +195,7 @@ public class GraphplanPDDLTest {
 			assertTrue(e.getMessage(),false);
 		}
 	}
-	
+
 //	@Test
 	public void testPDDLAll(){
 		logger.info("Testing All problems in PDDL, this may take a while");
