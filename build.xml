@@ -17,6 +17,7 @@
 	<property name="pddl4j.jar" value="${basedir}/lib/pddl4j.jar"/>
 	<property name="junit.jar" value="${basedir}/lib/junit-4.12.jar"/>
 	<property name="hamcrest-core.jar" value="${basedir}/lib/hamcrest-core-1.3.jar"/>
+	<property name="annotations-java8.jar" value="${basedir}/lib/annotations-java8.jar"/>
 	<property name="build.dir" value="${basedir}/bin" />
 	<property name="src.dir" value="${basedir}/src"/>
 	<property name="doc.api.dir" value="${basedir}/doc/api"/>
@@ -34,6 +35,7 @@
 	    <pathelement location="${jason.jar}"/>
 		<pathelement location="${javacc.jar}"/>
 		<pathelement location="${pddl4j.jar}"/>
+		<pathelement location="${annotations-java8.jar}"/>
 	</path>
 
 
@@ -47,6 +49,7 @@
         <pathelement location="${pddl4j.jar}"/>
         <pathelement location="${junit.jar}"/>
         <pathelement location="${hamcrest-core.jar}"/>
+        <pathelement location="${annotations-java8.jar}"/>
 		<pathelement location="${build.dir}"/>
 	</path>
 
