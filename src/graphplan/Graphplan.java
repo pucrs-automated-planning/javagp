@@ -40,14 +40,13 @@ import graphplan.graph.planning.cwa.PlanningGraphClosedWorldAssumption;
 import graphplan.parser.PDDLPlannerAdapter;
 import graphplan.parser.ParseException;
 import graphplan.parser.PlannerParser;
+import org.jetbrains.annotations.Nullable;
 import pddl4j.ParserException;
 
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -59,24 +58,27 @@ import java.util.logging.Logger;
  */
 public class Graphplan {
 	private static final Logger logger = Logger.getLogger(Graphplan.class.getName());
-	public static final String LOGGER_FILE = "logging.properties";
+	private static final String LOGGER_FILE = "logging.properties";
 	
-	protected int maxLevels = Integer.MAX_VALUE;
+	private int maxLevels = Integer.MAX_VALUE;
 	private PlanningGraph planningGraph;
 	private SolutionExtractionVisitor solutionExtraction;
-	private boolean pddl = true;
+
+	private static boolean pddl = true;
 
 	public static boolean noopsFirst = false;
 	public static boolean operatorsLatest = true;
 	public static boolean propositionsSmallest = true;
 	public static boolean sortGoals = false;
+    public static boolean extractAllPossibleSolutions = false;
 	
 	public static void main(String[] args) {
-		getPlanResult(args);
+		getPlanSolution(args);
 	}
 
-	public static PlanResult getPlanResult(String[] args) {
-		PlanResult result = null;
+	@Nullable
+	public static PlanSolution getPlanSolution(String[] args) {
+		PlanSolution planSolution = null;
 
 		setupLogger();
 		Graphplan graphplan = new Graphplan();
@@ -90,73 +92,86 @@ public class Graphplan {
 		
 		long timeout = 0;
 		boolean argsOk = true;
-		boolean pddl = true;
 		
 		for(int i=0; i<args.length && argsOk; i++) {
-			if(args[i].equals("-nopddl")) {
-				pddl = false;
-				graphplan.setPddl(pddl);
-			}else if(args[i].equals("-d")) { /* The domain argument */
-				if(++i < args.length && !args[i].startsWith("-")) {
-					domainFilename = args[i];
-				} else {
-					logger.warning("-d argument requires a filename with the domain");
-					argsOk = false;
-				}
-			} else if(args[i].equals("-p")) { /* The problem argument */
-				if(++i < args.length && !args[i].startsWith("-")) {
-					problemFilename = args[i];
-				} else {
-					logger.warning("-p argument requires a filename with the problem");
-					argsOk = false;
-				}
-			} else if(args[i].equals("-maxlevels")) {
-				if(++i < args.length && !args[i].startsWith("-")) {
-					try {
-						int levels = Integer.parseInt(args[i]);
-						if(levels > 0) {
-							graphplan.setMaxLevels(levels);
+			switch (args[i]) {
+				case "-nopddl":
+					pddl = false;
+					break;
+				case "-d":  /* The domain argument */
+					if (++i < args.length && !args[i].startsWith("-")) {
+						domainFilename = args[i];
+					} else {
+						logger.warning("-d argument requires a filename with the domain");
+						argsOk = false;
+					}
+					break;
+				case "-p":  /* The problem argument */
+					if (++i < args.length && !args[i].startsWith("-")) {
+						problemFilename = args[i];
+					} else {
+						logger.warning("-p argument requires a filename with the problem");
+						argsOk = false;
+					}
+					break;
+				case "-maxlevels":
+					if (++i < args.length && !args[i].startsWith("-")) {
+						try {
+							int levels = Integer.parseInt(args[i]);
+							if (levels > 0) {
+								graphplan.setMaxLevels(levels);
+							}
+						} catch (NumberFormatException e) {
+							logger.warning("-maxlevels argument requires a positive integer number of levels");
 						}
-					} catch (NumberFormatException e) {
+					} else {
 						logger.warning("-maxlevels argument requires a positive integer number of levels");
+						argsOk = false;
 					}
-				} else {
-					logger.warning("-maxlevels argument requires a positive integer number of levels");
-					argsOk = false;
-				}
-			} else if(args[i].equals("-timeout")) {
-				if(++i < args.length && !args[i].startsWith("-")) {
-					try {
-						timeout = Long.parseLong(args[i]);
-					} catch (NumberFormatException e) {
+					break;
+				case "-timeout":
+					if (++i < args.length && !args[i].startsWith("-")) {
+						try {
+							timeout = Long.parseLong(args[i]);
+						} catch (NumberFormatException e) {
+							logger.warning("-timeout argument requires a positive integer amount of time");
+						}
+					} else {
 						logger.warning("-timeout argument requires a positive integer amount of time");
+						argsOk = false;
 					}
-				} else {
-					logger.warning("-timeout argument requires a positive integer amount of time");
-					argsOk = false;
-				}
-			} else if(args[i].equals("-noopsFirst")) {
-				noopsFirst = true;
-				operatorsLatest = false;
-			} else if(args[i].equals("-operatorsLatest")) {
-				operatorsLatest = true;
-			} else if(args[i].equals("-propositionsSmallest")) {
-				propositionsSmallest = true;
-			} else if(args[i].equals("-sortGoals")) {
-				sortGoals = true;
-				propositionsSmallest = false;
-			}  else if(args[i].equals("-noHeuristics")) {
-				sortGoals = false;
-				propositionsSmallest = false;
-				noopsFirst = false;
-				operatorsLatest = false;
-			} else if(args[i].equals("-draw")) {
-				if(++i < args.length && !args[i].startsWith("-")) {
-					graphDrawFile = args[i];
-				} else {
-					logger.warning("-draw argument requires a valid filename");
-					argsOk = false;
-				}
+					break;
+				case "-noopsFirst":
+					noopsFirst = true;
+					operatorsLatest = false;
+					break;
+				case "-operatorsLatest":
+					operatorsLatest = true;
+					break;
+				case "-propositionsSmallest":
+					propositionsSmallest = true;
+					break;
+				case "-sortGoals":
+					sortGoals = true;
+					propositionsSmallest = false;
+					break;
+				case "-noHeuristics":
+					sortGoals = false;
+					propositionsSmallest = false;
+					noopsFirst = false;
+					operatorsLatest = false;
+					break;
+				case "-draw":
+					if (++i < args.length && !args[i].startsWith("-")) {
+						graphDrawFile = args[i];
+					} else {
+						logger.warning("-draw argument requires a valid filename");
+						argsOk = false;
+					}
+					break;
+				case "-extractAllPossibleSolutions":
+					extractAllPossibleSolutions = true;
+					break;
 			}
 		}
 		
@@ -180,7 +195,6 @@ public class Graphplan {
 				problem = new FileInputStream(probFile);
 			} catch (FileNotFoundException e) {
 				logger.warning(e.toString());
-				argsOk = false;
 			}
 			argsOk = (operators != null) && (problem != null);
 		}
@@ -202,14 +216,11 @@ public class Graphplan {
 					PlannerParser parser = new PlannerParser();
 					domain = parser.parseProblem(operators, problem);
 				}
-			} catch (ParserException e) {
-				e.printStackTrace();
-				System.exit(1);
-			} catch (ParseException e) {
+			} catch (ParserException | ParseException e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
-			
+
 			logger.fine("Selected Heuristics: ");
 			if(Graphplan.noopsFirst) 
 				logger.fine("\t+ Heuristic for actions: Select Noops first");
@@ -231,17 +242,29 @@ public class Graphplan {
 				
 				logger.info("Running planner, maximum memory: "+fm.format(runtime.maxMemory()/Math.pow(1024, 2))+"MB");
 				if(timeout > 0) {
-					result = graphplan.plan(domain, timeout);
+					planSolution = graphplan.planGeneral(domain, timeout);
 				} else {
-					result = graphplan.plan(domain); 
+					planSolution = graphplan.planGeneral(domain);
 				}
 				long t2 = System.currentTimeMillis();
 				long totalTime = (t2-t1);
 				logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s )");
 				logger.info("Total memory used: "+fm.format(runtime.totalMemory()/Math.pow(1024, 2))+"MB");
-				if(result.isTrue()) {
-					logger.info("Plan found:\n"+result.toString()); 
-					logger.info("Plan length: " + result.getPlanLength());
+				if(!planSolution.getAllHighlevelPlans().isEmpty()) {
+					if(extractAllPossibleSolutions) {
+						logger.info("Number of plan founds: " + planSolution.getAllPlans().size());
+						logger.info("---------------------");
+
+						for (List<Operator> listResult : planSolution.getAllPlans()) {
+							logger.info("Plan found:\n" + listResult.toString());
+							logger.info("Plan length: " + listResult.size());
+							logger.info("---------------------");
+						}
+					} else {
+						PlanResult result = planSolution.getAllHighlevelPlans().iterator().next();
+						logger.info("Plan found:\n" + result.toString());
+						logger.info("Plan length: " + result.getPlanLength());
+					}
 					if(graphDrawFile != null) {
 						logger.info("Drawing planning graph to "+graphDrawFile);
 						DotGraphDrawVisitor drawVisitor = new DotGraphDrawVisitor();
@@ -255,32 +278,15 @@ public class Graphplan {
 				} else {
 					logger.warning("No plan found");
 				}
-			} catch (PlanningGraphException e) {
+			} catch (PlanningGraphException | OperatorFactoryException | FileNotFoundException | OutOfMemoryError | TimeoutException e) {
 				e.printStackTrace();
 				System.exit(1);
-			} catch (OperatorFactoryException e) {
-				e.printStackTrace();
-				System.exit(1);
-			} catch (TimeoutException e) {
-				e.printStackTrace();
-				System.exit(1);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				System.exit(1);
-			} catch (OutOfMemoryError e) {
-				e.printStackTrace();
-				Runtime runtime = Runtime.getRuntime();
-				logger.severe("Memory use exceeded maximum allocated for VM");
-				long t2 = System.currentTimeMillis();
-				long totalTime = (t2-t1);
-				logger.info("Planning took "+(totalTime)+"ms ( " + (totalTime/1000)+"s ) before error");
-				logger.severe("Current maximum memory: "+runtime.maxMemory()/1024+"kb");
 			}
-			
+
 		} else {
 			Graphplan.wrongParametersMessage();
 		}
-		return result;
+		return planSolution;
 	}
 	
 	private static void wrongParametersMessage(){
@@ -344,7 +350,13 @@ public class Graphplan {
 	 * @throws PlanningGraphException
 	 * @throws OperatorFactoryException 
 	 */
+	@Nullable
 	public PlanResult plan(DomainDescription domainDescription) throws PlanningGraphException, OperatorFactoryException {
+		Set<PlanResult> planResults = planGeneral(domainDescription).getAllHighlevelPlans();
+		return planResults.isEmpty()? null : planResults.iterator().next();
+	}
+
+	public PlanSolution planGeneral(DomainDescription domainDescription) throws PlanningGraphException, OperatorFactoryException {
 		PropositionLevel initialLevel = new PropositionLevel();
 		initialLevel.addPropositions(domainDescription.getInitialState());
 		this.solutionExtraction = new SolutionExtractionVisitor(domainDescription.getGoalState());
@@ -362,17 +374,15 @@ public class Graphplan {
 		logger.fine("OPTIMIZATION: JavaGP using Static Mutexes Table");
 		logger.fine("OPTIMIZATION: JavaGP using Memoization");
 		
-		if(this.pddl) {
+		if(pddl) {
 			logger.fine("OPTIMIZATION: JavaGP using Types");
 			//If domain has negative preconditions, the planner will use the closed world assumption 
 			if(domainDescription.isNegativePreconditions()) {
 				logger.fine("OPTIMIZATION: JavaGP using Closed World Assumption (Lazily)");
-				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
-			} else this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
+				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domainDescription.getOperators())));
+			} else this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domainDescription.getOperators())));
 		} else this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
-		
-//		System.out.println();
-		
+
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
 		for(Operator operator:domainDescription.getOperators()) {
@@ -389,22 +399,22 @@ public class Graphplan {
 				//If we have a problem with the planning graph
 				//Issue the error and quit
 				System.err.println(e);
-				return new PlanResult(false);
+				return new PlanSolution();
 			}
 			if(this.planningGraph.goalsPossible(domainDescription.getGoalState(), this.planningGraph.size()-1)) {
 				//Extract solution
 				logger.info("Extracting solution");
 				planFound = this.planningGraph.accept(this.solutionExtraction);
 				if(planFound) {
-					logger.info("Plan found with "+((int)this.planningGraph.size()/2)+" steps");
+					logger.info("Plan found with "+(this.planningGraph.size()/2)+" steps");
 				} else {
-					logger.info("Plan not found with "+((int)this.planningGraph.size()/2)+" steps");
+					logger.info("Plan not found with "+(this.planningGraph.size()/2)+" steps");
 					if(!planPossible()) {
 						throw new PlanningGraphException("Graph has levelled off, plan is not possible.",this.planningGraph.levelOffIndex());
 					}
 				}
 			} else {
-				logger.info("Goals not possible with "+((int)this.planningGraph.size()/2)+" steps");
+				logger.info("Goals not possible with "+(this.planningGraph.size()/2)+" steps");
 				//If the goals are not possible, and the graph has levelled off,
 				//then this problem has no possible plan
 				if(this.planningGraph.levelledOff()) {
@@ -413,7 +423,7 @@ public class Graphplan {
 			}
 		}
 		
-		return this.solutionExtraction.getPlanResult();
+		return this.solutionExtraction.getPlanSolution();
 	}
 	
 	/**
@@ -425,7 +435,13 @@ public class Graphplan {
 	 * @throws OperatorFactoryException
 	 * @throws TimeoutException
 	 */
+	@Nullable
 	public PlanResult plan(DomainDescription domainDescription, long timeout) throws PlanningGraphException, OperatorFactoryException, TimeoutException {
+		Set<PlanResult> planResults = planGeneral(domainDescription, timeout).getAllHighlevelPlans();
+		return planResults.isEmpty()? null:planResults.iterator().next();
+	}
+
+	public PlanSolution planGeneral(DomainDescription domainDescription, long timeout) throws PlanningGraphException, OperatorFactoryException, TimeoutException {
 		PropositionLevel initialLevel = new PropositionLevel();
 		initialLevel.addPropositions(domainDescription.getInitialState());
 		this.solutionExtraction = new TimeoutSolutionExtractionVisitor(domainDescription.getGoalState());
@@ -448,26 +464,26 @@ public class Graphplan {
 				//If we have a problem with the planning graph
 				//Issue the error and quit
 				System.err.println(e);
-				return new PlanResult(false);
+				return new PlanSolution();
 			}
 			if(planningGraph.goalsPossible(domainDescription.getGoalState(), this.planningGraph.size()-1)) {
 				//Extract solution
 				logger.info("Extracting solution");
 				planFound = this.planningGraph.accept(this.solutionExtraction);
 				if(planFound) {
-					logger.info("Plan found with "+((int)this.planningGraph.size()/2)+" steps");
+					logger.info("Plan found with "+(this.planningGraph.size() /2)+" steps");
 				} else {
 					if(((TimeoutSolutionExtractionVisitor)solutionExtraction).timedOut()) {
 						logger.info("Planner timed out after "+timeout+" milliseconds");
 						throw new TimeoutException("No plan possible in "+timeout+" milliseconds");
 					}
-					logger.info("Plan not found with "+((int)this.planningGraph.size()/2)+" steps");
+					logger.info("Plan not found with "+(this.planningGraph.size() /2)+" steps");
 					if(!planPossible()) {
 						throw new PlanningGraphException("Graph has levelled off, plan is not possible.",this.planningGraph.levelOffIndex());
 					}
 				}
 			} else {
-				logger.info("Goals not possible with "+((int)this.planningGraph.size()/2)+" steps");
+				logger.info("Goals not possible with "+(this.planningGraph.size() /2)+" steps");
 				//If the goals are not possible, and the graph has levelled off,
 				//then this problem has no possible plan
 				if(this.planningGraph.levelledOff()) {
@@ -476,13 +492,13 @@ public class Graphplan {
 			}
 		}
 		
-		return solutionExtraction.getPlanResult();
+		return solutionExtraction.getPlanSolution();
 	}
 	
 	/**
 	 * Returns whether or not a plan is possible according to both the 
 	 * memoization table criterion and the graph level size criterion.
-	 * @return
+	 * @return if plan is possible
 	 */
 	public boolean planPossible() {
 		if(!this.planningGraph.levelledOff()) {
@@ -502,18 +518,17 @@ public class Graphplan {
 	 * @param description	The domain description in which the supplied plan is executed
 	 * @return				The minimum set of propositions that must be true before execution
 	 */
-	public List<Proposition> getPlanPreconditions(List<String> plan, DomainDescription description) {
+	List<Proposition> getPlanPreconditions(List<String> plan, DomainDescription description) {
 		// XXX This variable has been placed here to give us a slight speed up and to ease debug
 		// XXX But this might not be a good idea if we try and change the singleton at runtime
 		OperatorFactory operatorFactory = OperatorFactory.getInstance();
-		
-		for(Iterator<Operator> iter = description.getOperators().iterator(); iter.hasNext(); ) {
+
+		for (Operator operator : description.getOperators()) {
 			try {
 				//OperatorFactory.getInstance().addOperatorTemplate(iter.next());
-				operatorFactory.addOperatorTemplate(iter.next());
+				operatorFactory.addOperatorTemplate(operator);
 			} catch (OperatorFactoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException(e.getLocalizedMessage());
 			}
 		}
 		
@@ -526,8 +541,7 @@ public class Graphplan {
 				//concreteOperators[i] = OperatorFactory.getInstance().getOperator(plan.get(i));
 				concreteOperators[i] = operatorFactory.getOperator(plan.get(i));
 			} catch (OperatorFactoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException(e.getLocalizedMessage());
 			}
 		}
 		
@@ -535,19 +549,19 @@ public class Graphplan {
 		PlanningGraph graph = new PlanningGraph(new PropositionLevel());
 		//And populate it with action levels and proposition levels containing the obvious
 		//preconditions from the subsequent action level
-		for (int i = 0; i < concreteOperators.length; i++) {
+		for (Operator concreteOperator : concreteOperators) {
 			//We always assume our graph has a proposition level as its last level
-			PropositionLevel propositionLevel = (PropositionLevel) graph.getGraphLevel(graph.size()-1);
+			PropositionLevel propositionLevel = (PropositionLevel) graph.getGraphLevel(graph.size() - 1);
 			//into which we add the preconditions for this action
-			propositionLevel.addPropositions(concreteOperators[i].getPreconds());
+			propositionLevel.addPropositions(concreteOperator.getPreconds());
 			//We then create an action level to contain this action
 			ActionLevel actionLevel = new ActionLevel();
-			actionLevel.addAction(concreteOperators[i]);
+			actionLevel.addAction(concreteOperator);
 			graph.addGraphLevel(actionLevel);
 			//And create another proposition level for its effects
 			PropositionLevel propositionLevel2 = new PropositionLevel();
-			propositionLevel2.addPropositions(concreteOperators[i].getEffects());
-			
+			propositionLevel2.addPropositions(concreteOperator.getEffects());
+
 			graph.addGraphLevel(propositionLevel2);
 		}
 		
@@ -574,30 +588,12 @@ public class Graphplan {
 		
 		//this last bit looks rather nasty, I should review this when time allows
 		PropositionLevel level = (PropositionLevel) graph.getGraphLevel(0);
-		List<Proposition> planPreconditions = new ArrayList<Proposition>(level.size());
+		List<Proposition> planPreconditions = new ArrayList<>(level.size());
 		
 		for (Iterator<Proposition> iter = level.getPropositions(); iter.hasNext();) {
 			planPreconditions.add(iter.next());
 		}
 
 		return planPreconditions;
-	}
-	
-	/**
-	 * @return the solutionExtraction
-	 */
-	public SolutionExtractionVisitor getSolutionExtraction() {
-		return solutionExtraction;
-	}
-
-	/**
-	 * @param solutionExtraction the solutionExtraction to set
-	 */
-	public void setSolutionExtraction(SolutionExtractionVisitor solutionExtraction) {
-		this.solutionExtraction = solutionExtraction;
-	}
-
-	public void setPddl(boolean pddl) {
-		this.pddl = pddl;
 	}
 }

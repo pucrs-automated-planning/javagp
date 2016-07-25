@@ -45,8 +45,6 @@ public class LevelGeneratorClosedWorldAssumptionImpl extends LevelGeneratorImpl 
 		super(types, parameterTypes);
 	}
 	
-	public LevelGeneratorClosedWorldAssumptionImpl(){}
-	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public ActionLevel createNextActionLevel(PropositionLevel propositionLevel, GraphLevel initialState) throws PlanningGraphException {

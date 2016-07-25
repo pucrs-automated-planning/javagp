@@ -4,9 +4,10 @@ import org.junit.Test;
 
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-// TODO: implement missing tests
+// TODO: Implement more tests using the "extractAllPossibleGoals"
+// Today, this parameter is (I hope) returning all possible solutions with minimal length
 public class GraphplanPDDLTest {
 
 	private static final Logger logger = Logger.getLogger(GraphplanPDDLTest.class.getName());
@@ -205,5 +206,41 @@ public class GraphplanPDDLTest {
 		this.testGripperPDDLAll();
 		this.testHanoiPDDLAll();
 		this.testLogisticsPDDLAll();
+	}
+
+	/**
+	 * extractAllPossibleSolutions
+     */
+
+	@Test
+	public void testAllGripperPDDL(){
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/gripper/gripper.pddl", "-p", "examples/pddl/gripper/pb1.pddl", "-extractAllPossibleSolutions"});
+		assertNotNull(planSolution);
+		assertEquals(2, planSolution.getNumberOfHighlevelPlans());
+		assertEquals(8, planSolution.getNumberOfPlans());
+	}
+
+	@Test
+	public void testAllDrinkAndDrivePDDL1(){
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb1.pddl", "-extractAllPossibleSolutions"});
+		assertNotNull(planSolution);
+		assertEquals(1, planSolution.getNumberOfHighlevelPlans());
+		assertEquals(1, planSolution.getNumberOfPlans());
+	}
+
+	@Test
+	public void testAllDrinkAndDrivePDDL2(){
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb2.pddl", "-extractAllPossibleSolutions"});
+		assertNotNull(planSolution);
+		assertEquals(6, planSolution.getNumberOfHighlevelPlans());
+		assertEquals(6, planSolution.getNumberOfPlans());
+	}
+
+	@Test
+	public void testAllDrinkAndDrivePDDL3(){
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb3.pddl", "-extractAllPossibleSolutions"});
+		assertNotNull(planSolution);
+		assertEquals(2, planSolution.getNumberOfHighlevelPlans());
+		assertEquals(2, planSolution.getNumberOfPlans());
 	}
 }

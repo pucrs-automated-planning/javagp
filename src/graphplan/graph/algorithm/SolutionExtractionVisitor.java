@@ -25,67 +25,67 @@ package graphplan.graph.algorithm;
 
 import graphplan.Graphplan;
 import graphplan.PlanResult;
+import graphplan.PlanSolution;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import graphplan.graph.ActionLevel;
-import graphplan.graph.GraphElement;
-import graphplan.graph.GraphElementVisitor;
-import graphplan.graph.GraphLevel;
-import graphplan.graph.PropositionLevel;
+import graphplan.graph.*;
 import graphplan.graph.memo.MemoizationTable;
 import graphplan.graph.planning.PlanningGraph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
  * A visitor class that implements the Graphplan solution extraction
  * algorithm.
- * 
- * TODO implement solution extraction using this pattern
+ *
  * @author Felipe Meneguzzi
  *
  */
 public class SolutionExtractionVisitor implements GraphElementVisitor {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SolutionExtractionVisitor.class.getName());
+
+	protected PlanningGraph planningGraph;
 	
 	protected final List<Proposition> goals;
 	
 	protected final MemoizationTable memoizationTable ;
 	
 	protected Stack<Set<Proposition>> subGoalStack;
-	protected Stack<Set<Operator>> supportActionStack;
-	
-	protected PlanResult planResult = null;
-	protected PlanningGraph planningGraph;
+
+	// Represent plan solution
+	protected PlanSolution planSolution;
+
+	// List that contains all support actions stacks. Each one contains steps of a given plan found.
+	protected List<Stack<Set<Operator>>> supportActionStacks;
+
+	// Temporary stack that will hold steps of plans with intersection steps
+	protected Stack<Set<Operator>> globalSupportActionStack;
+
+	// Temporary list that will hold steps indexes of plans with intersection steps
+	protected List<Integer> actionLevels;
 	
 	public SolutionExtractionVisitor(List<Proposition> goals) {
 		this.goals = goals;
-		//By default the plan result will be false, unless changed during a
-		//round of solution extraction
-		planResult = new PlanResult(false);
-		subGoalStack = new Stack<Set<Proposition>>();
-		supportActionStack = new Stack<Set<Operator>>();
-		
+		planSolution = new PlanSolution();
+		subGoalStack = new Stack<>();
+		supportActionStacks = new ArrayList<>();
+		globalSupportActionStack = new Stack<>();
+		actionLevels = new ArrayList<>();
 		memoizationTable = new MemoizationTable();
 	}
 
-	@SuppressWarnings("rawtypes")
 	public boolean visitElement(GraphElement element) {
 		if(element instanceof PlanningGraph) {
 			this.planningGraph = (PlanningGraph) element;
 			if(this.planningGraph.getLastGraphLevel().isPropositionLevel()) {
 				this.subGoalStack.clear();
-				this.supportActionStack.clear();
-				this.subGoalStack.push(new TreeSet<Proposition>(this.goals));
+				this.supportActionStacks.clear();
+				this.planSolution.clear();
+				this.globalSupportActionStack.clear();
+				this.actionLevels.clear();
+				this.subGoalStack.push(new TreeSet<>(this.goals));
 				
 				/*TextDrawVisitor visitor = new TextDrawVisitor();
 				planningGraph.accept(visitor);
@@ -97,16 +97,16 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 				memoizationTable.ensureCapacity(planningGraph.size()/2);
 				
 				if(this.planningGraph.getLastGraphLevel().accept(this)) {
-					this.planResult = new PlanResult(this.supportActionStack);
-				} else {
-					this.planResult = new PlanResult(false);
+					for(Stack<Set<Operator>> supportActionStack : supportActionStacks) {
+						planSolution.add(new PlanResult(supportActionStack));
+					}
 				}
 				
 				//logger.info("Table size is: "+noGoodTableSize());
 				//logger.info("Hits         : "+hits);
 				//logger.info("Misses       : "+misses);
 				
-				return planResult.isTrue();
+				return !supportActionStacks.isEmpty();
 			} else {
 				return false;
 			}
@@ -158,8 +158,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		//return false;
 	}
 	
-	private boolean visitPropositionLevel(PropositionLevel propositionLevel, 
-										Set<Proposition> subGoals) {
+	private boolean visitPropositionLevel(PropositionLevel propositionLevel, Set<Proposition> subGoals) {
 		//If we have reached the first proposition level
 		//We have found a plan
 		//TODO check this for redundancy
@@ -177,31 +176,26 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		
 		/* Heuristic: sort goals by proposition that appears earliest in the planning graph */
 		if(Graphplan.sortGoals){
-			Collections.sort(subGoalsSorted, new Comparator<Proposition>() {
-				public int compare(Proposition o1, Proposition o2) {
-					return (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
-				}
-			});
+			Collections.sort(subGoalsSorted, (o1, o2) -> (o1.getIndex() > o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1)));
 		}
 
 		/* Heuristic: select firstly propositions that leads to the smallest set of resolvers */
 		if(Graphplan.propositionsSmallest){
-			Collections.sort(subGoalsSorted, new Comparator<Proposition>() {
-				public int compare(Proposition o1, Proposition o2) {
-					int o1Size = actionLevel.getGeneratingActions(o1).size();
-					int o2Size = actionLevel.getGeneratingActions(o2).size();
-					return (o1Size < o2Size ? -1: (o1Size == o2Size ? 0 : 1));
-				}
-			});
+			Collections.sort(subGoalsSorted, (o1, o2) -> {
+                int o1Size = actionLevel.getGeneratingActions(o1).size();
+                int o2Size = actionLevel.getGeneratingActions(o2).size();
+                return (o1Size < o2Size ? -1: (o1Size == o2Size ? 0 : 1));
+            });
 		}
 		
-		boolean planFound = this.search(subGoalsSorted, new HashSet<Operator>(), actionLevel, new HashSet<Operator>());
+		boolean planFound = this.search(subGoalsSorted, new HashSet<>(), actionLevel, new HashSet<>());
 		if(!planFound) {
 			this.memoizationTable.addNoGood(subGoals, propositionLevel.getIndex());
 			this.subGoalStack.pop();
-		} else return true;
-
-		return false;
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	public boolean search(List<Proposition> subGoals, Set<Operator> operators, ActionLevel actionLevel, Set<Operator> mutex){
@@ -211,22 +205,61 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			Set<Proposition> newSubGoals = determineSubgoals(operators);
 			this.subGoalStack.push(newSubGoals);
 			planFound = this.visitPropositionLevel((PropositionLevel) actionLevel.getPrevLevel(), newSubGoals);
-			if(planFound) this.supportActionStack.push(operators);
+			if(planFound) {
+				globalSupportActionStack.push(operators);
+				actionLevels.add(actionLevel.getIndex());
+
+				// If this is the last action level, use globalSupportActionStack and actionLevels to build the final support actions stacks
+				if(actionLevel.getIndex() == (planningGraph.getLastGraphLevel().getIndex() -1)) {
+					buildPlanResults();
+				}
+			}
 		} else {
 			List<Operator> resolvers = actionLevel.getGeneratingActions(this.popGoal(subGoals));
 			resolvers = this.andNotMutexes(resolvers, mutex);
-			while(!resolvers.isEmpty() && !planFound){
+			while(!resolvers.isEmpty()){
 				Operator resolver = this.popResolver(resolvers);
-				Set<Operator> newOperators = new HashSet<Operator>(operators);
+				Set<Operator> newOperators = new HashSet<>(operators);
 				newOperators.add(resolver);
 				List<Proposition> newSubGoals = this.getSubGoals(resolver, subGoals);
-				Set<Operator> newMutex = new HashSet<Operator>(mutex);
+				Set<Operator> newMutex = new HashSet<>(mutex);
 				if(actionLevel.getMutexes().get(resolver) != null) newMutex.addAll(actionLevel.getMutexes().get(resolver));
-				
-				planFound = this.search(newSubGoals, newOperators, actionLevel, newMutex);
+
+				if(this.search(newSubGoals, newOperators, actionLevel, newMutex)) {
+					planFound = true;
+
+					// If we have found a plan, and we not intend to find all of them, return
+					if(!Graphplan.extractAllPossibleSolutions) {
+						return true;
+					}
+				}
 			}
 		}
 		return planFound;
+	}
+
+	private void buildPlanResults() {
+		List<Set<Operator>> temp = new ArrayList<>();
+		for(Set<Operator> set : globalSupportActionStack) {
+			temp.add(set);
+		}
+
+		for(int i = 0;i<actionLevels.size();i++) {
+			int currentI = actionLevels.get(i);
+			if(currentI == 1) {
+				Stack<Set<Operator>> aux = new Stack<>();
+				int current = 0;
+				for(int j=i;j<temp.size();j++) {
+					if(actionLevels.get(j) > current) {
+						aux.push(temp.get(j));
+						current = actionLevels.get(j);
+					}
+				}
+				supportActionStacks.add(aux);
+			}
+		}
+		this.globalSupportActionStack.clear();
+		actionLevels.clear();
 	}
 	
 	/**
@@ -317,11 +350,10 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	}
 
 	/**
-	 * Returns the plan resulting from this solution extraction cycle.
+	 * Returns the plans resulting from this solution extraction cycle.
 	 * @return
 	 */
-	public PlanResult getPlanResult() {
-		//TODO make a real implementation of this method
-		return planResult;
+	public PlanSolution getPlanSolution() {
+		return planSolution;
 	}
 }

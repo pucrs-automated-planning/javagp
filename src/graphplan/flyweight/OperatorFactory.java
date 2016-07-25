@@ -78,28 +78,26 @@ public class OperatorFactory {
 	protected Hashtable<String, OperatorImpl> operatorTemplates;
 	
 	public OperatorFactory() {
-		this.operatorInstances = new Hashtable<String, OperatorImpl>();
-		this.operatorTemplates = new Hashtable<String, OperatorImpl>();
+		this.operatorInstances = new Hashtable<>();
+		this.operatorTemplates = new Hashtable<>();
 	}
 	
 	public Operator createOperatorTemplate(String signature, String[] preconds, String[] effects) {
 		Structure oper = Structure.parse(signature);
-		ArrayList<Proposition> precondProps = new ArrayList<Proposition>(preconds.length);
-		ArrayList<Proposition> effectProps = new ArrayList<Proposition>(effects.length);
-		
-		for (int i = 0; i < preconds.length; i++) {
-			PropositionImpl precond = new PropositionImpl(preconds[i]);
+		ArrayList<Proposition> precondProps = new ArrayList<>(preconds.length);
+		ArrayList<Proposition> effectProps = new ArrayList<>(effects.length);
+
+		for (String precond1 : preconds) {
+			PropositionImpl precond = new PropositionImpl(precond1);
 			precondProps.add(precond);
 		}
-		
-		for (int i = 0; i < effects.length; i++) {
-			PropositionImpl effect = new PropositionImpl(effects[i]);
+
+		for (String effect1 : effects) {
+			PropositionImpl effect = new PropositionImpl(effect1);
 			effectProps.add(effect);
 		}
-		
-		OperatorImpl operator = new OperatorImpl(oper, precondProps, effectProps);
-		
-		return operator;
+
+		return new OperatorImpl(oper, precondProps, effectProps);
 	}
 	
 	public void addOperatorTemplate(Operator operator) throws OperatorFactoryException {
@@ -179,7 +177,7 @@ public class OperatorFactory {
 			//If a template exists matching the supplied indicator
 			if(this.operatorTemplates.containsKey(signature.getPredicateIndicator().toString())) {
 				//We get the template
-				OperatorImpl template = (OperatorImpl) this.operatorTemplates.get(signature.getPredicateIndicator().toString());
+				OperatorImpl template = this.operatorTemplates.get(signature.getPredicateIndicator().toString());
 				//And start copying it
 				Structure templateSignature = new Structure(template);
 				Unifier un = new Unifier();
@@ -195,12 +193,11 @@ public class OperatorFactory {
 				List<Proposition> templatePreconds = template.getPreconds();
 				List<Proposition> concretePreconds = new ArrayList<Proposition>(templatePreconds.size());
 				//And apply the unifier to them
-				for (Iterator iter = templatePreconds.iterator(); iter
-						.hasNext();) {
-					PropositionImpl precond = (PropositionImpl) iter.next();
+				for (Proposition templatePrecond : templatePreconds) {
+					PropositionImpl precond = (PropositionImpl) templatePrecond;
 					Literal literal = new LiteralImpl(precond);
 					literal.apply(un);
-					PropositionImpl concretePrecond = (PropositionImpl)propositionFactory.getProposition(literal.toString());
+					PropositionImpl concretePrecond = (PropositionImpl) propositionFactory.getProposition(literal.toString());
 					// XXX Uncomment the code to debug operator instantiation, it is removed to avoid wasting time here
 //					if(!concretePrecond.isGround()) {
 //						//throw new OperatorFactoryException("We have a non-concrete precond in operator "+signature+": "+concretePrecond);
@@ -211,13 +208,12 @@ public class OperatorFactory {
 				
 				List<Proposition> templateEffects = template.getEffects();
 				List<Proposition> concreteEffects = new ArrayList<Proposition>(templateEffects.size());
-				
-				for (Iterator iter = templateEffects.iterator(); iter
-						.hasNext();) {
-					PropositionImpl effect = (PropositionImpl) iter.next();
+
+				for (Proposition templateEffect : templateEffects) {
+					PropositionImpl effect = (PropositionImpl) templateEffect;
 					Literal literal = new LiteralImpl(effect);
 					literal.apply(un);
-					PropositionImpl concreteEffect = (PropositionImpl)propositionFactory.getProposition(literal.toString());
+					PropositionImpl concreteEffect = (PropositionImpl) propositionFactory.getProposition(literal.toString());
 					// XXX Uncomment the code to debug operator instantiation, it is removed to avoid wasting time here
 //					if(!concreteEffect.isGround()) {
 //						//throw new OperatorFactoryException("We have a non-concrete effect in operator "+signature+": "+concreteEffect);
@@ -252,21 +248,6 @@ public class OperatorFactory {
 			//or trying to unify the supplied precondition with any of the preconditions
 			for (Proposition oPrecond : oper.getPreconds()) {
 				if(precond.unifies(oPrecond)) {
-					templates.add(oper);
-				}
-			}
-		}
-		return templates;
-	}
-	
-	public List<Operator> getCausingOperatorsTemplates(Proposition effect) {
-		List<Operator> templates = new ArrayList<Operator>();
-		//Scan every operator template
-		for(Enumeration<OperatorImpl> e = operatorTemplates.elements(); e.hasMoreElements(); ) {
-			OperatorImpl oper = e.nextElement();
-			//and trying to unify the supplied effect with any of the effects
-			for (Proposition oEffect : oper.getEffects()) {
-				if(effect.unifies(oEffect)) {
 					templates.add(oper);
 				}
 			}
