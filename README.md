@@ -19,8 +19,9 @@ java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p exampl
 
 ### Planner arguments
 ```bash
--maxlevels <NUMBER>,	Max Graph levels.
--timeout <NUMBER>,		Planning timeout.
+-maxlevels <NUMBER>,	        Max Graph levels.
+-timeout <NUMBER>,              Planning timeout.
+-extractAllPossibleSolutions,   Extract all solutions with minimum length (TODO: need more tests).
 
 -noHeuristics,			No Heuristics.
 

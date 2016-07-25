@@ -88,7 +88,7 @@
           target: compile              
          ================================= -->
     <target name="compile" depends="parser" description="--> Compiles the sources">
-    	<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${debug}" deprecation="true" optimize="true" nowarn="true" source="1.5" target="1.5">
+    	<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${debug}" deprecation="true" optimize="true" nowarn="true" source="1.8" target="1.8">
 			<classpath refid="project.classpath" />
 		</javac>
     </target>
