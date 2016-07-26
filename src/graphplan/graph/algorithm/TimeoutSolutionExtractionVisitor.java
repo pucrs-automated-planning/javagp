@@ -23,6 +23,7 @@
  */
 package graphplan.graph.algorithm;
 
+import graphplan.Graphplan;
 import graphplan.domain.Proposition;
 import graphplan.graph.GraphElement;
 import graphplan.graph.GraphLevel;
@@ -45,8 +46,8 @@ public class TimeoutSolutionExtractionVisitor extends SolutionExtractionVisitor 
 	private long targetTime = 0;
 	private boolean timedOut = false;
 
-	public TimeoutSolutionExtractionVisitor(List<Proposition> goals) {
-		super(goals);
+	public TimeoutSolutionExtractionVisitor(List<Proposition> goals, Graphplan graphplan) {
+		super(goals, graphplan);
 	}
 
 	@SuppressWarnings("unchecked")

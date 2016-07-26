@@ -49,6 +49,9 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	protected PlanningGraph planningGraph;
 	protected Stack<Set<Proposition>> subGoalStack;
 
+	// Reference Graphplan problem
+	private Graphplan graphplan;
+
 	// Represent plan solution
 	protected PlanSolution planSolution;
 
@@ -61,8 +64,9 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	// Temporary list that will hold steps indexes of plans with intersection steps
 	protected List<Integer> actionLevels;
 
-	public SolutionExtractionVisitor(List<Proposition> goals) {
+	public SolutionExtractionVisitor(List<Proposition> goals, Graphplan graphplan) {
 		this.goals = goals;
+		this.graphplan = graphplan;
 		planSolution = new PlanSolution();
 		subGoalStack = new Stack<>();
 		supportActionStacks = new ArrayList<>();
@@ -223,7 +227,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 					planFound = true;
 
 					// If we have found a plan, and we not intend to find all of them, return
-					if (!Graphplan.extractAllPossibleSolutions) {
+					if (!graphplan.isExtractAllPossibleSolutions()) {
 						return true;
 					}
 				}
