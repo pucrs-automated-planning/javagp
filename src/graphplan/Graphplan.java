@@ -66,7 +66,8 @@ public class Graphplan {
 	public static boolean operatorsLatest = true;
 	public static boolean propositionsSmallest = true;
 	public static boolean sortGoals = false;
-	public static boolean extractAllPossibleSolutions = false;
+	public static boolean extractAllPossibleSolutions = false; // Extract all solutions with minimum length (TODO: need more tests)
+	private static int extractAllPossibleSolutionsWithMaxLength = 0; // Extract all solutions with (minimum length + extractAllPossibleWithMaxLength)
 	private static boolean pddl = true;
 	private int maxLevels = Integer.MAX_VALUE;
 	private PlanningGraph planningGraph;
@@ -176,7 +177,20 @@ public class Graphplan {
 					}
 					break;
 				case "-extractAllPossibleSolutions":
-					extractAllPossibleSolutions = true;
+					if (++i < args.length && !args[i].startsWith("-")) {
+						try {
+							int maxLength = Integer.parseInt(args[i]);
+							if (maxLength >= 0) {
+								extractAllPossibleSolutions = true;
+								extractAllPossibleSolutionsWithMaxLength = maxLength;
+							}
+						} catch (NumberFormatException e) {
+							logger.warning("-maxlevels argument requires a positive integer number of levels");
+						}
+					} else {
+						logger.warning("-extractAllPossibleSolutions argument requires a valid non-negative integer max length");
+						argsOk = false;
+					}
 					break;
 			}
 		}
@@ -303,9 +317,9 @@ public class Graphplan {
 				"\n\n\t>>> PDDL Language: " +
 				"\n\t\t" + "java -jar javagp.jar -d examples/pddl/blocksworld/blocksworld.pddl -p examples/pddl/blocksworld/pb1.pddl" +
 				"\n\n\t>>> Planner arguments: " +
-				"\n\t-maxlevels <NUMBER>, " + "\t\t\tMax Graph levels." +
-				"\n\t-timeout <NUMBER>, " + "\t\t\t\tPlanning timeout." +
-				"\n\t-extractAllPossibleSolutions, " + "\tExtract all solutions with minimum length (TODO: need more tests)." +
+				"\n\t-maxlevels <NUMBER>, " + "\t\t\t\t\tMax Graph levels." +
+				"\n\t-timeout <NUMBER>, " + "\t\t\t\t\t\tPlanning timeout." +
+				"\n\t-extractAllPossibleSolutions <NUMBER>, " + "\tExtract all solutions with (minimum length + NUMBER) (TODO: need more tests)." +
 				"\n\n\t-noHeuristics, " + "\t\tNo Heuristics." +
 				"\n\n\t[Heuristics for actions]" +
 				"\n\t-operatorsLatest, " + "\tSelect actions that appears latest in the Planning Graph." +
@@ -393,8 +407,9 @@ public class Graphplan {
 		}
 
 		boolean planFound = false;
+		int maxLength = extractAllPossibleSolutionsWithMaxLength;
 
-		while (!planFound && (this.planningGraph.size() <= this.maxLevels)) {
+		while ((!planFound && (this.planningGraph.size() <= maxLevels)) || maxLength >= 0) {
 			try {
 				logger.info("Expanding graph");
 				this.planningGraph.expandGraph();
@@ -410,6 +425,7 @@ public class Graphplan {
 				planFound = this.planningGraph.accept(this.solutionExtraction);
 				if (planFound) {
 					logger.info("Plan found with " + (this.planningGraph.size() / 2) + " steps");
+					maxLength--;
 				} else {
 					logger.info("Plan not found with " + (this.planningGraph.size() / 2) + " steps");
 					if (!planPossible()) {
@@ -459,8 +475,9 @@ public class Graphplan {
 		}
 
 		boolean planFound = false;
+		int maxLength = extractAllPossibleSolutionsWithMaxLength;
 
-		while (!planFound && (this.planningGraph.size() <= this.maxLevels)) {
+		while ((!planFound && (this.planningGraph.size() <= maxLevels)) || maxLength >= 0) {
 			try {
 				logger.info("Expanding graph");
 				this.planningGraph.expandGraph();
@@ -476,6 +493,7 @@ public class Graphplan {
 				planFound = this.planningGraph.accept(this.solutionExtraction);
 				if (planFound) {
 					logger.info("Plan found with " + (this.planningGraph.size() / 2) + " steps");
+					maxLength--;
 				} else {
 					if (((TimeoutSolutionExtractionVisitor) solutionExtraction).timedOut()) {
 						logger.info("Planner timed out after " + timeout + " milliseconds");

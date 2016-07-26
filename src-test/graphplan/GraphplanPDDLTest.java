@@ -214,7 +214,7 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllGripperPDDL() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/gripper/gripper.pddl", "-p", "examples/pddl/gripper/pb1.pddl", "-extractAllPossibleSolutions"});
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/gripper/gripper.pddl", "-p", "examples/pddl/gripper/pb1.pddl", "-extractAllPossibleSolutions", "0"});
 		assertNotNull(planSolution);
 		assertEquals(2, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(8, planSolution.getNumberOfPlans());
@@ -222,7 +222,7 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL1() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb1.pddl", "-extractAllPossibleSolutions"});
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb1.pddl", "-extractAllPossibleSolutions", "0"});
 		assertNotNull(planSolution);
 		assertEquals(1, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(1, planSolution.getNumberOfPlans());
@@ -230,7 +230,7 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL2() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb2.pddl", "-extractAllPossibleSolutions"});
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb2.pddl", "-extractAllPossibleSolutions", "0"});
 		assertNotNull(planSolution);
 		assertEquals(6, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(6, planSolution.getNumberOfPlans());
@@ -238,7 +238,7 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL3() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb3.pddl", "-extractAllPossibleSolutions"});
+		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb3.pddl", "-extractAllPossibleSolutions", "0"});
 		assertNotNull(planSolution);
 		assertEquals(2, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(2, planSolution.getNumberOfPlans());

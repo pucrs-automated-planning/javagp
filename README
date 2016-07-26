@@ -10,9 +10,9 @@ Run "java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p e
 Run "java -jar javagp.jar -d examples/pddl/blocksworld/blockworlds.pddl -p examples/pddl/blocksworld/pb1.pddl"
 
 >>> Planner arguments
--maxlevels <NUMBER>,	        Max Graph levels.
--timeout <NUMBER>,		        Planning timeout.
--extractAllPossibleSolutions,   Extract all solutions with minimum length (TODO: need more tests).
+-maxlevels <NUMBER>,	                Max Graph levels.
+-timeout <NUMBER>,		                Planning timeout.
+-extractAllPossibleSolutions <NUMBER>,  Extract all solutions with (minimum length + NUMBER) (TODO: need more tests).
 
 -noHeuristics,			No Heuristics.
 
