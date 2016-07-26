@@ -30,19 +30,18 @@ import graphplan.graph.GraphLevel;
 import java.util.List;
 
 /**
- * A SolutionExtraction wrapper that interrupts computation when a timeout 
+ * A SolutionExtraction wrapper that interrupts computation when a timeout
  * occurs.
- * 
- * TODO Many concurrency problems are bound to happen if this is used 
- *      in a threaded environment.
- * 
- * @author Felipe Meneguzzi
+ * <p>
+ * TODO Many concurrency problems are bound to happen if this is used
+ * in a threaded environment.
  *
+ * @author Felipe Meneguzzi
  */
 public class TimeoutSolutionExtractionVisitor extends SolutionExtractionVisitor {
-	
+
 	protected long timeoutTime = 0;
-	
+
 	private long targetTime = 0;
 	private boolean timedOut = false;
 
@@ -54,7 +53,7 @@ public class TimeoutSolutionExtractionVisitor extends SolutionExtractionVisitor 
 	@Override
 	public boolean visitElement(GraphElement element) {
 		//First we must check if timeout has been reached
-		if(System.currentTimeMillis() > targetTime) {
+		if (System.currentTimeMillis() > targetTime) {
 			//If the timeout has been reached, we set the appropriate
 			//flags and return false
 			timedOut = true;
@@ -65,12 +64,12 @@ public class TimeoutSolutionExtractionVisitor extends SolutionExtractionVisitor 
 			return super.visitElement(element);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean visitGraphLevel(GraphLevel graphLevel) {
 		//First we check if the timeout has been reached
-		if(System.currentTimeMillis() > targetTime) {
+		if (System.currentTimeMillis() > targetTime) {
 			//If the timeout has been reached, we set the appropriate
 			//flags and return false
 			timedOut = true;
@@ -81,17 +80,19 @@ public class TimeoutSolutionExtractionVisitor extends SolutionExtractionVisitor 
 			return super.visitGraphLevel(graphLevel);
 		}
 	}
-	
+
 	/**
 	 * Returns whether or not the last computation terminated due to a timeout
+	 *
 	 * @return
 	 */
 	public boolean timedOut() {
 		return timedOut;
 	}
-	
+
 	/**
 	 * Sets the timeout value for invocations of visitElement
+	 *
 	 * @param timeout
 	 */
 	public void setTimeout(long timeout) {
@@ -107,6 +108,6 @@ public class TimeoutSolutionExtractionVisitor extends SolutionExtractionVisitor 
 	public long getTimeoutTime() {
 		return timeoutTime;
 	}
-	
-	
+
+
 }

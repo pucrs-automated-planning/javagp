@@ -36,10 +36,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XMLExporterVisitor implements GraphElementVisitor {
 	protected Document document;
-	
+
 
 	public boolean visitElement(GraphElement element) {
-		if(element instanceof PlanningGraph) {
+		if (element instanceof PlanningGraph) {
 			PlanningGraph planningGraph = (PlanningGraph) element;
 			DocumentBuilder builder;
 			try {
@@ -49,7 +49,7 @@ public class XMLExporterVisitor implements GraphElementVisitor {
 				return false;
 			}
 			document = builder.newDocument();
-			
+
 		}
 		return false;
 	}
@@ -58,14 +58,15 @@ public class XMLExporterVisitor implements GraphElementVisitor {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	protected void addPlanningGraphElement(PlanningGraph planningGraph) {
 		Element element = document.createElement("planning-graph");
-		
+
 	}
 
 	/**
 	 * Returns the DOM representation of the previously visited graph
+	 *
 	 * @return
 	 */
 	public Document getGraphDocument() {

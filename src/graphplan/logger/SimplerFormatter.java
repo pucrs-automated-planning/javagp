@@ -30,15 +30,14 @@ import java.util.logging.LogRecord;
 
 /**
  * @author Felipe Meneguzzi
- *
  */
 public class SimplerFormatter extends Formatter {
-	
-    // Line separator string.  This is the value of the line.separator
-    // property at the moment that the SimpleFormatter was created.
-    @SuppressWarnings("unchecked")
+
+	// Line separator string.  This is the value of the line.separator
+	// property at the moment that the SimpleFormatter was created.
+	@SuppressWarnings("unchecked")
 	private String lineSeparator = (String) java.security.AccessController.doPrivileged(
-               new sun.security.action.GetPropertyAction("line.separator"));
+			new sun.security.action.GetPropertyAction("line.separator"));
 
 	/* (non-Javadoc)
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
@@ -46,25 +45,25 @@ public class SimplerFormatter extends Formatter {
 	@Override
 	public String format(LogRecord record) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		String message = formatMessage(record);
-		
+
 		sb.append(record.getLevel().getLocalizedName());
 		sb.append(": ");
 		sb.append(message);
-		
+
 		if (record.getThrown() != null) {
-		    try {
-		        StringWriter sw = new StringWriter();
-		        PrintWriter pw = new PrintWriter(sw);
-		        record.getThrown().printStackTrace(pw);
-		        pw.close();
-			sb.append(sw.toString());
-		    } catch (Exception ex) {
-		    }
+			try {
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+				record.getThrown().printStackTrace(pw);
+				pw.close();
+				sb.append(sw.toString());
+			} catch (Exception ex) {
+			}
 		}
 		sb.append(lineSeparator);
-		
+
 		return sb.toString();
 	}
 

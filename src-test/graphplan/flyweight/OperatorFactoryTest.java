@@ -51,17 +51,17 @@ public class OperatorFactoryTest {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testGetOperator() {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testGetRequiringOperatorTemplates() {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testGetCausingOperatorsTemplates() {
 		fail("Not yet implemented"); // TODO
 	}
@@ -71,33 +71,33 @@ public class OperatorFactoryTest {
 		GraphplanTestUtil util = GraphplanTestUtil.getInstance();
 		DomainDescription domainDescriptions[] = util.createDomains();
 		operatorFactory.resetOperatorTemplates();
-		
-		for(Operator operator : domainDescriptions[1].getOperators()) {
+
+		for (Operator operator : domainDescriptions[1].getOperators()) {
 			try {
 				operatorFactory.addOperatorTemplate(operator);
 			} catch (OperatorFactoryException e) {
 				fail(e.toString());
 			}
 		}
-		
+
 		List<Operator> operators = domainDescriptions[1].getOperators();
 		List<Proposition> propositions = domainDescriptions[1].getInitialState();
-		
+
 		try {
 			Set<Operator> instances = operatorFactory.getAllPossibleInstantiations(operators, propositions);
 			logger.info("Instances");
-			for(Operator op : instances) {
+			for (Operator op : instances) {
 				logger.info(op.toString());
 			}
 		} catch (OperatorFactoryException e) {
 			fail(e.toString());
 		}
-		
+
 		propositions = domainDescriptions[2].getInitialState();
 		try {
 			Set<Operator> instances = operatorFactory.getAllPossibleInstantiations(operators, propositions);
 			logger.info("Instances");
-			for(Operator op : instances) {
+			for (Operator op : instances) {
 				logger.info(op.toString());
 			}
 		} catch (OperatorFactoryException e) {

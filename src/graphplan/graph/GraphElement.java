@@ -29,14 +29,16 @@ import java.util.Iterator;
 public interface GraphElement<T> extends Iterable<T>, Serializable {
 	/**
 	 * Accepts a visitor element iterating through the graph.
+	 *
 	 * @param visitor
 	 * @return
 	 */
-    boolean accept(GraphElementVisitor visitor);
-	
+	boolean accept(GraphElementVisitor visitor);
+
 	/**
 	 * Returns an iterator to the children of this graph element.
+	 *
 	 * @return
 	 */
-    Iterator<T> iterator();
+	Iterator<T> iterator();
 }

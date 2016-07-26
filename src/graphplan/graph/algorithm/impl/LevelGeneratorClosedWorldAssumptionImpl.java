@@ -37,21 +37,21 @@ import java.util.*;
 
 public class LevelGeneratorClosedWorldAssumptionImpl extends LevelGeneratorImpl implements ActionLevelGeneratorClosedWorldAssumption {
 
-	public LevelGeneratorClosedWorldAssumptionImpl(Map<String, Set<String>> types, Map<String, List<String>> parameterTypes){
+	public LevelGeneratorClosedWorldAssumptionImpl(Map<String, Set<String>> types, Map<String, List<String>> parameterTypes) {
 		super(types, parameterTypes);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	public ActionLevel createNextActionLevel(PropositionLevel propositionLevel, GraphLevel initialState) throws PlanningGraphException {
 		final ActionLevel actionLevel = new ActionLevel();
-		
+
 		final OperatorFactory opFactory = OperatorFactory.getInstance();
 
 		final HashSet<Operator> opTemplateSet = new HashSet<>();
 		final Set<Operator> opSet = new HashSet<>();
 		final ArrayList<Proposition> preconds = new ArrayList<>();
-		
+
 		// For every proposition
 		for (Proposition proposition : propositionLevel) {
 			final List<Operator> templates;
@@ -63,23 +63,23 @@ public class LevelGeneratorClosedWorldAssumptionImpl extends LevelGeneratorImpl 
 			//And prepare the list of preconditons for later
 			preconds.add(proposition);
 		}
-		
+
 		opTemplateSet.addAll(opFactory.getRequiringOperatorTemplates(null));
 
 		try {
-			if(this.isUsingTypes())	{
+			if (this.isUsingTypes()) {
 				opFactory.setTypes(this.getTypes());
 				opFactory.setParameterTypes(this.getParameterTypes());
 				opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds, initialState));
 			} else opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds));
 		} catch (OperatorFactoryException e) {
-			throw new PlanningGraphException(e.getMessage(),propositionLevel.getIndex()+1);
+			throw new PlanningGraphException(e.getMessage(), propositionLevel.getIndex() + 1);
 		}
-		
+
 		for (Operator operator : opSet) {
 			actionLevel.addAction(operator);
 		}
-		
+
 		return actionLevel;
 	}
 }

@@ -31,26 +31,26 @@ import graphplan.flyweight.OperatorFactory;
 import java.util.*;
 
 public class ActionLevel implements GraphLevel<Operator> {
-	
+
 	private static final long serialVersionUID = -6424912652419709967L;
 
 	private static final Iterator<Operator> emptyIterator = OperatorFactory.getEmptyIterator();
 	protected final HashMap<Proposition, List<Operator>> generatingActionsCache;
 	protected final List<Operator> actions;
 	protected final HashMap<Operator, HashSet<Operator>> mutexes;
-	
+
 	protected PropositionLevel nextLevel = null;
 	protected PropositionLevel prevLevel = null;
-	
+
 	protected int index;
-	
+
 	public ActionLevel() {
 		//TODO tune the lists and hashtables to improve performance
 		this.actions = new ArrayList<>();
 		this.mutexes = new HashMap<>(16, (float) 0.5);
 		this.generatingActionsCache = new HashMap<>();
 	}
-	
+
 	public ActionLevel(int index) {
 		this();
 		this.setIndex(index);
@@ -66,37 +66,40 @@ public class ActionLevel implements GraphLevel<Operator> {
 
 	/**
 	 * Returns the actions in this action level.
+	 *
 	 * @return
 	 */
 	public final Iterator<Operator> getActions() {
 		return actions.iterator();
 	}
-	
+
 	/**
 	 * Returns whether or not the referred action is in this level.
+	 *
 	 * @param operator
 	 * @return
 	 */
 	public final boolean hasAction(Operator operator) {
 		return actions.contains(operator);
 	}
-	
+
 	/**
 	 * Adds the supplied actions to this action level.
+	 *
 	 * @param operator
 	 */
 	public final void addAction(Operator operator) {
-		if(!this.actions.contains(operator)) {
+		if (!this.actions.contains(operator)) {
 			this.actions.add(operator);
 			//Clear the cache
 			this.generatingActionsCache.clear();
 		}
 	}
-	
+
 	/**
 	 * Returns the actions in this level that have the supplied proposition as
 	 * a precondition.
-	 * 
+	 *
 	 * @param proposition
 	 * @return
 	 */
@@ -108,21 +111,21 @@ public class ActionLevel implements GraphLevel<Operator> {
 				requiringActions.add(oper);
 			}
 		}
-		
+
 		return requiringActions;
 	}
-	
+
 	/**
 	 * Returns the actions in this level that have the supplied proposition as
 	 * an effect.
-	 * 
+	 *
 	 * @param proposition
 	 * @return
 	 */
 	public List<Operator> getGeneratingActions(Proposition proposition) {
 		final List<Operator> generatingActions;
 		//A small caching strategy to speedup things
-		if(this.generatingActionsCache.containsKey(proposition)) {
+		if (this.generatingActionsCache.containsKey(proposition)) {
 			generatingActions = this.generatingActionsCache.get(proposition);
 		} else {
 			generatingActions = new ArrayList<>();
@@ -132,73 +135,77 @@ public class ActionLevel implements GraphLevel<Operator> {
 					generatingActions.add(oper);
 				}
 			}
-			/*Heuristic: select actions that appears latest in the planning graph*/
-			if(Graphplan.operatorsLatest)
+	        /*Heuristic: select actions that appears latest in the planning graph*/
+			if (Graphplan.operatorsLatest)
 				this.sortByIndex(generatingActions);
-			
+
 			/*Heuristic: select noops first*/
-			if(Graphplan.noopsFirst)
+			if (Graphplan.noopsFirst)
 				this.sortByNoopsFirst(generatingActions);
-			
+
 			this.generatingActionsCache.put(proposition, generatingActions);
 		}
 		return generatingActions;
 	}
-	
+
 	/**
 	 * Adds a noop action to propagate the supplied proposition to the subsequent
 	 * proposition level.
+	 *
 	 * @param proposition
 	 */
 	public void addNoop(Proposition proposition) {
 		Operator noop = OperatorFactory.getInstance().getNoop(proposition);
 		this.addAction(noop);
 	}
-	
+
 	/**
 	 * Returns whether or not the two actions are mutually exclusive in this level
+	 *
 	 * @param operator1
 	 * @param operator2
 	 * @return
 	 */
 	public final boolean isMutex(Operator operator1, Operator operator2) {
-		if(this.mutexes.containsKey(operator1)) {
+		if (this.mutexes.containsKey(operator1)) {
 			return this.mutexes.get(operator1).contains(operator2);
 		} else {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Adds a mutex link between operator1 and operator2. Currently we create links
 	 * in both directions, which may be unnecessary, and should be reviewed.
+	 *
 	 * @param operator1
 	 * @param operator2
 	 */
 	public final void addMutex(Operator operator1, Operator operator2) {
-		if(!this.mutexes.containsKey(operator1)) {
+		if (!this.mutexes.containsKey(operator1)) {
 			this.mutexes.put(operator1, new HashSet<>());
 		}
-		
-		if(!this.mutexes.containsKey(operator2)) {
+
+		if (!this.mutexes.containsKey(operator2)) {
 			this.mutexes.put(operator2, new HashSet<>());
 		}
-		
+
 		this.mutexes.get(operator1).add(operator2);
 		this.mutexes.get(operator2).add(operator1);
 	}
-	
+
 	/**
 	 * Returns an iterator to all mutexes for the specified operator.
+	 *
 	 * @param operator The operator for which the mutexes are to be returned.
 	 * @return An iterator to the mutexes for the specified operator.
 	 */
 	public final Iterator<Operator> getMutexes(Operator operator) {
-		if(this.mutexes.containsKey(operator)) {
+		if (this.mutexes.containsKey(operator)) {
 			return this.mutexes.get(operator).iterator();
 		} else return emptyIterator;
 	}
-	
+
 	public final boolean isActionLevel() {
 		return true;
 	}
@@ -212,28 +219,6 @@ public class ActionLevel implements GraphLevel<Operator> {
 		return this.nextLevel;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public final GraphLevel getPrevLevel() {
-		return this.prevLevel;
-	}
-
-	public final int size() {
-		return this.actions.size();
-	}
-	
-	public String toString() {
-
-		return this.actions.toString();
-	}
-	
-	public final int getIndex() {
-		return this.index;
-	}
-	
-	public final void setIndex(int index) {
-		this.index = index;
-	}
-
 	/**
 	 * @param nextLevel the nextLevel to set
 	 */
@@ -241,15 +226,37 @@ public class ActionLevel implements GraphLevel<Operator> {
 		this.nextLevel = nextLevel;
 	}
 
+	@SuppressWarnings("rawtypes")
+	public final GraphLevel getPrevLevel() {
+		return this.prevLevel;
+	}
+
 	/**
 	 * @param prevLevel the prevLevel to set
 	 */
 	@SuppressWarnings("rawtypes")
 	public final void setPrevLevel(GraphLevel prevLevel) {
-		if(prevLevel.isPropositionLevel()) {
+		if (prevLevel.isPropositionLevel()) {
 			this.prevLevel = (PropositionLevel) prevLevel;
 			this.prevLevel.setNextLevel(this);
 		}
+	}
+
+	public final int size() {
+		return this.actions.size();
+	}
+
+	public String toString() {
+
+		return this.actions.toString();
+	}
+
+	public final int getIndex() {
+		return this.index;
+	}
+
+	public final void setIndex(int index) {
+		this.index = index;
 	}
 
 	/*
@@ -258,22 +265,22 @@ public class ActionLevel implements GraphLevel<Operator> {
 	 */
 	public int mutexCount() {
 		int res = 0;
-		for(HashSet<Operator> mutex : mutexes.values()) {
-			res+=mutex.size();
+		for (HashSet<Operator> mutex : mutexes.values()) {
+			res += mutex.size();
 		}
 		return res;
 	}
-	
-	private void sortByNoopsFirst(List<Operator> operators){
+
+	private void sortByNoopsFirst(List<Operator> operators) {
 		Collections.sort(operators, (o1, o2) -> {
-            if( o1.isNoop() && !o2.isNoop()) return -1;
-            if(!o1.isNoop() &&  o2.isNoop()) return 1;
-            return 0;
-        });
+			if (o1.isNoop() && !o2.isNoop()) return -1;
+			if (!o1.isNoop() && o2.isNoop()) return 1;
+			return 0;
+		});
 	}
-	
-	private void sortByIndex(List<Operator> operators){
-		Collections.sort(operators, (o1, o2) -> (o1.getIndex() < o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1)));
+
+	private void sortByIndex(List<Operator> operators) {
+		Collections.sort(operators, (o1, o2) -> (o1.getIndex() < o2.getIndex() ? -1 : (o1.getIndex() == o2.getIndex() ? 0 : 1)));
 	}
 
 	public HashMap<Operator, HashSet<Operator>> getMutexes() {

@@ -38,7 +38,7 @@ import static org.junit.Assert.fail;
 
 public class MemoizationTableTest {
 	protected static final Logger logger = Logger.getLogger(MemoizationTableTest.class.getName());
-	
+
 	protected MemoizationTable table;
 	protected DomainDescription domainDescriptions[];
 
@@ -49,45 +49,45 @@ public class MemoizationTableTest {
 		table.ensureCapacity(3);
 	}
 
-    @Test
+	@Test
 	public void testIsNoGood() {
 		Set<Proposition> goalSet1 = new TreeSet<>();
 		goalSet1.add(domainDescriptions[1].getInitialState().get(1));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(5));
-		
-		logger.info("Goal Set 1 is "+goalSet1.toString());
+
+		logger.info("Goal Set 1 is " + goalSet1.toString());
 		String signature1 = PropositionFactory.getInstance().getGoalsSignature(goalSet1);
-		logger.info("Signature is "+signature1);
-		
+		logger.info("Signature is " + signature1);
+
 		Set<Proposition> goalSet2 = new TreeSet<>();
 		goalSet2.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(5));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(1));
-		
-		logger.info("Goal Set 2 is "+goalSet2.toString());
+
+		logger.info("Goal Set 2 is " + goalSet2.toString());
 		String signature2 = PropositionFactory.getInstance().getGoalsSignature(goalSet2);
-		logger.info("Signature is "+signature2);
-		
+		logger.info("Signature is " + signature2);
+
 		goalSet1 = new TreeSet<>();
 		goalSet1.add(domainDescriptions[1].getInitialState().get(2));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(4));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(6));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(8));
-		
-		logger.info("Goal Set 1 is "+goalSet1.toString());
+
+		logger.info("Goal Set 1 is " + goalSet1.toString());
 		signature1 = PropositionFactory.getInstance().getGoalsSignature(goalSet1);
-		logger.info("Signature is "+signature1);
-		
+		logger.info("Signature is " + signature1);
+
 		goalSet2 = new TreeSet<>();
 		goalSet2.add(domainDescriptions[1].getInitialState().get(6));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(4));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(2));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(8));
-		
-		logger.info("Goal Set 2 is "+goalSet2.toString());
+
+		logger.info("Goal Set 2 is " + goalSet2.toString());
 		signature2 = PropositionFactory.getInstance().getGoalsSignature(goalSet2);
-		logger.info("Signature is "+signature2);
+		logger.info("Signature is " + signature2);
 	}
 
 	@Test
@@ -96,19 +96,19 @@ public class MemoizationTableTest {
 		goalSet1.add(domainDescriptions[1].getInitialState().get(1));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(5));
-		
+
 		table.addNoGood(goalSet1, 2);
-		
-		if(!table.isNoGood(goalSet1, 2)) {
+
+		if (!table.isNoGood(goalSet1, 2)) {
 			fail("No goods table is busted");
 		}
-		
+
 		Set<Proposition> goalSet2 = new TreeSet<>();
 		goalSet2.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(5));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(1));
-		
-		if(!table.isNoGood(goalSet2, 2)) {
+
+		if (!table.isNoGood(goalSet2, 2)) {
 			fail("Failed to find another combination of the same set of goals");
 		}
 	}

@@ -24,61 +24,67 @@
 package graphplan.graph;
 
 public interface GraphLevel<T> extends GraphElement<T> {
-		
+
 	/**
 	 * Returns whether or not this is a proposition graph level.
+	 *
 	 * @return
 	 */
-    boolean isPropositionLevel();
-	
+	boolean isPropositionLevel();
+
 	/**
 	 * Returns whether or not this is an action graph level.
+	 *
 	 * @return
 	 */
-    boolean isActionLevel();
-	
+	boolean isActionLevel();
+
 	/**
 	 * Returns the next level in the graph
+	 *
 	 * @return
 	 */
-    GraphLevel getNextLevel();
-	
+	GraphLevel getNextLevel();
+
 	/**
 	 * Returns the previous level in the graph
+	 *
 	 * @return
 	 */
-    GraphLevel getPrevLevel();
-	
+	GraphLevel getPrevLevel();
+
 	/**
 	 * Sets the previous graph level to the specified level,
 	 * as well as setting the right forward reference in
 	 * the supplied level.
-	 * 
+	 *
 	 * @param graphLevel
 	 */
-    void setPrevLevel(GraphLevel graphLevel);
-	
+	void setPrevLevel(GraphLevel graphLevel);
+
 	/**
 	 * Returns the number of GraphElements in this Level.
+	 *
 	 * @return
 	 */
-    int size();
-	
+	int size();
+
 	/**
 	 * Returns the index of this graph level.
+	 *
 	 * @return
 	 */
-    int getIndex();
-	
+	int getIndex();
+
 	/**
 	 * Sets the index for this graph level.
-	 *
 	 */
-    void setIndex(int index);
-	
+	void setIndex(int index);
+
 	/**
 	 * Returns the number of mutex relations stored in this graph level
+	 *
 	 * @return The number of mutex relations stored in this graph level
 	 */
-    int mutexCount();
+	int mutexCount();
 }

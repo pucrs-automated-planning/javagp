@@ -11,26 +11,26 @@ public class StaticMutexesTable {
 
 	private HashMap<String, HashMap<String, List<MutexCondition>>> mutexesTable = new HashMap<>();
 	private HashMap<String, Set<String>> tableMutexesHits = new HashMap<>();
-	
-	public StaticMutexesTable(List<Operator> operators){
+
+	public StaticMutexesTable(List<Operator> operators) {
 		this.initializeConstructor(operators);
 	}
 
-	private void initializeConstructor(List<Operator> operators){
-		
+	private void initializeConstructor(List<Operator> operators) {
+
 		operators.addAll(this.getNoops(operators));
-		
-		for(Operator op1: operators){
-			for(Operator op2: operators){
-				
-				if(op1.getSignature().equals(op2.getSignature())) continue;	
-				for(Proposition e1: op1.getEffects()){
-					
+
+		for (Operator op1 : operators) {
+			for (Operator op2 : operators) {
+
+				if (op1.getSignature().equals(op2.getSignature())) continue;
+				for (Proposition e1 : op1.getEffects()) {
+
 					// check for inconsistent effects
-					for(Proposition e2: op2.getEffects()){
-						if(!e1.unifies(e2)){
+					for (Proposition e2 : op2.getEffects()) {
+						if (!e1.unifies(e2)) {
 							//if they do not unify check if they are equal
-							if(e1.getSignature().equals(e2.getSignature()) ){
+							if (e1.getSignature().equals(e2.getSignature())) {
 //								System.out.println("\nEffects-> " + op1 + "         " + op2);
 //								System.out.println("effect op1: "+ e1);
 //								System.out.println("effect op2: "+ e2);
@@ -38,12 +38,12 @@ public class StaticMutexesTable {
 							}
 						}
 					}
-					
+
 					// now check for interference
 					for (Proposition p1 : op2.getPreconds()) {
-						if(!e1.unifies(p1)){
+						if (!e1.unifies(p1)) {
 							//if they do not unify check if they are equal
-							if(e1.getSignature().equals(p1.getSignature())){
+							if (e1.getSignature().equals(p1.getSignature())) {
 //								System.out.println("\nPrecond of: " + op2 + " - Effect of: " + op1);
 //								System.out.println("precond op2: "+ p1);
 //								System.out.println("effect op1: "+e1);
@@ -51,26 +51,26 @@ public class StaticMutexesTable {
 							}
 						}
 					}
-					
+
 				}
-				
+
 			}
 		}
 		//for(Operator o: operators){
 		//	System.out.println(o.getFunctor() + " -> " + this.mutexesTable.get(o.getFunctor()));
 		//}
 	}
-	
-	
+
+
 	@SuppressWarnings("rawtypes")
-	private void populateStaticMutexTable(Proposition p1, Proposition p2, Operator op1, Operator op2){
+	private void populateStaticMutexTable(Proposition p1, Proposition p2, Operator op1, Operator op2) {
 		HashMap<String, List<MutexCondition>> mutexOp = this.mutexesTable.get(op1.getFunctor());
-		if(mutexOp == null) mutexOp = new HashMap<>();
+		if (mutexOp == null) mutexOp = new HashMap<>();
 
 		List<MutexCondition> conditionOp = mutexOp.get(op2.getFunctor());
-		if(conditionOp == null) conditionOp = new ArrayList<>();
+		if (conditionOp == null) conditionOp = new ArrayList<>();
 
-		
+
 		MutexCondition mutexCond = new MutexCondition();
 
 		for (Object o1 : p1.getTerms()) {
@@ -90,10 +90,10 @@ public class StaticMutexesTable {
 		this.mutexesTable.put(op1.getFunctor(), mutexOp);
 	}
 
-	private Set<Operator> getNoops(List<Operator> operators){
+	private Set<Operator> getNoops(List<Operator> operators) {
 		Set<Operator> noops = new HashSet<>();
 		OperatorFactory opFac = OperatorFactory.getInstance();
-		
+
 		for (Operator operator : operators) {
 			for (Proposition effect : operator.getEffects()) {
 				noops.add(opFac.getNoop(effect));
@@ -104,24 +104,24 @@ public class StaticMutexesTable {
 		}
 		return noops;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public boolean isMutex(Operator op1, Operator op2) {
 		HashMap<String, List<MutexCondition>> hashOp1 = this.mutexesTable.get(op1.getFunctor());
-		
-		if (hashOp1 != null ) {
+
+		if (hashOp1 != null) {
 			Set<String> mutexes = this.tableMutexesHits.get(op1.toString());
-            if(mutexes != null){
-				if(mutexes.contains(op2.toString())) {
+			if (mutexes != null) {
+				if (mutexes.contains(op2.toString())) {
 					return true;
 				}
 			}
 
 			List<MutexCondition> mutexConditions = hashOp1.get(op2.getFunctor());
-			if(mutexConditions != null){
+			if (mutexConditions != null) {
 				for (MutexCondition mutextCondition : mutexConditions) {
 					if (mutextCondition.verifyConditionsByIndexes(op1.getTerms(), op2.getTerms())) {
-						if(mutexes == null) {
+						if (mutexes == null) {
 							mutexes = new HashSet<>();
 							this.tableMutexesHits.put(op1.toString(), mutexes);
 						}

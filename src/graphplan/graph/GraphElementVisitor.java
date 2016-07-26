@@ -26,6 +26,6 @@ package graphplan.graph;
 @SuppressWarnings("unchecked")
 public interface GraphElementVisitor {
 	boolean visitElement(GraphElement element);
-	
+
 	boolean visitGraphLevel(GraphLevel graphLevel);
 }

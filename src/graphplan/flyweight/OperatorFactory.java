@@ -37,40 +37,65 @@ import java.util.*;
 /**
  * A factory class to be used in the creation and maintenance of
  * operators for our planning system using the flyweight pattern.
- * XXX It may have to be modified if multiple instances of the planner are to be used 
- * @author Felipe Meneguzzi
+ * XXX It may have to be modified if multiple instances of the planner are to be used
  *
+ * @author Felipe Meneguzzi
  */
 public class OperatorFactory {
 	public static final String NOOP_FUNCTOR = "noop";
-	
+
 	private static OperatorFactory operatorFactory = null;
-	
-	private Map<String, Set<String>> types;
-	private Map<String, List<String>> parameterTypes;
-	
-	private boolean usingTypes = false;
-	
-	/**
-	 * Returns the singleton <code>OperatorFactory</code> instance.
-	 * @return
-	 */
-	public static OperatorFactory getInstance() {
-		if(operatorFactory == null) {
-			operatorFactory = new OperatorFactory();
-		}
-		
-		return operatorFactory;
-	}
-	
 	protected Hashtable<String, OperatorImpl> operatorInstances;
 	protected Hashtable<String, OperatorImpl> operatorTemplates;
-	
+	private Map<String, Set<String>> types;
+	private Map<String, List<String>> parameterTypes;
+	private boolean usingTypes = false;
+
 	public OperatorFactory() {
 		this.operatorInstances = new Hashtable<>();
 		this.operatorTemplates = new Hashtable<>();
 	}
-	
+
+	/**
+	 * Returns the singleton <code>OperatorFactory</code> instance.
+	 *
+	 * @return
+	 */
+	public static OperatorFactory getInstance() {
+		if (operatorFactory == null) {
+			operatorFactory = new OperatorFactory();
+		}
+
+		return operatorFactory;
+	}
+
+	public static void reset() {
+		operatorFactory.resetOperatorFactory();
+	}
+
+	/**
+	 * A utility function that returns an empty operator iterator
+	 *
+	 * @return
+	 */
+	public static Iterator<Operator> getEmptyIterator() {
+
+		return new Iterator<Operator>() {
+
+			public boolean hasNext() {
+				return false;
+			}
+
+			public Operator next() {
+				return null;
+			}
+
+			public void remove() {
+			}
+
+		};
+	}
+
 	public Operator createOperatorTemplate(String signature, String[] preconds, String[] effects) {
 		Structure oper = Structure.parse(signature);
 		ArrayList<Proposition> precondProps = new ArrayList<>(preconds.length);
@@ -88,55 +113,50 @@ public class OperatorFactory {
 
 		return new OperatorImpl(oper, precondProps, effectProps);
 	}
-	
+
 	public void addOperatorTemplate(Operator operator) throws OperatorFactoryException {
 		//We check if the operator has no arguments, or if it is not ground
 		//Operators with arguments should not be ground
-		if(operator.getTerms() == null || operator.getTerms().size() == 0 || !operator.isGround()) {
-			//TODO this cast to OperatorImpl has to be reviewed, since it violates the Bridge pattern 
-			this.operatorTemplates.put(operator.getOperatorIndicator(), (OperatorImpl)operator);
+		if (operator.getTerms() == null || operator.getTerms().size() == 0 || !operator.isGround()) {
+			//TODO this cast to OperatorImpl has to be reviewed, since it violates the Bridge pattern
+			this.operatorTemplates.put(operator.getOperatorIndicator(), (OperatorImpl) operator);
 		} else {
-			throw new OperatorFactoryException("Operator "+operator+" is not ground");
+			throw new OperatorFactoryException("Operator " + operator + " is not ground");
 		}
 	}
-	
-	public static void reset() {
-		operatorFactory.resetOperatorFactory();
-	}
-	
+
 	/**
 	 * Resets the operator factory so that it is detached from all flyweight
 	 * operators created so far. Invoke this method with caution.
-	 *
 	 */
 	protected void resetOperatorFactory() {
 		this.operatorInstances.clear();
 		this.operatorTemplates.clear();
 	}
-	
+
 	/**
 	 * Resets the operator templates from this operator factory,
 	 * this method is relevant when operating with multiple
 	 * domains being used at the same time.
-	 *
 	 */
 	public void resetOperatorTemplates() {
 		this.operatorTemplates.clear();
 	}
-	
+
 	/**
 	 * Creates a noop action to propagate the supplied proposition between two proposition
 	 * levels.
+	 *
 	 * @param proposition
 	 */
 	public Operator getNoop(Proposition proposition) {
-		String noopSignature = NOOP_FUNCTOR+"_";
-		if(proposition.negated()) {
-			noopSignature+="not_"+(proposition.toString().substring(1));
+		String noopSignature = NOOP_FUNCTOR + "_";
+		if (proposition.negated()) {
+			noopSignature += "not_" + (proposition.toString().substring(1));
 		} else {
-			noopSignature+=proposition.toString();
+			noopSignature += proposition.toString();
 		}
-		if(operatorInstances.containsKey(noopSignature)) {
+		if (operatorInstances.containsKey(noopSignature)) {
 			return operatorInstances.get(noopSignature);
 		} else {
 			List<Proposition> precondsEffects = new ArrayList<>(1);
@@ -150,7 +170,7 @@ public class OperatorFactory {
 
 	/**
 	 * Returns a fully instantiated operator.
-	 * 
+	 *
 	 * @param operatorSignature
 	 * @return
 	 * @throws OperatorFactoryException
@@ -158,26 +178,26 @@ public class OperatorFactory {
 	@SuppressWarnings("rawtypes")
 	public Operator getOperator(String operatorSignature) throws OperatorFactoryException {
 		//If this operator has been used before, retrieve it from the flyweights
-		if(operatorInstances.containsKey(operatorSignature)) {
+		if (operatorInstances.containsKey(operatorSignature)) {
 			return operatorInstances.get(operatorSignature);
 		} else {
 			//Otherwise, we have to create a new one from a template
 			Structure signature = Structure.parse(operatorSignature);
 			//If a template exists matching the supplied indicator
-			if(this.operatorTemplates.containsKey(signature.getPredicateIndicator().toString())) {
+			if (this.operatorTemplates.containsKey(signature.getPredicateIndicator().toString())) {
 				//We get the template
 				OperatorImpl template = this.operatorTemplates.get(signature.getPredicateIndicator().toString());
 				//And start copying it
 				Structure templateSignature = new Structure(template);
 				Unifier un = new Unifier();
 				//The signature should unify with the template
-				if(!un.unifies(signature, templateSignature)) {
+				if (!un.unifies(signature, templateSignature)) {
 					//This should not happen in a properly described domain
-					throw new OperatorFactoryException("Failed to unify "+templateSignature+" with operator "+templateSignature+" instantiating "+operatorSignature);
+					throw new OperatorFactoryException("Failed to unify " + templateSignature + " with operator " + templateSignature + " instantiating " + operatorSignature);
 				}
 				templateSignature.apply(un);
 				PropositionFactory propositionFactory = PropositionFactory.getInstance();
-				
+
 				//Then get the preconditions in the template
 				List<Proposition> templatePreconds = template.getPreconds();
 				List<Proposition> concretePreconds = new ArrayList<>(templatePreconds.size());
@@ -194,7 +214,7 @@ public class OperatorFactory {
 //					}
 					concretePreconds.add(concretePrecond);
 				}
-				
+
 				List<Proposition> templateEffects = template.getEffects();
 				List<Proposition> concreteEffects = new ArrayList<>(templateEffects.size());
 
@@ -210,143 +230,143 @@ public class OperatorFactory {
 //					}
 					concreteEffects.add(concreteEffect);
 				}
-				
+
 				OperatorImpl operatorImpl = new OperatorImpl(templateSignature, concretePreconds, concreteEffects);
 				this.operatorInstances.put(operatorImpl.getSignature(), operatorImpl);
 				return operatorImpl;
 			} else {
-				throw new OperatorFactoryException("No operator template for "+operatorSignature);
+				throw new OperatorFactoryException("No operator template for " + operatorSignature);
 			}
 			//return null;
 		}
 	}
-	
+
 	public List<Operator> getRequiringOperatorTemplates(Proposition precond) {
 		List<Operator> templates = new ArrayList<>();
 		//Scan every operator template
-		for(Enumeration<OperatorImpl> e = operatorTemplates.elements(); e.hasMoreElements(); ) {
+		for (Enumeration<OperatorImpl> e = operatorTemplates.elements(); e.hasMoreElements(); ) {
 			OperatorImpl oper = e.nextElement();
 			//if the parameter is null or a true proposition
 			//return any empty preconditions operator
-			if(precond == null) {
-				if(oper.getPreconds().isEmpty()) {
+			if (precond == null) {
+				if (oper.getPreconds().isEmpty()) {
 					templates.add(oper);
 				}
 				continue;
-			}			
+			}
 			//or trying to unify the supplied precondition with any of the preconditions
 			for (Proposition oPrecond : oper.getPreconds()) {
-				if(precond.unifies(oPrecond)) {
+				if (precond.unifies(oPrecond)) {
 					templates.add(oper);
 				}
 			}
 		}
 		return templates;
 	}
-	
+
 	@Deprecated
 	public Set<Operator> getAllPossibleInstantiations(List<Operator> operators, List<Proposition> preconds) throws OperatorFactoryException {
 		return this.getAllPossibleInstantiations(operators, preconds, null);
 	}
-	
+
 	/**
 	 * Returns all possible instantiations of the supplied operators, given
 	 * the supplied preconditions.
-	 * 
+	 *
 	 * @param operators
 	 * @return
-	 * @throws OperatorFactoryException 
+	 * @throws OperatorFactoryException
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public Set<Operator> getAllPossibleInstantiations(List<Operator> operators, List<Proposition> preconds, GraphLevel initialState) throws OperatorFactoryException {
 		final Set<Operator> instances = new HashSet<>();
 		final Set<Term> terms = getAllPossibleTerms(preconds);
-		//For each operator template 
+		//For each operator template
 		//We need to instantiate it in every possible way
 		//allowed by the propositions
-		for(Operator operator : operators) {
+		for (Operator operator : operators) {
 			//If this operator has no parameters, there is only one way
 			//to instantiate it
-			if(operator.getTerms() == null) {
+			if (operator.getTerms() == null) {
 				instances.add(getOperator(operator.getSignature()));
 			} else {
 				int size = operator.getTerms().size();
 				//Otherwise, we have to come up with all possible combinations
 				//of parameters
 				Term termInstances[];
-				
-				for(TermInstanceIterator it = new TermInstanceIterator(terms, size);
-					it.hasNext(); ){
+
+				for (TermInstanceIterator it = new TermInstanceIterator(terms, size);
+				     it.hasNext(); ) {
 					termInstances = it.next();
-					
+
 					//Never allow different variables to have the same value
 					boolean addInstance = true;
-					for(int i=0; addInstance && i<termInstances.length; i++) {
-						for(int j=i+1; j<termInstances.length; j++) {
-							if(termInstances[i]==termInstances[j]) {
+					for (int i = 0; addInstance && i < termInstances.length; i++) {
+						for (int j = i + 1; j < termInstances.length; j++) {
+							if (termInstances[i] == termInstances[j]) {
 								addInstance = false;
 								break;
 							}
 						}
 					}
-					
-					if(!addInstance) {
+
+					if (!addInstance) {
 						continue;
 					}
-					
-					if(this.usingTypes){
+
+					if (this.usingTypes) {
 						List<String> pTypes = this.parameterTypes.get(operator.getFunctor());
 						int n = pTypes.size();
 						addInstance = true;
-						
-						for(int i=0; i<n; i++){
+
+						for (int i = 0; i < n; i++) {
 							Set<String> tTypes = this.types.get(pTypes.get(i));
-							if(tTypes == null || !tTypes.contains(((Atom)termInstances[i]).getFunctor())) {
+							if (tTypes == null || !tTypes.contains(((Atom) termInstances[i]).getFunctor())) {
 								addInstance = false;
 								break;
 							}
 						}
 
-						if(!addInstance) continue;
+						if (!addInstance) continue;
 					}
-					
+
 					final OperatorImpl copy = (OperatorImpl) operator.clone();
 					Structure struct = new Structure(copy.getFunctor());
-					for(Term term : termInstances) {
+					for (Term term : termInstances) {
 						struct.addTerm(term);
 					}
-					
+
 					Unifier unifier = new Unifier();
-					if(unifier.unifies(copy, struct)) {
+					if (unifier.unifies(copy, struct)) {
 						copy.apply(unifier);
 					} else {
 						///TODO Check this messy code
 						System.err.println("Big mess!");
 					}
-					
-					for(Proposition proposition : copy.getPreconds()) {
+
+					for (Proposition proposition : copy.getPreconds()) {
 						PropositionImpl realProp = (PropositionImpl) proposition;
 						realProp.apply(unifier);
 						addInstance = preconds.contains(proposition);
-						
-						if(proposition.negated() && !addInstance) {
-							/*Closed World Assumption*/
-							if(initialState != null && initialState.isPropositionLevel()){
+
+						if (proposition.negated() && !addInstance) {
+	                        /*Closed World Assumption*/
+							if (initialState != null && initialState.isPropositionLevel()) {
 								PropositionLevel initial = (PropositionLevel) initialState;
 								PropositionImpl positiveProposition = new PropositionImpl(proposition.getFunctor());
 								positiveProposition.setTerms(proposition.getTerms());
 
-								if(!initial.hasProposition(positiveProposition)){
+								if (!initial.hasProposition(positiveProposition)) {
 									initial.addProposition(proposition);
 								}
 							}
 							//addInstance = true;
 						}
-						if(!addInstance) {
+						if (!addInstance) {
 							break;
 						}
 					}
-					if(addInstance) {
+					if (addInstance) {
 						copy.apply(unifier);
 						instances.add(getOperator(copy.getSignature()));
 					}
@@ -355,66 +375,59 @@ public class OperatorFactory {
 		}
 		return instances;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected Set<Term> getAllPossibleTerms(List<Proposition> propositions) {
 		Set<Term> possibleTerms = new HashSet<>();
-		
-		for(Proposition proposition : propositions) {
-			if(proposition.getTerms() !=  null) {
+
+		for (Proposition proposition : propositions) {
+			if (proposition.getTerms() != null) {
 				possibleTerms.addAll(proposition.getTerms());
 			}
 		}
-		
+
 		return possibleTerms;
 	}
-	
-	/**
-	 * A utility function that returns an empty operator iterator
-	 * @return
-	 */
-	public static Iterator<Operator> getEmptyIterator() {
 
-		return new Iterator<Operator>() {
-
-			public boolean hasNext() {return false;}
-
-			public Operator next() {return null;}
-
-			public void remove() {}
-
-		};
+	public void setTypes(Map<String, Set<String>> types) {
+		this.usingTypes = true;
+		this.types = types;
 	}
-	
+
+	public void setParameterTypes(Map<String, List<String>> parameterTypes) {
+		this.usingTypes = true;
+		this.parameterTypes = parameterTypes;
+	}
+
 	/**
 	 * An iterator to generate all possible combinations of
 	 * terms for a given vector size
-	 * @author Felipe Meneguzzi
 	 *
+	 * @author Felipe Meneguzzi
 	 */
 	protected class TermInstanceIterator implements Iterator<Term[]> {
 		protected final Iterator<Term>[] iterators;
 		protected final Term[] currentTerms;
 		protected final Set<Term> terms;
-		
+
 		@SuppressWarnings("unchecked")
 		public TermInstanceIterator(Set<Term> terms, int size) {
 			iterators = new Iterator[size];
 			currentTerms = new Term[size];
 			this.terms = terms;
-			for(int i=0; i<iterators.length; i++) {
-				iterators[i]=terms.iterator();
+			for (int i = 0; i < iterators.length; i++) {
+				iterators[i] = terms.iterator();
 				//Initialize all but the first term
 				//to comply with the next method
-				if(i>0) {
+				if (i > 0) {
 					currentTerms[i] = iterators[i].next();
 				}
 			}
 		}
 
 		public boolean hasNext() {
-			for(Iterator<Term> iterator : iterators) {
-				if(iterator.hasNext()) {
+			for (Iterator<Term> iterator : iterators) {
+				if (iterator.hasNext()) {
 					return true;
 				}
 			}
@@ -423,9 +436,9 @@ public class OperatorFactory {
 
 		public Term[] next() {
 			boolean advanceNext = true;
-			int i=0;
-			while(advanceNext) {
-				if(iterators[i].hasNext()) {
+			int i = 0;
+			while (advanceNext) {
+				if (iterators[i].hasNext()) {
 					advanceNext = false;
 					currentTerms[i] = iterators[i].next();
 				} else {
@@ -439,17 +452,7 @@ public class OperatorFactory {
 
 		public void remove() {
 			// TODO Auto-generated method stub
-			
+
 		}
-	}
-
-	public void setTypes(Map<String, Set<String>> types) {
-		this.usingTypes = true;
-		this.types = types;
-	}
-
-	public void setParameterTypes(Map<String, List<String>> parameterTypes) {
-		this.usingTypes = true;
-		this.parameterTypes = parameterTypes;
 	}
 }

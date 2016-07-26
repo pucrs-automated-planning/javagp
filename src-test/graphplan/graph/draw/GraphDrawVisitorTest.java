@@ -39,12 +39,12 @@ import static org.junit.Assert.fail;
 
 public class GraphDrawVisitorTest {
 	private static final Logger logger = Logger.getLogger(GraphDrawVisitorTest.class.getName());
-	
+
 	private PlanningGraph planningGraph = null;
 
-    @Before
+	@Before
 	public void setUp() throws Exception {
-        PropositionLevel initialState = new PropositionLevel();
+		PropositionLevel initialState = new PropositionLevel();
 		Proposition proposition = PropositionFactory.getInstance()
 				.getProposition("at(a)");
 		initialState.addProposition(proposition);
@@ -54,13 +54,13 @@ public class GraphDrawVisitorTest {
 
 		OperatorFactory operatorFactory = OperatorFactory.getInstance();
 		Operator operTemplate = operatorFactory.createOperatorTemplate("move(A,B)",
-				new String[] { "~at(B)", "at(A)" }, 
-				new String[] { "at(B)", "~at(A)" });
-		
+				new String[]{"~at(B)", "at(A)"},
+				new String[]{"at(B)", "~at(A)"});
+
 		operatorFactory.addOperatorTemplate(operTemplate);
-		
+
 		planningGraph = new PlanningGraph(initialState);
-		
+
 		ActionLevel actionLevel = new ActionLevel();
 		Operator operator = null;
 		try {
@@ -73,7 +73,7 @@ public class GraphDrawVisitorTest {
 		planningGraph.addGraphLevel(actionLevel);
 	}
 
-    @Test
+	@Test
 	public void testVisitElement() {
 		GraphDrawVisitor drawVisitor = null;
 		try {
@@ -81,7 +81,7 @@ public class GraphDrawVisitorTest {
 		} catch (Exception e) {
 			fail(e.toString());
 		}
-		
+
 		this.planningGraph.accept(drawVisitor);
 		logger.info(drawVisitor.toString());
 	}

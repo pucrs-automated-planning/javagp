@@ -30,80 +30,89 @@ import java.util.List;
 
 /**
  * The interface to a Proposition in the planning graph, this is a bridge
- * pattern between what the planning graph and algorithm expect, and 
+ * pattern between what the planning graph and algorithm expect, and
  * any type of logic implementation we choose to use.
- * @author Felipe Meneguzzi
  *
+ * @author Felipe Meneguzzi
  */
 @SuppressWarnings("unchecked")
 public interface Proposition extends GraphElement {
 	/**
 	 * Gets the functor for this operator
+	 *
 	 * @return This operator's functor.
 	 */
-    String getFunctor();
-	
+	String getFunctor();
+
 	/**
 	 * Gets the signature of this operator, which is composed of the
 	 * operator's functor and its terms.
+	 *
 	 * @return This operator's signature.
 	 */
-    String getSignature();
-	
+	String getSignature();
+
 	/**
 	 * Returns whether or not this operator is ground, i.e. is an action or
 	 * an operator template.
+	 *
 	 * @return Whether or not all variables in this operator are instantiated.
 	 */
-    boolean isGround();
-	
+	boolean isGround();
+
 	/**
 	 * Gets the terms applied to this proposition.
+	 *
 	 * @return This proposition's terms.
 	 */
-    List getTerms();
-	
+	List getTerms();
+
 	/**
 	 * Returns whether or not this is a negated proposition.
+	 *
 	 * @return Whether or not this is a negated proposition.
 	 */
-    boolean negated();
-	
+	boolean negated();
+
 	/**
 	 * Determines whether or not the supplied proposition is mutually exclusive
 	 * of this one. This method only checks for complementarity.
+	 *
 	 * @param proposition The proposition against which mutex relations are to be checked
 	 * @return Whether or not the supplied proposition is mutex with this one.
 	 */
-    boolean isMutex(Proposition proposition);
-	
+	boolean isMutex(Proposition proposition);
+
 	/**
 	 * Tells whether or not this proposition unifies with the supplied proposition.
+	 *
 	 * @param proposition
 	 * @return
 	 */
-    boolean unifies(Proposition proposition);
-	
+	boolean unifies(Proposition proposition);
+
 	/**
 	 * Applies the specified unifier to this proposition, binding its variables
+	 *
 	 * @param unifier
 	 * @return
 	 */
-    boolean apply(Unifier unifier);
-	
+	boolean apply(Unifier unifier);
+
 	/**
 	 * Makes this proposition ground by instantiating its variables as a lower
 	 * case representation of the variable names.
-	 *
 	 */
-    Proposition makeGround();
-	
+	Proposition makeGround();
+
 	/**
 	 * Clones this proposition
+	 *
 	 * @return A deep copy of this operator.
 	 */
-    Object clone();
-	
-	void setIndex(int index);
+	Object clone();
+
 	int getIndex();
+
+	void setIndex(int index);
 }

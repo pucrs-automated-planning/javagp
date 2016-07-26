@@ -37,7 +37,7 @@ import graphplan.graph.memo.mutexes.StaticMutexesTable;
 import java.util.*;
 import java.util.logging.Logger;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class PlanningGraph implements GraphElement {
 
 	private static final long serialVersionUID = -941628537295487625L;
@@ -51,7 +51,7 @@ public class PlanningGraph implements GraphElement {
 	protected MutexGenerator mutexGenerator = null;
 	protected TreeSet<Proposition> propositions;
 	protected TreeSet<Operator> operators;
-	
+
 	//The level in which the graph has levelled off
 	protected int levelOff = 0;
 
@@ -72,7 +72,7 @@ public class PlanningGraph implements GraphElement {
 		this();
 		this.addGraphLevel(initialState);
 	}
-	
+
 	public PlanningGraph(PropositionLevel initialState, StaticMutexesTable staticsMutexesTable) {
 		this();
 		this.mutexGenerator = new MutexGeneratorImpl(staticsMutexesTable);
@@ -89,7 +89,7 @@ public class PlanningGraph implements GraphElement {
 	}
 
 	public boolean accept(GraphElementVisitor visitor) {
-		/*for (GraphLevel level : graphLevels) {
+	    /*for (GraphLevel level : graphLevels) {
 			visitor.visitGraphLevel(level);
 		}*/
 		return visitor.visitElement(this);
@@ -134,7 +134,7 @@ public class PlanningGraph implements GraphElement {
 
 	/**
 	 * Returns the number of levels in this graph
-	 * 
+	 *
 	 * @return
 	 */
 	public int size() {
@@ -143,7 +143,7 @@ public class PlanningGraph implements GraphElement {
 
 	/**
 	 * Returns the specified graph level
-	 * 
+	 *
 	 * @param iLevel
 	 * @return
 	 */
@@ -153,7 +153,7 @@ public class PlanningGraph implements GraphElement {
 
 	/**
 	 * Helper method to get the last GraphLevel.
-	 * 
+	 *
 	 * @return The last level in the planning graph.
 	 */
 	public GraphLevel getLastGraphLevel() {
@@ -167,18 +167,17 @@ public class PlanningGraph implements GraphElement {
 	/**
 	 * Adds a new graph level, enforcing the alternation of Proposition and
 	 * Action levels.
-	 * 
-	 * @param graphLevel
-	 *            The new level to be added.
+	 *
+	 * @param graphLevel The new level to be added.
 	 */
 	public boolean addGraphLevel(GraphLevel graphLevel) {
-		if ((graphLevels.isEmpty() && graphLevel.isPropositionLevel()) || 
-			(this.graphLevels.get(this.graphLevels.size() - 1).isActionLevel() 
-					!= graphLevel.isActionLevel())) {
-			if(!graphLevels.isEmpty()){
+		if ((graphLevels.isEmpty() && graphLevel.isPropositionLevel()) ||
+				(this.graphLevels.get(this.graphLevels.size() - 1).isActionLevel()
+						!= graphLevel.isActionLevel())) {
+			if (!graphLevels.isEmpty()) {
 				graphLevel.setPrevLevel(this.getLastGraphLevel());
 			}
-			
+
 			this.graphLevels.add(graphLevel);
 			graphLevel.setIndex(this.graphLevels.size() - 1);
 			return true;
@@ -190,7 +189,7 @@ public class PlanningGraph implements GraphElement {
 	/**
 	 * Determines if the propositions given as a parameter are a possible set of
 	 * goals in the specified proposition level.
-	 * 
+	 *
 	 * @param goals
 	 * @return
 	 */
@@ -206,7 +205,6 @@ public class PlanningGraph implements GraphElement {
 	/**
 	 * Expands the planning graph by adding one action level and one proposition
 	 * level.
-	 * 
 	 */
 	public void expandGraph() throws PlanningGraphException {
 		if (getLastGraphLevel().isPropositionLevel()) {
@@ -234,47 +232,49 @@ public class PlanningGraph implements GraphElement {
 	 * Returns whether or not this graph has levelled off according to the
 	 * level size criterion. The entire graph levels off when both the levels
 	 * have levelled off and the memoization table has levelled off.
+	 *
 	 * @return
 	 */
 	public boolean levelledOff() {
 		//If the graph has already levelled off, then we don't have to check
 		//again
-		if(levelOff > 0) {
+		if (levelOff > 0) {
 			return true;
 		} else {
 			final int lastGraphLevel = graphLevels.size() - 1;
-			
-			if(lastGraphLevel > 3) {
+
+			if (lastGraphLevel > 3) {
 				boolean levelledOff;
-				
-				//If the graph has levelled off, store the index where it 
-				//happened to check for the memoization stop condition				
-				levelledOff = 
-					(graphLevels.get(lastGraphLevel).size() == graphLevels.get(lastGraphLevel-2).size())
-				  &&(graphLevels.get(lastGraphLevel).mutexCount() == graphLevels.get(lastGraphLevel-2).mutexCount())
-				  &&(graphLevels.get(lastGraphLevel-1).size() == graphLevels.get(lastGraphLevel-3).size())
-				  &&(graphLevels.get(lastGraphLevel-1).mutexCount() == graphLevels.get(lastGraphLevel-3).mutexCount());
-				
-				if(levelledOff) {
+
+				//If the graph has levelled off, store the index where it
+				//happened to check for the memoization stop condition
+				levelledOff =
+						(graphLevels.get(lastGraphLevel).size() == graphLevels.get(lastGraphLevel - 2).size())
+								&& (graphLevels.get(lastGraphLevel).mutexCount() == graphLevels.get(lastGraphLevel - 2).mutexCount())
+								&& (graphLevels.get(lastGraphLevel - 1).size() == graphLevels.get(lastGraphLevel - 3).size())
+								&& (graphLevels.get(lastGraphLevel - 1).mutexCount() == graphLevels.get(lastGraphLevel - 3).mutexCount());
+
+				if (levelledOff) {
 					levelOff = lastGraphLevel;
 				}
-				
+
 				return levelledOff;
 			} else {
 				return false;
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the level at which the graph has levelled off.
+	 *
 	 * @return The level at which the graph has levelled off.
 	 */
 	public final int levelOffIndex() {
 		return levelOff;
 	}
-	
-	public void setIndexForPropositions(PropositionLevel propositionLevel){
+
+	public void setIndexForPropositions(PropositionLevel propositionLevel) {
 		for (Proposition p : propositionLevel) {
 			if (!this.propositions.contains(p)) {
 				p.setIndex(propositionLevel.getIndex());
@@ -282,8 +282,8 @@ public class PlanningGraph implements GraphElement {
 			} else p.setIndex(this.propositions.ceiling(p).getIndex());
 		}
 	}
-	
-	public void setIndexForOperators(ActionLevel actionLevel){
+
+	public void setIndexForOperators(ActionLevel actionLevel) {
 		for (Operator op : actionLevel) {
 			if (!this.operators.contains(op)) {
 				op.setIndex(actionLevel.getIndex());
@@ -291,10 +291,10 @@ public class PlanningGraph implements GraphElement {
 			} else op.setIndex(this.operators.ceiling(op).getIndex());
 		}
 	}
-	
+
 	public String toString() {
 		TextDrawVisitor visitor = new TextDrawVisitor();
-		if(this.accept(visitor)) {
+		if (this.accept(visitor)) {
 			return visitor.toString();
 		} else {
 			return super.toString();

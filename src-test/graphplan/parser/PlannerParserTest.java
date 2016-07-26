@@ -35,10 +35,10 @@ import static org.junit.Assert.fail;
 
 // TODO: implement missing tests
 public class PlannerParserTest {
-	
+
 	static final String OPERATORS_FILE = "src-test/graphplan/parser/operators.txt";
 	static final String PROBLEM_FILE = "src-test/graphplan/parser/problem.txt";
-	
+
 	protected PlannerParser plannerParser;
 
 	@Before
@@ -46,20 +46,20 @@ public class PlannerParserTest {
 		plannerParser = new PlannerParser();
 	}
 
-    @Test
+	@Test
 	public void testParseProblemFileFile() {
 		File operators = new File(OPERATORS_FILE);
 		File problem = new File(PROBLEM_FILE);
-		
+
 		DomainDescription domainDescription = null;
-		
+
 		try {
 			domainDescription = plannerParser.parseProblem(operators, problem);
 		} catch (FileNotFoundException | ParseException e) {
 			fail(e.toString());
 		}
 
-        if(domainDescription == null) {
+		if (domainDescription == null) {
 			fail("Domain description is invalid");
 		}
 	}
@@ -74,46 +74,46 @@ public class PlannerParserTest {
 		} catch (FileNotFoundException e) {
 			fail(e.toString());
 		}
-		
+
 		DomainDescription domainDescription = null;
-		
+
 		try {
 			domainDescription = plannerParser.parseProblem(operatorStream, problemStream);
 		} catch (ParseException e) {
 			fail(e.toString());
 		}
-		
-		if(domainDescription == null) {
+
+		if (domainDescription == null) {
 			fail("Domain description is invalid");
 		}
 	}
 
-//	@Test
+	//	@Test
 	public void testOperators() {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testOperator() {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testStart() {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testGoal() {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testPropositions() {
 		fail("Not yet implemented"); // TODO
 	}
 
-//	@Test
+	//	@Test
 	public void testProposition() {
 		fail("Not yet implemented"); // TODO
 	}

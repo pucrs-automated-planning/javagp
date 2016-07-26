@@ -29,11 +29,11 @@ import graphplan.util.SetUtil;
 import java.util.*;
 
 /**
- * A class encapsulating the result of planning. This class allows direct 
- * comparison with a boolean value determining whether or not the plan was 
+ * A class encapsulating the result of planning. This class allows direct
+ * comparison with a boolean value determining whether or not the plan was
  * successful, as well as iteration through the plan steps.
- * @author Felipe Meneguzzi
  *
+ * @author Felipe Meneguzzi
  */
 public class PlanResult implements Iterable<Operator> {
 	//The steps are a list of list, since we can have multiple operators at any given step
@@ -42,9 +42,9 @@ public class PlanResult implements Iterable<Operator> {
 
 	// Contains all possible sequence of steps from this plan
 	private Set<List<Operator>> allPossibleSolutions;
-	
+
 	/**
-	 * Creates a new PlanResult from a stack of operators in 
+	 * Creates a new PlanResult from a stack of operators in
 	 * reverse order.
 	 */
 	public PlanResult(Stack<Set<Operator>> stack) {
@@ -66,7 +66,7 @@ public class PlanResult implements Iterable<Operator> {
 	}
 
 	public Iterator<Operator> iterator() {
-		if(steps == null) {
+		if (steps == null) {
 			return null;
 		}
 		return new Iterator<Operator>() {
@@ -74,15 +74,15 @@ public class PlanResult implements Iterable<Operator> {
 			private Iterator<List<Operator>> listIterator = PlanResult.this.steps.iterator();
 
 			public boolean hasNext() {
-				if(stepIterator == null) {
-					if(listIterator.hasNext()) {
+				if (stepIterator == null) {
+					if (listIterator.hasNext()) {
 						stepIterator = listIterator.next().iterator();
 						return this.hasNext();
 					} else {
 						return false;
 					}
 				} else {
-					if(stepIterator.hasNext()) {
+					if (stepIterator.hasNext()) {
 						return true;
 					} else {
 						stepIterator = null;
@@ -92,7 +92,7 @@ public class PlanResult implements Iterable<Operator> {
 			}
 
 			public Operator next() {
-				if(this.hasNext()) {
+				if (this.hasNext()) {
 					return stepIterator.next();
 				} else {
 					return null;
@@ -107,7 +107,7 @@ public class PlanResult implements Iterable<Operator> {
 
 	// Get all possible sequence of steps from this plan
 	public Set<List<Operator>> getAllPossibleSolutions() {
-		if(allPossibleSolutions == null) {
+		if (allPossibleSolutions == null) {
 			allPossibleSolutions = new HashSet<>();
 			for (List<Operator> s : steps) {
 				List<List<Operator>> permutations = SetUtil.permutation(s);
@@ -118,7 +118,7 @@ public class PlanResult implements Iterable<Operator> {
 					tempSolutions.addAll(permutations);
 				} else {
 					for (List<Operator> list : allPossibleSolutions) {
-						for(List<Operator> per:permutations) {
+						for (List<Operator> per : permutations) {
 							List<Operator> newList = new ArrayList<>(list);
 							newList.addAll(per);
 							tempSolutions.add(newList);
@@ -131,16 +131,16 @@ public class PlanResult implements Iterable<Operator> {
 		}
 		return allPossibleSolutions;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		
+
 		for (Operator step : this) {
 			builder.append(step);
 			builder.append(System.getProperty("line.separator"));
 		}
-		
+
 		return builder.toString();
 	}
 }

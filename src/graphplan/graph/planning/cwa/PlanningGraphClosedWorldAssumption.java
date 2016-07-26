@@ -18,7 +18,7 @@ public class PlanningGraphClosedWorldAssumption extends PlanningGraph {
 	private static final Logger logger = Logger.getLogger(PlanningGraph.class.getName());
 
 	private static final long serialVersionUID = 5132706449924120949L;
-	
+
 	private LevelGeneratorClosedWorldAssumptionImpl actionLevelGeneratorCwa;
 	private boolean closedWorldAssumption = false;
 
@@ -26,18 +26,18 @@ public class PlanningGraphClosedWorldAssumption extends PlanningGraph {
 		super(initialLevel, types, parameterTypes, staticsMutexesTable);
 		this.actionLevelGeneratorCwa = new LevelGeneratorClosedWorldAssumptionImpl(types, parameterTypes);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void expandGraph() throws PlanningGraphException {
 		PropositionLevel lastLevel = (PropositionLevel) getLastGraphLevelCwa();
 		//First we create a new action level from the last proposition level
-		
+
 		PropositionLevel initialState = (PropositionLevel) this.getGraphLevel(0);
 		int initialStateSize = initialState.size();
 		ActionLevel actionLevel = this.actionLevelGeneratorCwa.createNextActionLevel(lastLevel, initialState);
-		
-		if(initialStateSize != initialState.size()) {
+
+		if (initialStateSize != initialState.size()) {
 			logger.info("-> Initial State was changed: Maintenance Actions and Mutexes from Level 0 until current Level");
 			this.graphLevels = new ArrayList<>();
 			this.graphLevels.add(initialState);
@@ -56,14 +56,14 @@ public class PlanningGraphClosedWorldAssumption extends PlanningGraph {
 			this.mutexGenerator.addPropositionMutexes(actionLevel, propositionLevel);
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public GraphLevel getLastGraphLevelCwa() {
-		if(this.closedWorldAssumption){
+		if (this.closedWorldAssumption) {
 			this.closedWorldAssumption = false;
 			return this.graphLevels.get(0);
 		}
-		
+
 		if (this.graphLevels.size() > 0) {
 			return this.graphLevels.get(this.graphLevels.size() - 1);
 		} else {

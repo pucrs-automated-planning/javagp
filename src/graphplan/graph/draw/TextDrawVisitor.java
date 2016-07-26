@@ -31,18 +31,18 @@ import graphplan.graph.planning.PlanningGraph;
 import java.util.Iterator;
 
 public class TextDrawVisitor implements GraphElementVisitor {
-	
+
 	protected StringBuffer sbOutput = null;
-	
+
 	public TextDrawVisitor() {
 		this.sbOutput = new StringBuffer();
 	}
 
 	@SuppressWarnings("unchecked")
 	public boolean visitElement(GraphElement element) {
-		if(element instanceof PlanningGraph) {
+		if (element instanceof PlanningGraph) {
 			PlanningGraph planningGraph = (PlanningGraph) element;
-			for (int i=0; i<planningGraph.size(); i++) {
+			for (int i = 0; i < planningGraph.size(); i++) {
 				this.visitGraphLevel(planningGraph.getGraphLevel(i));
 			}
 		}
@@ -55,35 +55,36 @@ public class TextDrawVisitor implements GraphElementVisitor {
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean visitGraphLevel(GraphLevel graphLevel) {
-		if(graphLevel.isPropositionLevel()) {
+		if (graphLevel.isPropositionLevel()) {
 			this.visitPropositionLevel((PropositionLevel) graphLevel);
 		} else {
 			this.visitActionLevel((ActionLevel) graphLevel);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Visits an action level to draw its elements.
+	 *
 	 * @param actionLevel
 	 * @return
 	 */
 	public boolean visitActionLevel(ActionLevel actionLevel) {
 		StringBuilder sbMutexes = new StringBuilder();
-		
+
 		sbOutput.append(" Action Level [");
-		for(Iterator<Operator> iter = actionLevel.getActions(); iter.hasNext(); ) {
+		for (Iterator<Operator> iter = actionLevel.getActions(); iter.hasNext(); ) {
 			Operator operator = iter.next();
 			sbOutput.append(operator.toString());
-			if(iter.hasNext()) {
+			if (iter.hasNext()) {
 				sbOutput.append(", ");
 			}
 			sbMutexes.append("   ").append(operator.toString()).append(": ");
-			for(Iterator<Operator> j = actionLevel.getMutexes(operator); j.hasNext(); ) {
+			for (Iterator<Operator> j = actionLevel.getMutexes(operator); j.hasNext(); ) {
 				Operator mutex = j.next();
 				sbMutexes.append(mutex.toString());
-				if(j.hasNext()) {
+				if (j.hasNext()) {
 					sbMutexes.append(", ");
 				}
 			}
@@ -91,29 +92,29 @@ public class TextDrawVisitor implements GraphElementVisitor {
 		}
 		sbOutput.append("]");
 		sbOutput.append(System.getProperty("line.separator"));
-		
+
 		sbOutput.append(" - Mutexes: ").append(System.getProperty("line.separator"));
 		sbOutput.append(sbMutexes.toString());
 		//sbOutput.append(System.getProperty("line.separator"));
 		return true;
 	}
-	
+
 	public boolean visitPropositionLevel(PropositionLevel propositionLevel) {
 		StringBuilder sbMutexes = new StringBuilder();
-		
+
 		sbOutput.append("Proposition Level [");
-		for (Iterator<Proposition> iter = propositionLevel.getPropositions(); iter.hasNext();) {
+		for (Iterator<Proposition> iter = propositionLevel.getPropositions(); iter.hasNext(); ) {
 			Proposition proposition = iter.next();
 			sbOutput.append(proposition.toString());
-			if(iter.hasNext()) {
+			if (iter.hasNext()) {
 				sbOutput.append(", ");
 			}
-			
+
 			sbMutexes.append("   ").append(proposition.toString()).append(": ");
-			for(Iterator<Proposition> j = propositionLevel.getMutexes(proposition); j.hasNext(); ) {
+			for (Iterator<Proposition> j = propositionLevel.getMutexes(proposition); j.hasNext(); ) {
 				Proposition mutex = j.next();
 				sbMutexes.append(mutex.toString());
-				if(j.hasNext()) {
+				if (j.hasNext()) {
 					sbMutexes.append(", ");
 				}
 			}
@@ -121,13 +122,13 @@ public class TextDrawVisitor implements GraphElementVisitor {
 		}
 		sbOutput.append("]");
 		sbOutput.append(System.getProperty("line.separator"));
-		
+
 		sbOutput.append(" - Mutexes: ").append(System.getProperty("line.separator"));
 		sbOutput.append(sbMutexes.toString());
 		//sbOutput.append(System.getProperty("line.separator"));
 		return true;
 	}
-	
+
 	/**
 	 * Clears the graph drawing created so far, allowing this visitor
 	 * to be reused.
