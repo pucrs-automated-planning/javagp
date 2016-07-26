@@ -214,7 +214,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllGripperPDDL0() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/gripper/gripper.pddl", "-p", "examples/pddl/gripper/pb1.pddl", "-extractAllPossibleSolutions", "0"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/gripper/gripper.pddl")
+				.setProblemFilename("examples/pddl/gripper/pb1.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(0).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(2, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(8, planSolution.getNumberOfPlans());
@@ -222,15 +226,23 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllGripperPDDL1() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/gripper/gripper.pddl", "-p", "examples/pddl/gripper/pb1.pddl", "-extractAllPossibleSolutions", "1"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/gripper/gripper.pddl")
+				.setProblemFilename("examples/pddl/gripper/pb1.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(1).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
-		assertEquals(112, planSolution.getNumberOfHighlevelPlans());
+		assertEquals(16, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(8, planSolution.getNumberOfPlans());
 	}
 
 	@Test
 	public void testAllGripperPDDL2() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/gripper/gripper.pddl", "-p", "examples/pddl/gripper/pb1.pddl", "-extractAllPossibleSolutions", "2"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/gripper/gripper.pddl")
+				.setProblemFilename("examples/pddl/gripper/pb1.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(2).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(112, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(248, planSolution.getNumberOfPlans());
@@ -238,7 +250,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL10() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb1.pddl", "-extractAllPossibleSolutions", "0"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/drinkanddrive/drinkanddrive.pddl")
+				.setProblemFilename("examples/pddl/drinkanddrive/pb1.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(0).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(1, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(1, planSolution.getNumberOfPlans());
@@ -246,7 +262,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL11() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb1.pddl", "-extractAllPossibleSolutions", "1"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/drinkanddrive/drinkanddrive.pddl")
+				.setProblemFilename("examples/pddl/drinkanddrive/pb1.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(1).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(5, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(1, planSolution.getNumberOfPlans());
@@ -254,7 +274,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL20() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb2.pddl", "-extractAllPossibleSolutions", "0"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/drinkanddrive/drinkanddrive.pddl")
+				.setProblemFilename("examples/pddl/drinkanddrive/pb2.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(0).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(6, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(6, planSolution.getNumberOfPlans());
@@ -262,7 +286,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL21() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb2.pddl", "-extractAllPossibleSolutions", "1"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/drinkanddrive/drinkanddrive.pddl")
+				.setProblemFilename("examples/pddl/drinkanddrive/pb2.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(1).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(42, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(6, planSolution.getNumberOfPlans());
@@ -270,7 +298,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL22() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb2.pddl", "-extractAllPossibleSolutions", "2"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/drinkanddrive/drinkanddrive.pddl")
+				.setProblemFilename("examples/pddl/drinkanddrive/pb2.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(2).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(258, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(96, planSolution.getNumberOfPlans());
@@ -278,7 +310,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL30() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb3.pddl", "-extractAllPossibleSolutions", "0"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/drinkanddrive/drinkanddrive.pddl")
+				.setProblemFilename("examples/pddl/drinkanddrive/pb3.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(0).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(2, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(2, planSolution.getNumberOfPlans());
@@ -286,7 +322,11 @@ public class GraphplanPDDLTest {
 
 	@Test
 	public void testAllDrinkAndDrivePDDL31() {
-		PlanSolution planSolution = Graphplan.getPlanSolution(new String[]{"-d", "examples/pddl/drinkanddrive/drinkanddrive.pddl", "-p", "examples/pddl/drinkanddrive/pb3.pddl", "-extractAllPossibleSolutions", "1"});
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/drinkanddrive/drinkanddrive.pddl")
+				.setProblemFilename("examples/pddl/drinkanddrive/pb3.pddl")
+				.setExtractAllPossibleSolutions(true)
+				.setExtractAllPossibleSolutionsWithMaxLength(1).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
 		assertNotNull(planSolution);
 		assertEquals(16, planSolution.getNumberOfHighlevelPlans());
 		assertEquals(6, planSolution.getNumberOfPlans());
