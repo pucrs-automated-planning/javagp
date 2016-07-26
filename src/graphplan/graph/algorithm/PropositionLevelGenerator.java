@@ -34,5 +34,5 @@ public interface PropositionLevelGenerator {
 	 * @return A new proposition level for the graph.
 	 * @throws PlanningGraphException
 	 */
-	PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) throws PlanningGraphException;
+	PropositionLevel createNextPropositionLevel(ActionLevel actionLevel);
 }

@@ -41,33 +41,33 @@ public interface Proposition extends GraphElement {
 	 * Gets the functor for this operator
 	 * @return This operator's functor.
 	 */
-	public String getFunctor();
+    String getFunctor();
 	
 	/**
 	 * Gets the signature of this operator, which is composed of the
 	 * operator's functor and its terms.
 	 * @return This operator's signature.
 	 */
-	public String getSignature();
+    String getSignature();
 	
 	/**
 	 * Returns whether or not this operator is ground, i.e. is an action or
 	 * an operator template.
 	 * @return Whether or not all variables in this operator are instantiated.
 	 */
-	public boolean isGround();
+    boolean isGround();
 	
 	/**
 	 * Gets the terms applied to this proposition.
 	 * @return This proposition's terms.
 	 */
-	public List getTerms();
+    List getTerms();
 	
 	/**
 	 * Returns whether or not this is a negated proposition.
 	 * @return Whether or not this is a negated proposition.
 	 */
-	public boolean negated();
+    boolean negated();
 	
 	/**
 	 * Determines whether or not the supplied proposition is mutually exclusive
@@ -75,35 +75,35 @@ public interface Proposition extends GraphElement {
 	 * @param proposition The proposition against which mutex relations are to be checked
 	 * @return Whether or not the supplied proposition is mutex with this one.
 	 */
-	public boolean isMutex(Proposition proposition);
+    boolean isMutex(Proposition proposition);
 	
 	/**
 	 * Tells whether or not this proposition unifies with the supplied proposition.
 	 * @param proposition
 	 * @return
 	 */
-	public boolean unifies(Proposition proposition);
+    boolean unifies(Proposition proposition);
 	
 	/**
 	 * Applies the specified unifier to this proposition, binding its variables
 	 * @param unifier
 	 * @return
 	 */
-	public boolean apply(Unifier unifier);
+    boolean apply(Unifier unifier);
 	
 	/**
 	 * Makes this proposition ground by instantiating its variables as a lower
 	 * case representation of the variable names.
 	 *
 	 */
-	public Proposition makeGround();
+    Proposition makeGround();
 	
 	/**
 	 * Clones this proposition
 	 * @return A deep copy of this operator.
 	 */
-	public Object clone();
+    Object clone();
 	
-	public void setIndex(int index);
-	public int getIndex();
+	void setIndex(int index);
+	int getIndex();
 }

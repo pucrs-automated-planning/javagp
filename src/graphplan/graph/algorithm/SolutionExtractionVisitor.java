@@ -120,15 +120,14 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 			//For every action level we visit, we add a list
 			//of actions to the support action stack to be
 			//used in the iteration of the proposition level
-			boolean planFound = graphLevel.getPrevLevel().accept(this);
-			return planFound;
+			return graphLevel.getPrevLevel().accept(this);
 		} else {
 			if(graphLevel.getPrevLevel() == null) {
 				//We hit the first level, return
 				return true;
 			}
 			PropositionLevel propositionLevel = (PropositionLevel) graphLevel;
-			Set<Proposition> subGoals = new TreeSet<Proposition>(this.subGoalStack.peek());
+			Set<Proposition> subGoals = new TreeSet<>(this.subGoalStack.peek());
 			
 			//First, check the no goods table
 			if(this.memoizationTable.isNoGood(this.subGoalStack.peek(), propositionLevel.getIndex())) {
@@ -144,11 +143,10 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 				//supportActionStack.push(new LinkedHashSet<Operator>());
 				//logger.fine("At level "+propositionLevel.getIndex()+", trying to achieve "+subGoalStack.peek());
 				
-				boolean planFound = this.visitPropositionLevel(propositionLevel, subGoals);
 				/*if(!planFound) {
 					this.supportActionStack.pop();
 				}*/
-				return planFound;
+				return this.visitPropositionLevel(propositionLevel, subGoals);
 			} else {
 				//When memoization is in, check this
 				return false;
@@ -172,7 +170,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 		
 		final ActionLevel actionLevel = (ActionLevel) propositionLevel.getPrevLevel();
 		
-		ArrayList<Proposition> subGoalsSorted = new ArrayList<Proposition>(subGoals);
+		ArrayList<Proposition> subGoalsSorted = new ArrayList<>(subGoals);
 		
 		/* Heuristic: sort goals by proposition that appears earliest in the planning graph */
 		if(Graphplan.sortGoals){
@@ -269,7 +267,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	 * @return
 	 */
 	private List<Operator> andNotMutexes(List<Operator> resolvers, Set<Operator> mutex) {
-		List<Operator> andNot = new ArrayList<Operator>();
+		List<Operator> andNot = new ArrayList<>();
 
 		for(Operator op: resolvers){
 			if(!mutex.contains(op)) andNot.add(op);
@@ -285,7 +283,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	 * @return
 	 */
 	private List<Proposition> getSubGoals(Operator resolver, List<Proposition> subGoals) {
-		List<Proposition> andNot = new ArrayList<Proposition>();
+		List<Proposition> andNot = new ArrayList<>();
 		
 		for(Proposition p: subGoals){
 			if(!resolver.getEffects().contains(p)) andNot.add(p);
@@ -294,13 +292,11 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	}
 
 	private Proposition popGoal(List<Proposition> subGoals){
-		Proposition p = subGoals.get(0);
-		return p;
+		return subGoals.get(0);
 	}
 	
 	private Operator popResolver(List<Operator> resolvers){
-		Operator op = resolvers.remove(0);
-		return op;
+		return resolvers.remove(0);
 	}
 	
 	/**
@@ -324,7 +320,7 @@ public class SolutionExtractionVisitor implements GraphElementVisitor {
 	 * @return
 	 */
 	private Set<Proposition> determineSubgoals(Set<Operator> operators) {
-		final TreeSet<Proposition> subGoals = new TreeSet<Proposition>();
+		final TreeSet<Proposition> subGoals = new TreeSet<>();
 		
 		for (Operator operator : operators) {
 			for(Proposition proposition : operator.getPreconds()) {

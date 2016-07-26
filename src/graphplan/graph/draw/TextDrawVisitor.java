@@ -79,7 +79,7 @@ public class TextDrawVisitor implements GraphElementVisitor {
 			if(iter.hasNext()) {
 				sbOutput.append(", ");
 			}
-			sbMutexes.append("   "+operator.toString()+": ");
+			sbMutexes.append("   ").append(operator.toString()).append(": ");
 			for(Iterator<Operator> j = actionLevel.getMutexes(operator); j.hasNext(); ) {
 				Operator mutex = j.next();
 				sbMutexes.append(mutex.toString());
@@ -92,7 +92,7 @@ public class TextDrawVisitor implements GraphElementVisitor {
 		sbOutput.append("]");
 		sbOutput.append(System.getProperty("line.separator"));
 		
-		sbOutput.append(" - Mutexes: "+System.getProperty("line.separator"));
+		sbOutput.append(" - Mutexes: ").append(System.getProperty("line.separator"));
 		sbOutput.append(sbMutexes.toString());
 		//sbOutput.append(System.getProperty("line.separator"));
 		return true;
@@ -109,7 +109,7 @@ public class TextDrawVisitor implements GraphElementVisitor {
 				sbOutput.append(", ");
 			}
 			
-			sbMutexes.append("   "+proposition.toString()+": ");
+			sbMutexes.append("   ").append(proposition.toString()).append(": ");
 			for(Iterator<Proposition> j = propositionLevel.getMutexes(proposition); j.hasNext(); ) {
 				Proposition mutex = j.next();
 				sbMutexes.append(mutex.toString());
@@ -122,7 +122,7 @@ public class TextDrawVisitor implements GraphElementVisitor {
 		sbOutput.append("]");
 		sbOutput.append(System.getProperty("line.separator"));
 		
-		sbOutput.append(" - Mutexes: "+System.getProperty("line.separator"));
+		sbOutput.append(" - Mutexes: ").append(System.getProperty("line.separator"));
 		sbOutput.append(sbMutexes.toString());
 		//sbOutput.append(System.getProperty("line.separator"));
 		return true;

@@ -46,9 +46,9 @@ public class ActionLevel implements GraphLevel<Operator> {
 	
 	public ActionLevel() {
 		//TODO tune the lists and hashtables to improve performance
-		this.actions = new ArrayList<Operator>();
-		this.mutexes = new HashMap<Operator, HashSet<Operator>>((int)16, (float)0.5);
-		this.generatingActionsCache = new HashMap<Proposition, List<Operator>>();
+		this.actions = new ArrayList<>();
+		this.mutexes = new HashMap<>(16, (float) 0.5);
+		this.generatingActionsCache = new HashMap<>();
 	}
 	
 	public ActionLevel(int index) {
@@ -101,11 +101,10 @@ public class ActionLevel implements GraphLevel<Operator> {
 	 * @return
 	 */
 	public List<Operator> getRequiringActions(Proposition proposition) {
-		List<Operator> requiringActions = new ArrayList<Operator>();
-		
-		for (Iterator<Operator> iter = actions.iterator(); iter.hasNext();) {
-			Operator oper = iter.next();
-			if(oper.getPreconds().contains(proposition)) {
+		List<Operator> requiringActions = new ArrayList<>();
+
+		for (Operator oper : actions) {
+			if (oper.getPreconds().contains(proposition)) {
 				requiringActions.add(oper);
 			}
 		}
@@ -126,11 +125,10 @@ public class ActionLevel implements GraphLevel<Operator> {
 		if(this.generatingActionsCache.containsKey(proposition)) {
 			generatingActions = this.generatingActionsCache.get(proposition);
 		} else {
-			generatingActions = new ArrayList<Operator>();
-			
-			for (Iterator<Operator> iter = this.actions.iterator(); iter.hasNext();) {
-				Operator oper = iter.next();
-				if(oper.getEffects().contains(proposition)) {
+			generatingActions = new ArrayList<>();
+
+			for (Operator oper : this.actions) {
+				if (oper.getEffects().contains(proposition)) {
 					generatingActions.add(oper);
 				}
 			}
@@ -179,11 +177,11 @@ public class ActionLevel implements GraphLevel<Operator> {
 	 */
 	public final void addMutex(Operator operator1, Operator operator2) {
 		if(!this.mutexes.containsKey(operator1)) {
-			this.mutexes.put(operator1, new HashSet<Operator>());
+			this.mutexes.put(operator1, new HashSet<>());
 		}
 		
 		if(!this.mutexes.containsKey(operator2)) {
-			this.mutexes.put(operator2, new HashSet<Operator>());
+			this.mutexes.put(operator2, new HashSet<>());
 		}
 		
 		this.mutexes.get(operator1).add(operator2);
@@ -224,11 +222,8 @@ public class ActionLevel implements GraphLevel<Operator> {
 	}
 	
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append(this.actions.toString());
-		
-		return sb.toString();
+
+		return this.actions.toString();
 	}
 	
 	public final int getIndex() {
@@ -270,21 +265,15 @@ public class ActionLevel implements GraphLevel<Operator> {
 	}
 	
 	private void sortByNoopsFirst(List<Operator> operators){
-		Collections.sort(operators, new Comparator<Operator>() {
-			public int compare(Operator o1, Operator o2) {
-				if( o1.isNoop() && !o2.isNoop()) return -1;
-				if(!o1.isNoop() &&  o2.isNoop()) return 1;
-				return 0;
-			}
-		});
+		Collections.sort(operators, (o1, o2) -> {
+            if( o1.isNoop() && !o2.isNoop()) return -1;
+            if(!o1.isNoop() &&  o2.isNoop()) return 1;
+            return 0;
+        });
 	}
 	
 	private void sortByIndex(List<Operator> operators){
-		Collections.sort(operators, new Comparator<Operator>() {
-			public int compare(Operator o1, Operator o2) {
-				return (o1.getIndex() < o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1));
-			}
-		});
+		Collections.sort(operators, (o1, o2) -> (o1.getIndex() < o2.getIndex() ? -1: (o1.getIndex() == o2.getIndex() ? 0 : 1)));
 	}
 
 	public HashMap<Operator, HashSet<Operator>> getMutexes() {

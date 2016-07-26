@@ -45,7 +45,7 @@ public class SimplerFormatter extends Formatter {
 	 */
 	@Override
 	public String format(LogRecord record) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		
 		String message = formatMessage(record);
 		

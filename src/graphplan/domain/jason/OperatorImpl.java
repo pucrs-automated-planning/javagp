@@ -57,14 +57,14 @@ public class OperatorImpl extends Structure implements Operator {
 
 	public OperatorImpl(String declaration) {
 		super(Structure.parse(declaration));
-		this.preconds = new ArrayList<Proposition>();
-		this.effects = new ArrayList<Proposition>();
+		this.preconds = new ArrayList<>();
+		this.effects = new ArrayList<>();
 	}
 	
 	public OperatorImpl(Structure functor, List<Proposition> preconds, List<Proposition> effects) {
 		super(functor);
-		this.preconds = new ArrayList<Proposition>();
-		this.effects = new ArrayList<Proposition>();
+		this.preconds = new ArrayList<>();
+		this.effects = new ArrayList<>();
 		this.addPreconds(preconds);
 		this.addEffects(effects);
 	}
@@ -103,7 +103,7 @@ public class OperatorImpl extends Structure implements Operator {
 	 * @param proposition
 	 * @return Whether the variables in the proposition match those of this operator's header
 	 */
-	private final boolean checkVariables(Proposition proposition) {
+	private boolean checkVariables(Proposition proposition) {
 		//TODO no checking is being made
 		return true;
 	}
@@ -188,14 +188,14 @@ public class OperatorImpl extends Structure implements Operator {
 		//XXX preconds and effects, rather than merging variables in the
 		//XXX operator globally
 		List<Proposition> temp = this.preconds;
-		for(int i=0; i<temp.size(); i++) {
-			tr = temp.get(i).apply(u);
+		for (Proposition aTemp1 : temp) {
+			tr = aTemp1.apply(u);
 			r = r || tr;
 		}
 		
 		temp = this.effects;
-		for(int i=0; i<temp.size(); i++) {
-			tr = temp.get(i).apply(u);
+		for (Proposition aTemp : temp) {
+			tr = aTemp.apply(u);
 			r = r || tr;
 		}
 		return r;

@@ -56,7 +56,7 @@ public class PlanningGraph implements GraphElement {
 	protected int levelOff = 0;
 
 	public PlanningGraph() {
-		this.graphLevels = new ArrayList<GraphLevel>();
+		this.graphLevels = new ArrayList<>();
 		//XXX Right now I'm hard coding the instantiation of the level generators
 		//TODO Eventually this should be done through configuration and reflection
 		LevelGeneratorImpl levelGenerator = new LevelGeneratorImpl();
@@ -64,8 +64,8 @@ public class PlanningGraph implements GraphElement {
 		this.propositionLevelGenerator = levelGenerator;
 		//And the mutex generator
 		this.mutexGenerator = new MutexGeneratorImpl();
-		this.propositions = new TreeSet<Proposition>();
-		this.operators = new TreeSet<Operator>();
+		this.propositions = new TreeSet<>();
+		this.operators = new TreeSet<>();
 	}
 
 	public PlanningGraph(PropositionLevel initialState) {
@@ -96,7 +96,7 @@ public class PlanningGraph implements GraphElement {
 	}
 
 	public Iterator<GraphElement> iterator() {
-		Iterator<GraphElement> iterator = new Iterator<GraphElement>() {
+		return new Iterator<GraphElement>() {
 			protected Iterator<GraphElement> elementIterator = null;
 
 			protected Iterator<GraphLevel> levelIterator = graphLevels
@@ -130,7 +130,6 @@ public class PlanningGraph implements GraphElement {
 			}
 
 		};
-		return iterator;
 	}
 
 	/**
@@ -246,7 +245,7 @@ public class PlanningGraph implements GraphElement {
 			final int lastGraphLevel = graphLevels.size() - 1;
 			
 			if(lastGraphLevel > 3) {
-				boolean levelledOff = false;
+				boolean levelledOff;
 				
 				//If the graph has levelled off, store the index where it 
 				//happened to check for the memoization stop condition				
@@ -276,9 +275,8 @@ public class PlanningGraph implements GraphElement {
 	}
 	
 	public void setIndexForPropositions(PropositionLevel propositionLevel){
-		for (Iterator<Proposition> it = propositionLevel.iterator(); it.hasNext();) {
-			Proposition p = it.next();
-			if(!this.propositions.contains(p)){
+		for (Proposition p : propositionLevel) {
+			if (!this.propositions.contains(p)) {
 				p.setIndex(propositionLevel.getIndex());
 				this.propositions.add(p);
 			} else p.setIndex(this.propositions.ceiling(p).getIndex());
@@ -286,9 +284,8 @@ public class PlanningGraph implements GraphElement {
 	}
 	
 	public void setIndexForOperators(ActionLevel actionLevel){
-		for (Iterator<Operator> it = actionLevel.iterator(); it.hasNext();) {
-			Operator op = it.next();
-			if(!this.operators.contains(op)){
+		for (Operator op : actionLevel) {
+			if (!this.operators.contains(op)) {
 				op.setIndex(actionLevel.getIndex());
 				this.operators.add(op);
 			} else op.setIndex(this.operators.ceiling(op).getIndex());

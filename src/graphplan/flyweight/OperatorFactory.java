@@ -139,7 +139,7 @@ public class OperatorFactory {
 		if(operatorInstances.containsKey(noopSignature)) {
 			return operatorInstances.get(noopSignature);
 		} else {
-			List<Proposition> precondsEffects = new ArrayList<Proposition>(1);
+			List<Proposition> precondsEffects = new ArrayList<>(1);
 			precondsEffects.add(proposition);
 			Structure signature = Structure.parse(noopSignature);
 			OperatorImpl operator = new OperatorImpl(signature, precondsEffects, precondsEffects);
@@ -180,7 +180,7 @@ public class OperatorFactory {
 				
 				//Then get the preconditions in the template
 				List<Proposition> templatePreconds = template.getPreconds();
-				List<Proposition> concretePreconds = new ArrayList<Proposition>(templatePreconds.size());
+				List<Proposition> concretePreconds = new ArrayList<>(templatePreconds.size());
 				//And apply the unifier to them
 				for (Proposition templatePrecond : templatePreconds) {
 					PropositionImpl precond = (PropositionImpl) templatePrecond;
@@ -196,7 +196,7 @@ public class OperatorFactory {
 				}
 				
 				List<Proposition> templateEffects = template.getEffects();
-				List<Proposition> concreteEffects = new ArrayList<Proposition>(templateEffects.size());
+				List<Proposition> concreteEffects = new ArrayList<>(templateEffects.size());
 
 				for (Proposition templateEffect : templateEffects) {
 					PropositionImpl effect = (PropositionImpl) templateEffect;
@@ -222,7 +222,7 @@ public class OperatorFactory {
 	}
 	
 	public List<Operator> getRequiringOperatorTemplates(Proposition precond) {
-		List<Operator> templates = new ArrayList<Operator>();
+		List<Operator> templates = new ArrayList<>();
 		//Scan every operator template
 		for(Enumeration<OperatorImpl> e = operatorTemplates.elements(); e.hasMoreElements(); ) {
 			OperatorImpl oper = e.nextElement();
@@ -254,13 +254,12 @@ public class OperatorFactory {
 	 * the supplied preconditions.
 	 * 
 	 * @param operators
-	 * @param propositions
 	 * @return
 	 * @throws OperatorFactoryException 
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Set<Operator> getAllPossibleInstantiations(List<Operator> operators, List<Proposition> preconds, GraphLevel initialState) throws OperatorFactoryException {
-		final Set<Operator> instances = new HashSet<Operator>();
+		final Set<Operator> instances = new HashSet<>();
 		final Set<Term> terms = getAllPossibleTerms(preconds);
 		//For each operator template 
 		//We need to instantiate it in every possible way
@@ -274,7 +273,7 @@ public class OperatorFactory {
 				int size = operator.getTerms().size();
 				//Otherwise, we have to come up with all possible combinations
 				//of parameters
-				Term termInstances[] = null;
+				Term termInstances[];
 				
 				for(TermInstanceIterator it = new TermInstanceIterator(terms, size);
 					it.hasNext(); ){
@@ -359,7 +358,7 @@ public class OperatorFactory {
 	
 	@SuppressWarnings("unchecked")
 	protected Set<Term> getAllPossibleTerms(List<Proposition> propositions) {
-		Set<Term> possibleTerms = new HashSet<Term>();
+		Set<Term> possibleTerms = new HashSet<>();
 		
 		for(Proposition proposition : propositions) {
 			if(proposition.getTerms() !=  null) {
@@ -375,17 +374,16 @@ public class OperatorFactory {
 	 * @return
 	 */
 	public static Iterator<Operator> getEmptyIterator() {
-		Iterator<Operator> iterator = new Iterator<Operator>() {
+
+		return new Iterator<Operator>() {
 
 			public boolean hasNext() {return false;}
 
 			public Operator next() {return null;}
 
 			public void remove() {}
-			
+
 		};
-		
-		return iterator;
 	}
 	
 	/**

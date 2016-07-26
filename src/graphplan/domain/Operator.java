@@ -41,46 +41,46 @@ public interface Operator extends GraphElement {
 	 * Gets the functor for this operator
 	 * @return This operator's functor.
 	 */
-	public String getFunctor();
+    String getFunctor();
 	
 	/**
 	 * Gets the signature of this operator, which is composed of the
 	 * operator's functor and its terms.
 	 * @return This operator's signature.
 	 */
-	public String getSignature();
+    String getSignature();
 	
 	/**
 	 * Returns the indicator for this operator, which consists of the 
 	 * operator functor "/" its arity.
 	 * @return
 	 */
-	public String getOperatorIndicator();
+    String getOperatorIndicator();
 	
 	/**
 	 * Returns whether or not this operator is ground, i.e. is an action or
 	 * an operator template.
 	 * @return Whether or not all variables in this operator are instantiated.
 	 */
-	public boolean isGround();
+    boolean isGround();
 	
 	/**
 	 * Gets the terms applied to this operator.
 	 * @return This operator's terms.
 	 */
-	public List getTerms();
+    List getTerms();
 	
 	/**
 	 * Gets the pre-conditions of this operator.
 	 * @return This operator's preconditions.
 	 */
-	public List<Proposition> getPreconds();
+    List<Proposition> getPreconds();
 	
 	/**
 	 * Gets the effects of this operator.
 	 * @return This operator's effects.
 	 */
-	public List<Proposition> getEffects();
+    List<Proposition> getEffects();
 	
 	/**
 	 * Returns whether or not <code>proposition</code> is a precondition
@@ -89,7 +89,7 @@ public interface Operator extends GraphElement {
 	 * @param proposition
 	 * @return
 	 */
-	public boolean isPrecond(Proposition proposition);
+    boolean isPrecond(Proposition proposition);
 	
 	/**
 	 * Returns whether or not <code>proposition</code> is an effect of
@@ -98,7 +98,7 @@ public interface Operator extends GraphElement {
 	 * @param proposition
 	 * @return
 	 */
-	public boolean isEffect(Proposition proposition);
+    boolean isEffect(Proposition proposition);
 	
 	/**
 	 * Returns whether or not this operator is mutually exclusive to the
@@ -109,27 +109,27 @@ public interface Operator extends GraphElement {
 	 * @param operator
 	 * @return
 	 */
-	public boolean isMutex(Operator operator);
+    boolean isMutex(Operator operator);
 	
 	/**
 	 * Applies the specified unifier to this proposition, binding its variables
 	 * @param unifier
 	 * @return
 	 */
-	public boolean apply(Unifier unifier);
+    boolean apply(Unifier unifier);
 	
 	/**
 	 * Tells whether or not this operator is a maintenance operator (Noop).
 	 * @return whether or not this operator is a maintenance operator (Noop)
 	 */
-	public boolean isNoop();
+    boolean isNoop();
 	
 	/**
 	 * Clones this operator
 	 * @return A deep copy of this operator.
 	 */
-	public Object clone();
+    Object clone();
 	
-	public void setIndex(int index);
-	public int getIndex();
+	void setIndex(int index);
+	int getIndex();
 }

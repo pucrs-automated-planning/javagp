@@ -38,5 +38,5 @@ public interface ActionLevelGeneratorClosedWorldAssumption {
 	 * @throws PlanningGraphException
 	 */
 	@SuppressWarnings("rawtypes")
-	public ActionLevel createNextActionLevel(PropositionLevel propositionLevel, GraphLevel initialState) throws PlanningGraphException;
+    ActionLevel createNextActionLevel(PropositionLevel propositionLevel, GraphLevel initialState) throws PlanningGraphException;
 }

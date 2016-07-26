@@ -384,7 +384,7 @@ public class Graphplan {
 				logger.fine("OPTIMIZATION: JavaGP using Closed World Assumption (Lazily)");
 				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domainDescription.getOperators())));
 			} else this.planningGraph = new PlanningGraph(initialLevel, domainDescription.getTypes(), domainDescription.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domainDescription.getOperators())));
-		} else this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
+		} else this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<>(domainDescription.getOperators())));
 
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
@@ -401,7 +401,7 @@ public class Graphplan {
 			} catch (PlanningGraphException e) {
 				//If we have a problem with the planning graph
 				//Issue the error and quit
-				System.err.println(e);
+				System.err.println(e.getMessage());
 				return new PlanSolution();
 			}
 			if(this.planningGraph.goalsPossible(domainDescription.getGoalState(), this.planningGraph.size()-1)) {
@@ -450,7 +450,7 @@ public class Graphplan {
 		this.solutionExtraction = new TimeoutSolutionExtractionVisitor(domainDescription.getGoalState());
 		((TimeoutSolutionExtractionVisitor)solutionExtraction).setTimeout(timeout);
 		
-		this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<Operator>(domainDescription.getOperators())));
+		this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<>(domainDescription.getOperators())));
 		OperatorFactory.getInstance().resetOperatorTemplates();
 		
 		for(Operator operator:domainDescription.getOperators()) {
@@ -466,7 +466,7 @@ public class Graphplan {
 			} catch (PlanningGraphException e) {
 				//If we have a problem with the planning graph
 				//Issue the error and quit
-				System.err.println(e);
+				System.err.println(e.getMessage());
 				return new PlanSolution();
 			}
 			if(planningGraph.goalsPossible(domainDescription.getGoalState(), this.planningGraph.size()-1)) {

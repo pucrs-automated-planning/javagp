@@ -96,17 +96,15 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 			
 			Element nodeElement = createNode(id, label);
 			graphElement.appendChild(nodeElement);
-			
-			for(Iterator<Proposition> iterPre = operator.getPreconds().iterator(); iterPre.hasNext(); ){
-				Proposition prop = iterPre.next();
-				String target = (actionLevel.getIndex()-1)+prop.getSignature();
+
+			for (Proposition prop : operator.getPreconds()) {
+				String target = (actionLevel.getIndex() - 1) + prop.getSignature();
 				Element edgeElement = createEdge(id, target);
 				graphElement.appendChild(edgeElement);
 			}
-			
-			for(Iterator<Proposition> iterEff = operator.getEffects().iterator(); iterEff.hasNext(); ){
-				Proposition prop = iterEff.next();
-				String target = (actionLevel.getIndex()+1)+prop.getSignature();
+
+			for (Proposition prop : operator.getEffects()) {
+				String target = (actionLevel.getIndex() + 1) + prop.getSignature();
 				Element edgeElement = createEdge(id, target);
 				graphElement.appendChild(edgeElement);
 			}
@@ -158,17 +156,11 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 			StreamResult result = new StreamResult(stringWriter);
 			transformer.setOutputProperty("indent", "yes");
 			transformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
+		} catch (TransformerFactoryConfigurationError | TransformerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return stringWriter.toString();
 	}
 }

@@ -30,7 +30,6 @@ import graphplan.flyweight.PropositionFactory;
 import graphplan.graph.ActionLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.planning.PlanningGraph;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,11 +42,9 @@ public class GraphDrawVisitorTest {
 	
 	private PlanningGraph planningGraph = null;
 
-	private PropositionLevel initialState = null;
-
-	@Before
+    @Before
 	public void setUp() throws Exception {
-		initialState = new PropositionLevel();
+        PropositionLevel initialState = new PropositionLevel();
 		Proposition proposition = PropositionFactory.getInstance()
 				.getProposition("at(a)");
 		initialState.addProposition(proposition);
@@ -76,11 +73,7 @@ public class GraphDrawVisitorTest {
 		planningGraph.addGraphLevel(actionLevel);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
+    @Test
 	public void testVisitElement() {
 		GraphDrawVisitor drawVisitor = null;
 		try {

@@ -32,11 +32,11 @@ public interface GraphElement<T> extends Iterable<T>, Serializable {
 	 * @param visitor
 	 * @return
 	 */
-	public boolean accept(GraphElementVisitor visitor);
+    boolean accept(GraphElementVisitor visitor);
 	
 	/**
 	 * Returns an iterator to the children of this graph element.
 	 * @return
 	 */
-	public Iterator<T> iterator();
+    Iterator<T> iterator();
 }

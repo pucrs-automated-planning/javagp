@@ -37,7 +37,7 @@ public interface MutexGenerator {
 	 * @param actionLevel	The action level onto which mutex relationships 
 	 * 						are to be added.
 	 */
-	public void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel);
+    void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel);
 	
 	/**
 	 * Adds mutex relationships to the specified proposition level based on
@@ -47,6 +47,6 @@ public interface MutexGenerator {
 	 * @param propositionLevel The proposition level onto which mutex 
 	 * 						relationships are to be added.
 	 */
-	public void addPropositionMutexes(GraphLevel<Operator> previousLevel, GraphLevel<Proposition> propositionLevel);
+    void addPropositionMutexes(GraphLevel<Operator> previousLevel, GraphLevel<Proposition> propositionLevel);
 	
 }

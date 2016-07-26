@@ -75,9 +75,9 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		
 		final OperatorFactory opFactory = OperatorFactory.getInstance();
 
-		final HashSet<Operator> opTemplateSet = new HashSet<Operator>();
-		final Set<Operator> opSet = new HashSet<Operator>();
-		final ArrayList<Proposition> preconds = new ArrayList<Proposition>();
+		final HashSet<Operator> opTemplateSet = new HashSet<>();
+		final Set<Operator> opSet = new HashSet<>();
+		final ArrayList<Proposition> preconds = new ArrayList<>();
 		
 		//TODO Change this to scan by operator rather than by proposition
 		
@@ -104,7 +104,7 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		
 		try {
 //			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
-			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds,propositionLevel));
+			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds,propositionLevel));
 		} catch (OperatorFactoryException e) {
 			throw new PlanningGraphException(e.getMessage(),propositionLevel.getIndex()+1);
 		}
@@ -119,7 +119,7 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 	}
 	
 	@Override
-	public PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) throws PlanningGraphException {
+	public PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) {
 		PropositionLevel propositionLevel = new PropositionLevel();
 		for (Operator operator : actionLevel) {
 			propositionLevel.addPropositions(operator.getEffects());

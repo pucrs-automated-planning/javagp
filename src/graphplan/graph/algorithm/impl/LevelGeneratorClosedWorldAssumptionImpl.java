@@ -48,9 +48,9 @@ public class LevelGeneratorClosedWorldAssumptionImpl extends LevelGeneratorImpl 
 		
 		final OperatorFactory opFactory = OperatorFactory.getInstance();
 
-		final HashSet<Operator> opTemplateSet = new HashSet<Operator>();
-		final Set<Operator> opSet = new HashSet<Operator>();
-		final ArrayList<Proposition> preconds = new ArrayList<Proposition>();
+		final HashSet<Operator> opTemplateSet = new HashSet<>();
+		final Set<Operator> opSet = new HashSet<>();
+		final ArrayList<Proposition> preconds = new ArrayList<>();
 		
 		// For every proposition
 		for (Proposition proposition : propositionLevel) {
@@ -70,8 +70,8 @@ public class LevelGeneratorClosedWorldAssumptionImpl extends LevelGeneratorImpl 
 			if(this.isUsingTypes())	{
 				opFactory.setTypes(this.getTypes());
 				opFactory.setParameterTypes(this.getParameterTypes());
-				opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds, initialState));
-			} else opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
+				opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds, initialState));
+			} else opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds));
 		} catch (OperatorFactoryException e) {
 			throw new PlanningGraphException(e.getMessage(),propositionLevel.getIndex()+1);
 		}

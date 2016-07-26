@@ -33,12 +33,10 @@ import graphplan.flyweight.PropositionFactory;
 import graphplan.graph.draw.TextDrawVisitor;
 import graphplan.graph.planning.PlanningGraph;
 import graphplan.graph.planning.PlanningGraphException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -52,19 +50,17 @@ public class PlanningGraphTest {
 	
 	private DomainDescription descriptions[] = null;
 
-	private PropositionLevel initialState = null;
 	private List<Proposition> initialPropositions = null;
-	private PropositionFactory propositionFactory = null;
-	
+
 	private OperatorFactory operatorFactory = null;
 
 	@Before
 	public void setUp() throws Exception {
-		propositionFactory = PropositionFactory.getInstance();
+		PropositionFactory propositionFactory = PropositionFactory.getInstance();
 		
 		planningGraph = new PlanningGraph();
 
-		initialState = new PropositionLevel();
+		PropositionLevel initialState = new PropositionLevel();
 		
 		operatorFactory = OperatorFactory.getInstance();
 		Operator operTemplate = operatorFactory.createOperatorTemplate("move(A,B)",
@@ -103,10 +99,6 @@ public class PlanningGraphTest {
 		planningGraph.addGraphLevel(propositionLevel);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void testAccept() {
 		addLevels();
@@ -125,9 +117,8 @@ public class PlanningGraphTest {
 	@Test
 	public void testGetChildren() {
 		try {
-			for (Iterator<GraphElement> i = planningGraph.iterator();i.hasNext();) {
-				GraphElement element = i.next();
-//				System.out.println(element);
+			for (GraphElement element : planningGraph) {
+				//				System.out.println(element);
 				assertNotNull(element);
 			}
 			

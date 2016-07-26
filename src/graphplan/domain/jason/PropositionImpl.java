@@ -114,9 +114,7 @@ public class PropositionImpl extends LiteralImpl implements Proposition {
 	}
 	
 	public Term clone() {
-		PropositionImpl propositionImpl = new PropositionImpl((Literal)this);
-		
-		return propositionImpl;
+		return new PropositionImpl((Literal) this);
 	}
 
 	public Proposition makeGround() {

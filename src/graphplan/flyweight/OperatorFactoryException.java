@@ -21,8 +21,8 @@
  * http://www.meneguzzi.eu/felipe/contact.html
  * ---------------------------------------------------------------------------
  */
-/**
- * 
+/*
+
  */
 package graphplan.flyweight;
 

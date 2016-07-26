@@ -44,7 +44,7 @@ public class PropositionFactory {
 	 * Returns the singleton <code>PropositionFactory</code> instance.
 	 * @return
 	 */
-	public static final PropositionFactory getInstance() {
+	public static PropositionFactory getInstance() {
 		if(propositionFactory == null) {
 			propositionFactory = new PropositionFactory();
 		}
@@ -52,14 +52,14 @@ public class PropositionFactory {
 		return propositionFactory;
 	}
 	
-	public static final void reset() {
+	public static void reset() {
 		propositionFactory.resetPropositionFactory();
 	}
 	
 	private Hashtable<String, Proposition> propositionInstances;
 	
 	private PropositionFactory() {
-		this.propositionInstances = new Hashtable<String, Proposition>();
+		this.propositionInstances = new Hashtable<>();
 	}
 	
 	/**
@@ -119,16 +119,15 @@ public class PropositionFactory {
 	 * @return
 	 */
 	public static Iterator<Proposition> getEmptyIterator() {
-		Iterator<Proposition> iterator = new Iterator<Proposition>() {
+
+		return new Iterator<Proposition>() {
 
 			public boolean hasNext() {return false;}
 
 			public Proposition next() {return null;}
 
 			public void remove() {}
-			
+
 		};
-		
-		return iterator;
 	}
 }

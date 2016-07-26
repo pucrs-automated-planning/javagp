@@ -51,8 +51,8 @@ public class PropositionLevel implements GraphLevel<Proposition> {
 	
 	public PropositionLevel() {
 		//TODO tune the lists and hashtables to improve performance
-		this.propositions = new ArrayList<Proposition>();
-		this.mutexes = new HashMap<Proposition, HashSet<Proposition>>();
+		this.propositions = new ArrayList<>();
+		this.mutexes = new HashMap<>();
 	}
 	
 	public PropositionLevel(int index) {
@@ -100,8 +100,7 @@ public class PropositionLevel implements GraphLevel<Proposition> {
 	 * @param propositions
 	 */
 	public void addPropositions(List<Proposition> propositions) {
-		for (Iterator<Proposition> iter = propositions.iterator(); iter.hasNext();) {
-			Proposition proposition = iter.next();
+		for (Proposition proposition : propositions) {
 			this.addProposition(proposition);
 		}
 	}
@@ -130,10 +129,10 @@ public class PropositionLevel implements GraphLevel<Proposition> {
 	 */
 	public final void addMutex(Proposition proposition1, Proposition proposition2) {
 		if(!this.mutexes.containsKey(proposition1)) {
-			this.mutexes.put(proposition1, new HashSet<Proposition>());
+			this.mutexes.put(proposition1, new HashSet<>());
 		}
 		if(!this.mutexes.containsKey(proposition2)) {
-			this.mutexes.put(proposition2, new HashSet<Proposition>());
+			this.mutexes.put(proposition2, new HashSet<>());
 		}
 		this.mutexes.get(proposition1).add(proposition2);
 		this.mutexes.get(proposition2).add(proposition1);
@@ -223,11 +222,8 @@ public class PropositionLevel implements GraphLevel<Proposition> {
 	}
 	
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append(this.propositions.toString());
-		
-		return sb.toString();
+
+		return this.propositions.toString();
 	}
 
 	/**

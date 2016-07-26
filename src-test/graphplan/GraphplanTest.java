@@ -28,7 +28,6 @@ import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.OperatorFactory;
 import graphplan.flyweight.PropositionFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,7 +52,7 @@ public class GraphplanTest {
 	@Before
 	public void setUp() throws Exception {
 		graphplan = new Graphplan();
-		operators = new ArrayList<Operator>();
+		operators = new ArrayList<>();
 		operatorFactory = OperatorFactory.getInstance();
 		Operator o = operatorFactory.createOperatorTemplate("process(Block,ProcUnit)", 
 				new String[] {"over(Block,ProcUnit)"}, 
@@ -92,14 +91,9 @@ public class GraphplanTest {
 		goalState = Arrays.asList(propositionFactory.getPropositions(propositions));
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		
-	}
-
-	@Test
+    @Test
 	public void testBlocks() {
-		int i=1;
+		int i;
 		try {
 			for(i=1;i<=7;i++) {
 				logger.info("Testing Blocksworld STRIPS problem"+i);
@@ -158,10 +152,10 @@ public class GraphplanTest {
 		if(propositions.length != planPreconds.size()) {
 			fail("Preconditions are not minimal");
 		}
-		
-		for (int i = 0; i < propositions.length; i++) {
-			if(!planPreconds.contains(propositions[i])) {
-				fail("Missing precondition "+propositions[i]);
+
+		for (Proposition proposition3 : propositions) {
+			if (!planPreconds.contains(proposition3)) {
+				fail("Missing precondition " + proposition3);
 			}
 		}
 		
@@ -179,9 +173,9 @@ public class GraphplanTest {
 		propositions = PropositionFactory.getInstance().getPropositions(signatures);
 		
 		assertEquals(planPreconds.size(),propositions.length);//"Preconditions are not minimal"
-		
-		for (int i = 0; i < propositions.length; i++) {
-			assertTrue("Missing precondition "+propositions[i],planPreconds.contains(propositions[i]));
+
+		for (Proposition proposition2 : propositions) {
+			assertTrue("Missing precondition " + proposition2, planPreconds.contains(proposition2));
 		}
 		
 		//Third test
@@ -204,9 +198,9 @@ public class GraphplanTest {
 		propositions = PropositionFactory.getInstance().getPropositions(signatures);
 		
 		assertEquals(planPreconds.size(),propositions.length);//"Preconditions are not minimal"
-		
-		for (int i = 0; i < propositions.length; i++) {
-			assertTrue("Missing precondition "+propositions[i],planPreconds.contains(propositions[i]));
+
+		for (Proposition proposition1 : propositions) {
+			assertTrue("Missing precondition " + proposition1, planPreconds.contains(proposition1));
 		}
 		
 		//Fourth test
@@ -231,9 +225,9 @@ public class GraphplanTest {
 		propositions = PropositionFactory.getInstance().getPropositions(signatures);
 		
 		assertEquals(planPreconds.size(),propositions.length);//"Preconditions are not minimal"
-		
-		for (int i = 0; i < propositions.length; i++) {
-			assertTrue("Missing precondition "+propositions[i],planPreconds.contains(propositions[i]));
+
+		for (Proposition proposition : propositions) {
+			assertTrue("Missing precondition " + proposition, planPreconds.contains(proposition));
 		}
 	}
 

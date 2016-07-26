@@ -27,7 +27,6 @@ import graphplan.GraphplanTestUtil;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,11 +46,7 @@ public class OperatorFactoryTest {
 		operatorFactory = OperatorFactory.getInstance();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-//	@Test
+	//	@Test
 	public void testGetNoop() {
 		fail("Not yet implemented"); // TODO
 	}

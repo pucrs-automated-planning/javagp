@@ -24,7 +24,6 @@
 package graphplan.parser;
 
 import graphplan.domain.DomainDescription;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,11 +46,7 @@ public class PlannerParserTest {
 		plannerParser = new PlannerParser();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
+    @Test
 	public void testParseProblemFileFile() {
 		File operators = new File(OPERATORS_FILE);
 		File problem = new File(PROBLEM_FILE);
@@ -60,13 +55,11 @@ public class PlannerParserTest {
 		
 		try {
 			domainDescription = plannerParser.parseProblem(operators, problem);
-		} catch (FileNotFoundException e) {
-			fail(e.toString());
-		} catch (ParseException e) {
+		} catch (FileNotFoundException | ParseException e) {
 			fail(e.toString());
 		}
-		
-		if(domainDescription == null) {
+
+        if(domainDescription == null) {
 			fail("Domain description is invalid");
 		}
 	}

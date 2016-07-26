@@ -17,10 +17,10 @@ public class SetUtil {
             accum.add(prefix);
         } else {
             for (int i = 0; i < n; ++i) {
-                List<T> newPrefix = new ArrayList<T>();
+                List<T> newPrefix = new ArrayList<>();
                 newPrefix.addAll(prefix);
                 newPrefix.add(nums.get(i));
-                List<T> numsLeft = new ArrayList<T>();
+                List<T> numsLeft = new ArrayList<>();
                 numsLeft.addAll(nums);
                 numsLeft.remove(i);
                 permutation(accum, newPrefix, numsLeft);

@@ -12,8 +12,8 @@ public class MutexCondition {
 	private List<Integer> op2Parameters;
 	
 	public MutexCondition(){
-		this.op1Parameters = new ArrayList<Integer>();
-		this.op2Parameters = new ArrayList<Integer>();
+		this.op1Parameters = new ArrayList<>();
+		this.op2Parameters = new ArrayList<>();
 	}
 	
 	public void addOp1Parameter(int index){

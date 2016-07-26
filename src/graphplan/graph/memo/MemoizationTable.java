@@ -35,7 +35,7 @@ public class MemoizationTable implements Iterable<HashSet<String>> {
 	//private static int misses = 0;
 	
 	public MemoizationTable() {
-		this.noGoodsTable = new ArrayList<HashSet<String>>();
+		this.noGoodsTable = new ArrayList<>();
 	}
 
 	public Iterator<HashSet<String>> iterator() {
@@ -48,7 +48,7 @@ public class MemoizationTable implements Iterable<HashSet<String>> {
 	 * @param graphLevel
 	 * @return
 	 */
-	private final int tableIndex(int graphLevel) {
+	private int tableIndex(int graphLevel) {
 		return ((graphLevel >> 1)-1);
 	}
 
@@ -59,7 +59,7 @@ public class MemoizationTable implements Iterable<HashSet<String>> {
 	 */
 	public final void ensureCapacity(int size) {
 		while(noGoodsTable.size() < size) {
-			noGoodsTable.add(new HashSet<String>());
+			noGoodsTable.add(new HashSet<>());
 		}
 	}
 	

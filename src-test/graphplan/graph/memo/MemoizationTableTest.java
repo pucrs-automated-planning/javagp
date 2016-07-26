@@ -27,7 +27,6 @@ import graphplan.GraphplanTestUtil;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.PropositionFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,13 +49,9 @@ public class MemoizationTableTest {
 		table.ensureCapacity(3);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
+    @Test
 	public void testIsNoGood() {
-		Set<Proposition> goalSet1 = new TreeSet<Proposition>();
+		Set<Proposition> goalSet1 = new TreeSet<>();
 		goalSet1.add(domainDescriptions[1].getInitialState().get(1));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(5));
@@ -65,7 +60,7 @@ public class MemoizationTableTest {
 		String signature1 = PropositionFactory.getInstance().getGoalsSignature(goalSet1);
 		logger.info("Signature is "+signature1);
 		
-		Set<Proposition> goalSet2 = new TreeSet<Proposition>();
+		Set<Proposition> goalSet2 = new TreeSet<>();
 		goalSet2.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(5));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(1));
@@ -74,7 +69,7 @@ public class MemoizationTableTest {
 		String signature2 = PropositionFactory.getInstance().getGoalsSignature(goalSet2);
 		logger.info("Signature is "+signature2);
 		
-		goalSet1 = new TreeSet<Proposition>();
+		goalSet1 = new TreeSet<>();
 		goalSet1.add(domainDescriptions[1].getInitialState().get(2));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(4));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(6));
@@ -84,7 +79,7 @@ public class MemoizationTableTest {
 		signature1 = PropositionFactory.getInstance().getGoalsSignature(goalSet1);
 		logger.info("Signature is "+signature1);
 		
-		goalSet2 = new TreeSet<Proposition>();
+		goalSet2 = new TreeSet<>();
 		goalSet2.add(domainDescriptions[1].getInitialState().get(6));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(4));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(2));
@@ -97,7 +92,7 @@ public class MemoizationTableTest {
 
 	@Test
 	public void testAddNoGood() {
-		Set<Proposition> goalSet1 = new TreeSet<Proposition>();
+		Set<Proposition> goalSet1 = new TreeSet<>();
 		goalSet1.add(domainDescriptions[1].getInitialState().get(1));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet1.add(domainDescriptions[1].getInitialState().get(5));
@@ -108,7 +103,7 @@ public class MemoizationTableTest {
 			fail("No goods table is busted");
 		}
 		
-		Set<Proposition> goalSet2 = new TreeSet<Proposition>();
+		Set<Proposition> goalSet2 = new TreeSet<>();
 		goalSet2.add(domainDescriptions[1].getInitialState().get(3));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(5));
 		goalSet2.add(domainDescriptions[1].getInitialState().get(1));

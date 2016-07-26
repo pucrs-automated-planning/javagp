@@ -39,7 +39,7 @@ public class PlanningGraphClosedWorldAssumption extends PlanningGraph {
 		
 		if(initialStateSize != initialState.size()) {
 			logger.info("-> Initial State was changed: Maintenance Actions and Mutexes from Level 0 until current Level");
-			this.graphLevels = new ArrayList<GraphLevel>();
+			this.graphLevels = new ArrayList<>();
 			this.graphLevels.add(initialState);
 			this.closedWorldAssumption = true;
 			this.expandGraph();

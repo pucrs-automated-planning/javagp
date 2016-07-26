@@ -9,8 +9,8 @@ import java.util.*;
 
 public class StaticMutexesTable {
 
-	private HashMap<String, HashMap<String, List<MutexCondition>>> mutexesTable = new HashMap<String, HashMap<String,List<MutexCondition>>>();
-	private HashMap<String, Set<String>> tableMutexesHits = new HashMap<String, Set<String>>();
+	private HashMap<String, HashMap<String, List<MutexCondition>>> mutexesTable = new HashMap<>();
+	private HashMap<String, Set<String>> tableMutexesHits = new HashMap<>();
 	
 	public StaticMutexesTable(List<Operator> operators){
 		this.initializeConstructor(operators);
@@ -65,24 +65,22 @@ public class StaticMutexesTable {
 	@SuppressWarnings("rawtypes")
 	private void populateStaticMutexTable(Proposition p1, Proposition p2, Operator op1, Operator op2){
 		HashMap<String, List<MutexCondition>> mutexOp = this.mutexesTable.get(op1.getFunctor());
-		if(mutexOp == null) mutexOp = new HashMap<String, List<MutexCondition>>();
+		if(mutexOp == null) mutexOp = new HashMap<>();
 
 		List<MutexCondition> conditionOp = mutexOp.get(op2.getFunctor());
-		if(conditionOp == null) conditionOp = new ArrayList<MutexCondition>();
+		if(conditionOp == null) conditionOp = new ArrayList<>();
 
 		
 		MutexCondition mutexCond = new MutexCondition();
-		
-		Iterator itE1 = p1.getTerms().iterator();
-		while(itE1.hasNext()){
-			Term t = (Term) itE1.next();
+
+		for (Object o1 : p1.getTerms()) {
+			Term t = (Term) o1;
 			mutexCond.addOp1Parameter(op1.getTerms().indexOf(t));
 //			System.out.println(op1.getTerms().indexOf(t));
 		}
 
-		Iterator itE2 = p2.getTerms().iterator();
-		while(itE2.hasNext()){
-			Term t = (Term) itE2.next();
+		for (Object o : p2.getTerms()) {
+			Term t = (Term) o;
 			mutexCond.addOp2Parameter(op2.getTerms().indexOf(t));
 			//System.out.println(op2.getTerms().indexOf(t));
 		}
@@ -93,7 +91,7 @@ public class StaticMutexesTable {
 	}
 
 	private Set<Operator> getNoops(List<Operator> operators){
-		Set<Operator> noops = new HashSet<Operator>();
+		Set<Operator> noops = new HashSet<>();
 		OperatorFactory opFac = OperatorFactory.getInstance();
 		
 		for (Operator operator : operators) {
@@ -112,8 +110,8 @@ public class StaticMutexesTable {
 		HashMap<String, List<MutexCondition>> hashOp1 = this.mutexesTable.get(op1.getFunctor());
 		
 		if (hashOp1 != null ) {
-			Set<String> mutexes = this.tableMutexesHits.get(op1.toString());; 
-			if(mutexes != null){
+			Set<String> mutexes = this.tableMutexesHits.get(op1.toString());
+            if(mutexes != null){
 				if(mutexes.contains(op2.toString())) {
 					return true;
 				}
@@ -124,7 +122,7 @@ public class StaticMutexesTable {
 				for (MutexCondition mutextCondition : mutexConditions) {
 					if (mutextCondition.verifyConditionsByIndexes(op1.getTerms(), op2.getTerms())) {
 						if(mutexes == null) {
-							mutexes = new HashSet<String>();
+							mutexes = new HashSet<>();
 							this.tableMutexesHits.put(op1.toString(), mutexes);
 						}
 						mutexes.add(op2.toString());

@@ -51,13 +51,11 @@ public class PlanningGraphException extends Exception {
 		if(graphLevel < 0) {
 			return super.getMessage();
 		} else {
-			StringBuilder builder = new StringBuilder();
-			
-			builder.append("At graph level ");
-			builder.append(graphLevel);
-			builder.append(": ");
-			builder.append(super.getMessage());
-			return builder.toString();
+
+			return "At graph level " +
+                    graphLevel +
+                    ": " +
+                    super.getMessage();
 		}
 	}
 }

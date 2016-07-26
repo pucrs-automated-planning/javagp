@@ -51,10 +51,10 @@ public class GraphplanTestUtil {
 	public DomainDescription []createDomains() {
 		DomainDescription domains[] = new DomainDescription[3];
 		
-		String propositions[] = null;
-		List<Proposition> initialState = null;
-		List<Proposition> goalState = null;
-		List<Operator> operators = null;
+		String propositions[];
+		List<Proposition> initialState;
+		List<Proposition> goalState;
+		List<Operator> operators;
 		// The dinner date domain
 		propositions = new String[] {"garbage","cleanHands","quiet"};
 		initialState = Arrays.asList(propositionFactory.getPropositions(propositions));
@@ -62,7 +62,7 @@ public class GraphplanTestUtil {
 		propositions = new String[] {"dinner","present","~garbage"};
 		goalState = Arrays.asList(propositionFactory.getPropositions(propositions));
 		
-		operators = new ArrayList<Operator>(4);
+		operators = new ArrayList<>(4);
 		operators.add(operatorFactory.createOperatorTemplate("cook", 
 										new String[] {"cleanHands"}, 
 										new String[] {"dinner"}));
@@ -97,7 +97,7 @@ public class GraphplanTestUtil {
 									 "finished(block1)"};
 		goalState = Arrays.asList(propositionFactory.getPropositions(propositions));
 		
-		operators = new ArrayList<Operator>(3);
+		operators = new ArrayList<>(3);
 		
 		operators.add(operatorFactory.createOperatorTemplate("process(Block,ProcUnit)",
 						new String[] {"block(Block)", "procUnit(ProcUnit)", 

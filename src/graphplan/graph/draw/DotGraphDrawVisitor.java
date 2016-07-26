@@ -1,5 +1,5 @@
-/**
- * 
+/*
+
  */
 package graphplan.graph.draw;
 
@@ -86,16 +86,14 @@ public class DotGraphDrawVisitor implements GraphElementVisitor {
 			String label = operator.getSignature();
 			String id = actionLevel.getIndex()+label;
 //			this.createNode(id, label,"box");
-			
-			for(Iterator<Proposition> iterPre = operator.getPreconds().iterator(); iterPre.hasNext(); ){
-				Proposition prop = iterPre.next();
-				String target = (actionLevel.getIndex()-1)+prop.getSignature();
-				createEdge(target,id);
+
+			for (Proposition prop : operator.getPreconds()) {
+				String target = (actionLevel.getIndex() - 1) + prop.getSignature();
+				createEdge(target, id);
 			}
-			
-			for(Iterator<Proposition> iterEff = operator.getEffects().iterator(); iterEff.hasNext(); ){
-				Proposition prop = iterEff.next();
-				String target = (actionLevel.getIndex()+1)+prop.getSignature();
+
+			for (Proposition prop : operator.getEffects()) {
+				String target = (actionLevel.getIndex() + 1) + prop.getSignature();
 				createEdge(id, target);
 			}
 		}

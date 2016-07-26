@@ -31,8 +31,6 @@ import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.MutexGenerator;
 import graphplan.graph.memo.mutexes.StaticMutexesTable;
 
-import java.util.Iterator;
-
 public class MutexGeneratorImpl implements MutexGenerator {
 	
 	private StaticMutexesTable staticsMutexesTable;
@@ -46,27 +44,25 @@ public class MutexGeneratorImpl implements MutexGenerator {
 	@Override
 	public void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel) {
 		//For every action in this level
-		for(Iterator<Operator> i=actionLevel.iterator(); i.hasNext();) {
-			//Check every other operator for static mutexes
-			Operator operator1 = i.next();
-			for(Iterator<Operator> j=actionLevel.iterator(); j.hasNext(); ) {
-				Operator operator2 = j.next();
-				//for nested iterators, we check everything before the current
-				//node, so if we hit the same operator twice, break
-				if(operator1 == operator2) {
-					break;
-				}
-				//Old way of generating mutexes
-				/*if(operator1.isMutex(operator2)) {
-					actionLevel.addMutex(operator1, operator2);
+        for (Operator operator1 : actionLevel) {
+            //Check every other operator for static mutexes
+            for (Operator operator2 : actionLevel) {
+                //for nested iterators, we check everything before the current
+                //node, so if we hit the same operator twice, break
+                if (operator1 == operator2) {
+                    break;
+                }
+                //Old way of generating mutexes
+                /*if(operator1.isMutex(operator2)) {
+                    actionLevel.addMutex(operator1, operator2);
 				}*/
-				if(this.staticsMutexesTable != null && this.staticsMutexesTable.isMutex(operator1, operator2)){
-					((ActionLevel) actionLevel).addMutex(operator1, operator2);
-				} else if(isMutex(operator1, operator2, (PropositionLevel) previousLevel)) {
-					((ActionLevel) actionLevel).addMutex(operator1, operator2);
-				}
-			}
-		}
+                if (this.staticsMutexesTable != null && this.staticsMutexesTable.isMutex(operator1, operator2)) {
+                    ((ActionLevel) actionLevel).addMutex(operator1, operator2);
+                } else if (isMutex(operator1, operator2, (PropositionLevel) previousLevel)) {
+                    ((ActionLevel) actionLevel).addMutex(operator1, operator2);
+                }
+            }
+        }
 	}
 	
 	@Override

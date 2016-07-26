@@ -56,8 +56,8 @@ public class DomainDescription {
 	 * @param goalState
 	 */
 	public DomainDescription(List<Proposition> initialState, List<Proposition> goalState) {
-		this.initialState = new ArrayList<Proposition>(initialState);
-		this.goalState = new ArrayList<Proposition>(goalState);
+		this.initialState = new ArrayList<>(initialState);
+		this.goalState = new ArrayList<>(goalState);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class DomainDescription {
 							 List<Proposition> initialState, 
 							 List<Proposition> goalState) {
 		this(initialState, goalState);
-		this.operators = new ArrayList<Operator>(operators);
+		this.operators = new ArrayList<>(operators);
 	}
 	
 	/**
@@ -81,7 +81,6 @@ public class DomainDescription {
 	 * @param initialState
 	 * @param goalState
 	 * @param types
-	 * @param parametertypes
 	 */
 	public DomainDescription(List<Operator> operators,
 							 List<Proposition> initialState, 

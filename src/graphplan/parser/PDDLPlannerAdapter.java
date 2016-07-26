@@ -26,33 +26,25 @@ public class PDDLPlannerAdapter {
 	private static final Logger logger = Logger.getLogger(PDDLPlannerAdapter.class.getName());
 	
 	private PDDLObject pddlObject;
-	
-	private String domain;
-	private String problem;
 
-	private Map<String, Set<String>> types;
+    private Map<String, Set<String>> types;
 	private Map<String, List<String>> parameterTypes;
 	
 	/**
-	 * 
-	 * @param pddl4j.PDDLObject pddlObject
-	 */
+	 *
+     */
 	public PDDLPlannerAdapter(PDDLObject pddlObject){
 		this.pddlObject = pddlObject;
 	}
 
 	/**
 	 * 
-	 * @param String domain
-	 * @param String problem
-	 * @throws ParserException 
+	 * @throws ParserException
 	 */
 	public PDDLPlannerAdapter(String domain, String problem) throws ParserException{
-		this.domain = domain;
-		this.problem = problem;
-		
-		this.types = new HashMap<String, Set<String>>();
-		this.parameterTypes = new HashMap<String, List<String>>();
+
+        this.types = new HashMap<>();
+		this.parameterTypes = new HashMap<>();
 		
         Properties options = new Properties();
         options.put("source", Source.V3_0);
@@ -87,7 +79,7 @@ public class PDDLPlannerAdapter {
 				throw new pddl4j.ParserException("Parse error in PDDL Domain");
 			} else if (pddlProblem == null || problemParseError){
 				throw new pddl4j.ParserException("Parse error in PDDL Problem");
-			} else if (pddlDomain != null && pddlProblem != null) {
+			} else {
 				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
 			}
 		} catch (FileNotFoundException e) {
@@ -98,7 +90,6 @@ public class PDDLPlannerAdapter {
 	
 	/**
 	 * 
-	 * @param PDDLObject pddlObject
 	 * @return DomainDescription
 	 */
 	@SuppressWarnings("rawtypes")
@@ -119,9 +110,9 @@ public class PDDLPlannerAdapter {
 			
 			Iterator<ActionDef> actionsIterator = this.pddlObject.actionsIterator();
 			
-			List<Operator>    operators    = new ArrayList<Operator>();
-			List<Proposition> initialState = new ArrayList<Proposition>();
-			List<Proposition> goalState    = new ArrayList<Proposition>();
+			List<Operator>    operators    = new ArrayList<>();
+			List<Proposition> initialState = new ArrayList<>();
+			List<Proposition> goalState    = new ArrayList<>();
 			
 			logger.finest("--> Actions\n");
 			
@@ -129,13 +120,13 @@ public class PDDLPlannerAdapter {
 				ActionDef actionDef = actionsIterator.next();
 				logger.finest(actionDef.toString());
 				
-				Exp precontidion = (Exp) ((Action)actionDef).getPrecondition();
-				Exp effect = (Exp) ((Action)actionDef).getEffect();
+				Exp precontidion = ((Action)actionDef).getPrecondition();
+				Exp effect = ((Action)actionDef).getEffect();
 				
-				List<String> parameterTypes = new ArrayList<String>();
+				List<String> parameterTypes = new ArrayList<>();
 				
 				OperatorImpl operatorImpl = new OperatorImpl(actionDef.getName());
-				List<Term> termsOp = new ArrayList<Term>();
+				List<Term> termsOp = new ArrayList<>();
 				for(pddl4j.exp.term.Term term: actionDef.getParameters()){
 					termsOp.add(new VarTerm(term.getImage().replace("?", "").toUpperCase()));
 					parameterTypes.add(term.getTypeSet().toString());
@@ -144,7 +135,7 @@ public class PDDLPlannerAdapter {
 					
 					for(Constant c: this.pddlObject.getTypedDomain(term.getTypeSet())){
 						if(setVar == null){
-							setVar = new HashSet<String>();
+							setVar = new HashSet<>();
 							setVar.add(c.toString());
 							this.types.put(term.getTypeSet().toString(), setVar);
 						} else setVar.add(c.toString());
@@ -166,7 +157,7 @@ public class PDDLPlannerAdapter {
 			for(InitEl init: this.pddlObject.getInit()){
 				logger.finest(init.toString());
 				boolean negated = false;
-				Literal p = null;
+				Literal p;
 
 				if(init instanceof NotAtomicFormula){
 					p = (NotAtomicFormula) init;
@@ -175,7 +166,7 @@ public class PDDLPlannerAdapter {
 				PropositionImpl proposition = new PropositionImpl(!negated, p.getPredicate());
 				Iterator variables = p.iterator();
 				
-				List<Term> terms = new ArrayList<Term>();
+				List<Term> terms = new ArrayList<>();
 				while(variables.hasNext()){
 					Constant var = (Constant) variables.next();
 					Atom term = new Atom(var.getImage());
@@ -195,8 +186,7 @@ public class PDDLPlannerAdapter {
 			goalState.addAll(this.getPropositionFromProblemExp(this.pddlObject.getGoal()));
 
 			logger.finest("\nPDDL Parser\n");
-			DomainDescription domainDescription = new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes, negativePreconditions);
-			return domainDescription;
+            return new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes, negativePreconditions);
 		}
 		
 		return null;
@@ -204,7 +194,6 @@ public class PDDLPlannerAdapter {
 	
 	/**
 	 * 
-	 * @param Exp exp
 	 * @return List<PropositionImpl>
 	 */
 	private List<PropositionImpl> getPropositionFromDomainExp(Exp exp){
@@ -213,13 +202,11 @@ public class PDDLPlannerAdapter {
 	
 	/**
 	 * 
-	 * @param Exp exp
-	 * @param boolean negated
 	 * @return List<PropositionImpl>
 	 */
 	@SuppressWarnings("rawtypes")
 	private List<PropositionImpl> getPropositionFromDomainExp(Exp exp, boolean negated){
-		List<PropositionImpl> propositionImpls = new ArrayList<PropositionImpl>();
+		List<PropositionImpl> propositionImpls = new ArrayList<>();
 		switch (exp.getExpID()) {
 	    	case AND:
 	            AndExp andExp = (AndExp) exp;
@@ -233,7 +220,7 @@ public class PDDLPlannerAdapter {
 				
 				Iterator pddlTerms = p.iterator();
 				
-				List<Term> terms = new ArrayList<Term>();
+				List<Term> terms = new ArrayList<>();
 				while(pddlTerms.hasNext()){
 					pddl4j.exp.term.Term var = (pddl4j.exp.term.Term) pddlTerms.next();
 					VarTerm term = new VarTerm(var.getImage().replace("?", "").toUpperCase());
@@ -243,7 +230,7 @@ public class PDDLPlannerAdapter {
 					
 					for(Constant c: this.pddlObject.getTypedDomain(var.getTypeSet())){
 						if(setVar == null){
-							setVar = new HashSet<String>();
+							setVar = new HashSet<>();
 							setVar.add(c.toString());
 							this.types.put(var.getTypeSet().toString(), setVar);
 						} else setVar.add(c.toString());
@@ -267,7 +254,6 @@ public class PDDLPlannerAdapter {
 
 	/**
 	 * 
-	 * @param Exp exp
 	 * @return List<PropositionImpl>
 	 */
 	private List<PropositionImpl> getPropositionFromProblemExp(Exp exp){
@@ -276,13 +262,11 @@ public class PDDLPlannerAdapter {
 	
 	/**
 	 * 
-	 * @param Exp exp
-	 * @param boolean negated
 	 * @return List<PropositionImpl>
 	 */
 	@SuppressWarnings("rawtypes")
 	private List<PropositionImpl> getPropositionFromProblemExp(Exp exp, boolean negated){
-		List<PropositionImpl> propositionImpls = new ArrayList<PropositionImpl>();
+		List<PropositionImpl> propositionImpls = new ArrayList<>();
 		switch (exp.getExpID()) {
 	    	case AND:
 	            AndExp andExp = (AndExp) exp;
@@ -296,7 +280,7 @@ public class PDDLPlannerAdapter {
 				
 				Iterator constants = p.iterator();
 				
-				List<Term> terms = new ArrayList<Term>();
+				List<Term> terms = new ArrayList<>();
 				while(constants.hasNext()){
 					Constant con = (Constant) constants.next();
 					Atom term = new Atom(con.getImage());
@@ -306,7 +290,7 @@ public class PDDLPlannerAdapter {
 					
 					for(Constant c: this.pddlObject.getTypedDomain(con.getTypeSet())){
 						if(setCon == null){
-							setCon = new HashSet<String>();
+							setCon = new HashSet<>();
 							setCon.add(c.toString());
 							this.types.put(con.getTypeSet().toString(), setCon);
 						} else setCon.add(c.toString());
