@@ -303,8 +303,9 @@ public class Graphplan {
 				"\n\n\t>>> PDDL Language: " +
 				"\n\t\t" + "java -jar javagp.jar -d examples/pddl/blocksworld/blocksworld.pddl -p examples/pddl/blocksworld/pb1.pddl" +
 				"\n\n\t>>> Planner arguments: " +
-				"\n\t-maxlevels <NUMBER>, " + "\tMax Graph levels." +
-				"\n\t-timeout <NUMBER>, " + "\tPlanning timeout." +
+				"\n\t-maxlevels <NUMBER>, " + "\t\t\tMax Graph levels." +
+				"\n\t-timeout <NUMBER>, " + "\t\t\t\tPlanning timeout." +
+				"\n\t-extractAllPossibleSolutions, " + "\tExtract all solutions with minimum length (TODO: need more tests)." +
 				"\n\n\t-noHeuristics, " + "\t\tNo Heuristics." +
 				"\n\n\t[Heuristics for actions]" +
 				"\n\t-operatorsLatest, " + "\tSelect actions that appears latest in the Planning Graph." +
