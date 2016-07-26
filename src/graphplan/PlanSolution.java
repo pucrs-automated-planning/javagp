@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class PlanSolution {
 	private Set<PlanResult> results;
-	private Set<List<Operator>> allPlans;
+	private Set<List<Operator>> allPlans; // Different results can have same List<Operator> plan, therefore we are using a Set
 
 	public PlanSolution() {
 		this(new HashSet<>());
@@ -38,11 +38,7 @@ public class PlanSolution {
 	}
 
 	public int getNumberOfPlans() {
-		int n = 0;
-		for (PlanResult result : results) {
-			n += result.getAllPossibleSolutions().size();
-		}
-		return n;
+		return getAllPlans().size();
 	}
 
 	public int getNumberOfHighlevelPlans() {

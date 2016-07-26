@@ -67,7 +67,7 @@ public class Graphplan {
 	public static boolean propositionsSmallest = true;
 	public static boolean sortGoals = false;
 	private boolean extractAllPossibleSolutions = false; // Extract all solutions with minimum length (TODO: need more tests)
-	private int extractAllPossibleSolutionsWithMaxLength = 0; // Extract all solutions with (minimum length + extractAllPossibleWithMaxLength)
+	private int extractAllPossibleSolutionsWithMaxLength = 0; // Extract all solutions with (minimum length + extractAllPossibleWithMaxLength, respective to graph level)
 	private boolean pddl = true;
 	private int maxLevels = Integer.MAX_VALUE;
 	private PlanningGraph planningGraph;
