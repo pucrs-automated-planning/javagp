@@ -117,7 +117,7 @@ public class PlanningGraphTest {
 	@Test
 	public void testGetChildren() {
 		try {
-			for (GraphElement element : planningGraph) {
+			for (Object element : planningGraph) {
 				//				System.out.println(element);
 				assertNotNull(element);
 			}
