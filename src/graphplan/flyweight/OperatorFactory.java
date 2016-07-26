@@ -30,20 +30,9 @@ import graphplan.domain.jason.PropositionImpl;
 import graphplan.graph.GraphLevel;
 import graphplan.graph.PropositionLevel;
 import jason.asSemantics.Unifier;
-import jason.asSyntax.Atom;
-import jason.asSyntax.Literal;
-import jason.asSyntax.LiteralImpl;
-import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
+import jason.asSyntax.*;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A factory class to be used in the creation and maintenance of

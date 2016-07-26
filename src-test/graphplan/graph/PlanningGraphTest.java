@@ -23,16 +23,6 @@
  */
 package graphplan.graph;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-
 import graphplan.GraphplanTestUtil;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
@@ -43,10 +33,16 @@ import graphplan.flyweight.PropositionFactory;
 import graphplan.graph.draw.TextDrawVisitor;
 import graphplan.graph.planning.PlanningGraph;
 import graphplan.graph.planning.PlanningGraphException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
 
 public class PlanningGraphTest {
 	

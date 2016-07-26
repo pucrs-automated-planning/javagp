@@ -1,7 +1,6 @@
 package graphplan.graph.memo.mutexes;
-import jason.asSyntax.Atom;
 
-import jason.asSyntax.Term;
+import jason.asSyntax.Atom;
 
 import java.util.ArrayList;
 import java.util.List;

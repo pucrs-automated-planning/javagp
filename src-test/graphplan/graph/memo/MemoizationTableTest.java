@@ -23,22 +23,19 @@
  */
 package graphplan.graph.memo;
 
-import static org.junit.Assert.*;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Logger;
-
 import graphplan.GraphplanTestUtil;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.PropositionFactory;
-import graphplan.graph.memo.MemoizationTable;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.fail;
 
 public class MemoizationTableTest {
 	protected static final Logger logger = Logger.getLogger(MemoizationTableTest.class.getName());

@@ -23,17 +23,16 @@
  */
 package graphplan.graph.xml;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import graphplan.graph.GraphElement;
 import graphplan.graph.GraphElementVisitor;
 import graphplan.graph.GraphLevel;
 import graphplan.graph.planning.PlanningGraph;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class XMLExporterVisitor implements GraphElementVisitor {
 	protected Document document;

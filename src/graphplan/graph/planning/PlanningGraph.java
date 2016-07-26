@@ -25,11 +25,7 @@ package graphplan.graph.planning;
 
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import graphplan.graph.ActionLevel;
-import graphplan.graph.GraphElement;
-import graphplan.graph.GraphElementVisitor;
-import graphplan.graph.GraphLevel;
-import graphplan.graph.PropositionLevel;
+import graphplan.graph.*;
 import graphplan.graph.algorithm.ActionLevelGenerator;
 import graphplan.graph.algorithm.MutexGenerator;
 import graphplan.graph.algorithm.PropositionLevelGenerator;
@@ -38,12 +34,7 @@ import graphplan.graph.algorithm.impl.MutexGeneratorImpl;
 import graphplan.graph.draw.TextDrawVisitor;
 import graphplan.graph.memo.mutexes.StaticMutexesTable;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.logging.Logger;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })

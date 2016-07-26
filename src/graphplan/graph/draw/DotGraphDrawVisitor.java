@@ -5,11 +5,7 @@ package graphplan.graph.draw;
 
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
-import graphplan.graph.ActionLevel;
-import graphplan.graph.GraphElement;
-import graphplan.graph.GraphElementVisitor;
-import graphplan.graph.GraphLevel;
-import graphplan.graph.PropositionLevel;
+import graphplan.graph.*;
 import graphplan.graph.planning.PlanningGraph;
 
 import java.io.PrintWriter;

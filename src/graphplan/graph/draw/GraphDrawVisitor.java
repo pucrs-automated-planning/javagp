@@ -23,32 +23,22 @@
  */
 package graphplan.graph.draw;
 
-import java.io.StringWriter;
-import java.util.Iterator;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import graphplan.domain.Operator;
+import graphplan.domain.Proposition;
+import graphplan.graph.*;
+import graphplan.graph.planning.PlanningGraph;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import graphplan.domain.Operator;
-import graphplan.domain.Proposition;
-import graphplan.graph.ActionLevel;
-import graphplan.graph.GraphElement;
-import graphplan.graph.GraphElementVisitor;
-import graphplan.graph.GraphLevel;
-import graphplan.graph.PropositionLevel;
-import graphplan.graph.planning.PlanningGraph;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
+import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
 public class GraphDrawVisitor implements GraphElementVisitor {

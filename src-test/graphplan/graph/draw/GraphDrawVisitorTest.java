@@ -23,10 +23,6 @@
  */
 package graphplan.graph.draw;
 
-import static org.junit.Assert.fail;
-
-import java.util.logging.Logger;
-
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.OperatorFactory;
@@ -34,10 +30,13 @@ import graphplan.flyweight.PropositionFactory;
 import graphplan.graph.ActionLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.planning.PlanningGraph;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.logging.Logger;
+
+import static org.junit.Assert.fail;
 
 public class GraphDrawVisitorTest {
 	private static final Logger logger = Logger.getLogger(GraphDrawVisitorTest.class.getName());

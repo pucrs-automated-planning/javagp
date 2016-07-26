@@ -33,11 +33,7 @@ import graphplan.graph.algorithm.ActionLevelGenerator;
 import graphplan.graph.algorithm.PropositionLevelGenerator;
 import graphplan.graph.planning.PlanningGraphException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLevelGenerator {

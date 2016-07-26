@@ -5,12 +5,7 @@ import graphplan.domain.Proposition;
 import graphplan.flyweight.OperatorFactory;
 import jason.asSyntax.Term;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class StaticMutexesTable {
 

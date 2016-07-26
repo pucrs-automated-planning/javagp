@@ -26,11 +26,7 @@ package graphplan.graph.memo;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.PropositionFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MemoizationTable implements Iterable<HashSet<String>> {
 	protected List<HashSet<String>> noGoodsTable;

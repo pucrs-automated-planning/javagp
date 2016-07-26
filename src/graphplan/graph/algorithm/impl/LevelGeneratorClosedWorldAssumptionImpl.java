@@ -33,11 +33,7 @@ import graphplan.graph.PropositionLevel;
 import graphplan.graph.algorithm.ActionLevelGeneratorClosedWorldAssumption;
 import graphplan.graph.planning.PlanningGraphException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class LevelGeneratorClosedWorldAssumptionImpl extends LevelGeneratorImpl implements ActionLevelGeneratorClosedWorldAssumption {
 

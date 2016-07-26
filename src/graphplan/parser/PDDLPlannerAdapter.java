@@ -9,37 +9,17 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import pddl4j.ErrorManager;
+import pddl4j.*;
 import pddl4j.ErrorManager.Message;
-import pddl4j.PDDLObject;
-import pddl4j.Parser;
-import pddl4j.ParserException;
-import pddl4j.RequireKey;
-import pddl4j.Source;
-import pddl4j.exp.AndExp;
-import pddl4j.exp.AtomicFormula;
-import pddl4j.exp.Exp;
-import pddl4j.exp.InitEl;
-import pddl4j.exp.Literal;
-import pddl4j.exp.NotAtomicFormula;
-import pddl4j.exp.NotExp;
+import pddl4j.exp.*;
 import pddl4j.exp.action.Action;
 import pddl4j.exp.action.ActionDef;
 import pddl4j.exp.term.Constant;
-import pddl4j.exp.term.Variable;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class PDDLPlannerAdapter {
 	
