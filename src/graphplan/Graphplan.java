@@ -47,6 +47,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -60,6 +62,7 @@ public class Graphplan {
 	// Logging
 	private static final Logger logger = Logger.getLogger(Graphplan.class.getName());
 	private static final String LOGGER_FILE = "logging.properties";
+	private static final String SEVERE_LOGGER_FILE = "severelogging.properties";
 
 	// Global parameters
 	public static boolean noopsFirst = false;
@@ -71,6 +74,7 @@ public class Graphplan {
 	private boolean extractAllPossibleSolutions; // Extract all solutions with minimum length (TODO: need more tests)
 	private int extractAllPossibleSolutionsWithMaxLength; // Extract all solutions with (minimum length + extractAllPossibleWithMaxLength, respective to graph level)
 	private boolean pddl;
+	private boolean setupLogger;
 	private long timeout;
 	private int maxLevels;
 	private String graphDrawFile;
@@ -100,6 +104,7 @@ public class Graphplan {
 			throw new IllegalStateException("domainFilename or problemFilename not provided");
 		}
 		this.pddl = builder.pddl;
+		this.setupLogger = builder.setupLogger;
 		this.timeout = builder.timeout;
 		this.maxLevels = builder.maxLevels;
 		this.extractAllPossibleSolutions = builder.extractAllPossibleSolutions;
@@ -109,12 +114,16 @@ public class Graphplan {
 		parseDomain(builder.domainFilename, builder.problemFilename);
 	}
 
-	public boolean isPddl() {
-		return pddl;
-	}
-
 	public boolean isExtractAllPossibleSolutions() {
 		return extractAllPossibleSolutions;
+	}
+
+	public void setExtractAllPossibleSolutions(boolean extractAllPossibleSolutions) {
+		this.extractAllPossibleSolutions = extractAllPossibleSolutions;
+	}
+
+	public void setExtractAllPossibleSolutionsWithMaxLength(int extractAllPossibleSolutionsWithMaxLength) {
+		this.extractAllPossibleSolutionsWithMaxLength = extractAllPossibleSolutionsWithMaxLength;
 	}
 
 	private void parseDomain(String domainFilename, String problemFilename) {
@@ -257,15 +266,24 @@ public class Graphplan {
 		System.exit(1);
 	}
 
-	private static void setupLogger() {
+	private void setupLogger() {
 		try {
 			if (new File(LOGGER_FILE).exists()) {
 				LogManager.getLogManager().readConfiguration(new FileInputStream(new File(LOGGER_FILE)));
 			} else {
 				LogManager.getLogManager().readConfiguration(Graphplan.class.getResourceAsStream("/" + LOGGER_FILE));
 			}
+
+			if(!setupLogger) {
+				Handler[] handlers = Logger.getLogger("").getHandlers();
+				for (Handler handler : handlers) {
+					handler.setLevel(Level.SEVERE);
+				}
+			}
 		} catch (Exception e) {
-			System.err.println("Error setting up logger:" + e);
+			if(setupLogger) {
+				System.err.println("Error setting up logger:" + e);
+			}
 		}
 	}
 
@@ -362,6 +380,7 @@ public class Graphplan {
 		private String problemFilename;
 		private String graphDrawFile;
 		private boolean pddl = true;
+		private boolean setupLogger = false;
 		private long timeout = 0;
 		private int maxLevels = Integer.MAX_VALUE;
 		private boolean extractAllPossibleSolutions = false;
@@ -379,6 +398,11 @@ public class Graphplan {
 
 		public Builder setPddl(boolean pddl) {
 			this.pddl = pddl;
+			return this;
+		}
+
+		public Builder setSetupLogger(boolean setupLogger) {
+			this.setupLogger = setupLogger;
 			return this;
 		}
 
@@ -415,6 +439,7 @@ public class Graphplan {
 	@Nullable
 	private static Graphplan parseArgs(String[] args) {
 		Builder builder = new Builder();
+		builder.setSetupLogger(true);
 		boolean argsOk = true;
 
 		for (int i = 0; i < args.length && argsOk; i++) {
