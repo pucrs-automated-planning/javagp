@@ -160,7 +160,6 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 			transformer.setOutputProperty("indent", "yes");
 			transformer.transform(source, result);
 		} catch (TransformerFactoryConfigurationError | TransformerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

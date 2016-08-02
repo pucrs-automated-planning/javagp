@@ -12,7 +12,7 @@ Run "java -jar javagp.jar -d examples/pddl/blocksworld/blockworlds.pddl -p examp
 >>> Planner arguments
 -maxlevels <NUMBER>,	                Max Graph levels.
 -timeout <NUMBER>,		                Planning timeout.
--extractAllPossibleSolutions <NUMBER>,  Extract all solutions with (minimum length + NUMBER, respective to graph level) (TODO: need more tests).
+-extractAllPossibleSolutions <NUMBER>,  Extract all solutions with (minimum length + NUMBER, respective to graph level)
 
 -noHeuristics,			No Heuristics.
 

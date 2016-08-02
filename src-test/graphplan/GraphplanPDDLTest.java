@@ -6,8 +6,6 @@ import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 
-// TODO: Implement more tests using the "extractAllPossibleGoals"
-// Today, this parameter is (I hope) returning all possible solutions with minimal length
 public class GraphplanPDDLTest {
 
 	private static final Logger logger = Logger.getLogger(GraphplanPDDLTest.class.getName());

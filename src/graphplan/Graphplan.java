@@ -70,7 +70,7 @@ public class Graphplan {
 	public static boolean sortGoals = false;
 
 	// Parameters
-	private boolean extractAllPossibleSolutions; // Extract all solutions with minimum length (TODO: need more tests)
+	private boolean extractAllPossibleSolutions; // Extract all solutions with minimum length
 	private int extractAllPossibleSolutionsWithMaxLength; // Extract all solutions with (minimum length + extractAllPossibleWithMaxLength, respective to graph level)
 	private boolean pddl;
 	private boolean setupLogger;
