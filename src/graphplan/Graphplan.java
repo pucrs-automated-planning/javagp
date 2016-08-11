@@ -177,6 +177,9 @@ public class Graphplan {
 		}
 	}
 
+	/**
+	 * Return plan solution containing all found solutions given specified parameters
+	 */
 	@Nullable
 	public PlanSolution getPlanSolution() {
 		PlanSolution planSolution = null;
@@ -217,6 +220,41 @@ public class Graphplan {
 		}
 
 		return planSolution;
+	}
+
+	/**
+	 * Get levelled planning graph, i.e. a complete planning graph with all mutex relations
+	 */
+	@Nullable
+	public PlanningGraph getLevelledPlanningGraph() {
+		PlanningGraph levelledPlanningGraph = null;
+		try {
+			PropositionLevel initialLevel = new PropositionLevel();
+			initialLevel.addPropositions(domain.getInitialState());
+			this.solutionExtraction = new SolutionExtractionVisitor(domain.getGoalState(), this);
+
+			if (pddl) {
+				//If domain has negative preconditions, the planner will use the closed world assumption
+				if (domain.isNegativePreconditions()) {
+					levelledPlanningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domain.getTypes(), domain.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
+				} else
+					levelledPlanningGraph = new PlanningGraph(initialLevel, domain.getTypes(), domain.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
+			} else {
+				levelledPlanningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
+			}
+
+			OperatorFactory.getInstance().resetOperatorTemplates();
+			for (Operator operator : domain.getOperators()) {
+				OperatorFactory.getInstance().addOperatorTemplate(operator);
+			}
+
+			while (!levelledPlanningGraph.levelledOff()) {
+				levelledPlanningGraph.expandGraph();
+			}
+		} catch (OperatorFactoryException | PlanningGraphException e) {
+			logger.warning(e.getLocalizedMessage());
+		}
+		return levelledPlanningGraph;
 	}
 
 	public void drawPlanningGraph() {
@@ -307,8 +345,9 @@ public class Graphplan {
 				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domain.getTypes(), domain.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
 			} else
 				this.planningGraph = new PlanningGraph(initialLevel, domain.getTypes(), domain.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
-		} else
+		} else {
 			this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
+		}
 
 		OperatorFactory.getInstance().resetOperatorTemplates();
 
