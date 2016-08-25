@@ -39,7 +39,6 @@ import graphplan.parser.PDDLPlannerAdapter;
 import graphplan.parser.ParseException;
 import graphplan.parser.PlannerParser;
 import org.jetbrains.annotations.Nullable;
-import pddl4j.ParserException;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -131,7 +130,7 @@ public class Graphplan {
 				logger.finest("JavaGP - PDDL\n");
 				logger.finest("+ DOMAIN: " + domainFilename);
 				logger.finest("+ PROBLEM: " + problemFilename);
-				PDDLPlannerAdapter parserPDDL = new PDDLPlannerAdapter(domainFilename, problemFilename);
+				PDDLPlannerAdapter parserPDDL = PDDLPlannerAdapter.getInstance(domainFilename, problemFilename);
 				domain = parserPDDL.getDomainDescriptionFromPddlObject();
 			} else {
 				File opFile = new File(domainFilename);
@@ -152,7 +151,7 @@ public class Graphplan {
 				PlannerParser parser = new PlannerParser();
 				domain = parser.parseProblem(operators, problem);
 			}
-		} catch (ParserException | ParseException | FileNotFoundException e) {
+		} catch (ParseException | FileNotFoundException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}

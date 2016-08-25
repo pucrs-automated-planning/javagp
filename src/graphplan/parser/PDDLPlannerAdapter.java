@@ -1,5 +1,6 @@
 package graphplan.parser;
 
+import fr.uga.pddl4j.parser.*;
 import graphplan.domain.DomainDescription;
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
@@ -9,14 +10,7 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
-import pddl4j.*;
-import pddl4j.ErrorManager.Message;
-import pddl4j.exp.*;
-import pddl4j.exp.action.Action;
-import pddl4j.exp.action.ActionDef;
-import pddl4j.exp.term.Constant;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -24,285 +18,217 @@ import java.util.logging.Logger;
 public class PDDLPlannerAdapter {
 
 	private static final Logger logger = Logger.getLogger(PDDLPlannerAdapter.class.getName());
-
-	private PDDLObject pddlObject;
-
+	private Parser parser;
 	private Map<String, Set<String>> types;
 	private Map<String, List<String>> parameterTypes;
 
-	/**
-	 *
-	 */
-	public PDDLPlannerAdapter(PDDLObject pddlObject) {
-		this.pddlObject = pddlObject;
-	}
-
-	/**
-	 * @throws ParserException
-	 */
-	public PDDLPlannerAdapter(String domain, String problem) throws ParserException {
-
-		this.types = new HashMap<>();
-		this.parameterTypes = new HashMap<>();
-
-		Properties options = new Properties();
-		options.put("source", Source.V3_0);
-		options.put("debug", true);
-		options.put(RequireKey.STRIPS, true);
-		options.put(RequireKey.TYPING, true);
-//        options.put(RequireKey.EQUALITY, false);
-		options.put(RequireKey.NEGATIVE_PRECONDITIONS, true);
-//        options.put(RequireKey.DISJUNCTIVE_PRECONDITIONS, false);
-//        options.put(RequireKey.EXISTENTIAL_PRECONDITIONS, false);
-//        options.put(RequireKey.UNIVERSAL_PRECONDITIONS, false);
-//        options.put(RequireKey.CONDITIONAL_EFFECTS, false);
-
+	public static PDDLPlannerAdapter getInstance(String domain, String problem) {
 		try {
-			Parser pddlParser = new Parser(options);
-			PDDLObject pddlDomain = pddlParser.parse(new File(domain));
-			boolean domainParseError = pddlParser.getErrorManager().contains(Message.ERROR);
-			PDDLObject pddlProblem = pddlParser.parse(new File(problem));
-			boolean problemParseError = pddlParser.getErrorManager().contains(Message.ERROR);
-			ErrorManager mgr = pddlParser.getErrorManager();
-			// If the parser produces errors we print it and stop
-			if (mgr.contains(Message.ERROR)) {
-				for (String m : mgr.getMessages(Message.ALL)) {
-					logger.severe(m);
-				}
-			} else {// else we print the warnings
-				for (String m : mgr.getMessages(Message.WARNING)) {
-					logger.severe(m);
-				}
-			}
-			if (pddlDomain == null || domainParseError) {
-				throw new pddl4j.ParserException("Parse error in PDDL Domain");
-			} else if (pddlProblem == null || problemParseError) {
-				throw new pddl4j.ParserException("Parse error in PDDL Problem");
-			} else {
-				this.pddlObject = pddlParser.link(pddlDomain, pddlProblem);
-			}
+			Parser parser = new Parser();
+			parser.parse(domain, problem);
+			return new PDDLPlannerAdapter(parser);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-
-
-	/**
-	 * @return DomainDescription
-	 */
-	@SuppressWarnings("rawtypes")
-	public DomainDescription getDomainDescriptionFromPddlObject() {
-		if (this.pddlObject != null) {
-			logger.finest("\nPDDL Parser\n");
-
-			boolean negativePreconditions = false;
-
-			Iterator<RequireKey> requirements = this.pddlObject.requirementsIterator();
-			while (requirements.hasNext()) {
-				RequireKey requireKey = requirements.next();
-				if (requireKey == RequireKey.NEGATIVE_PRECONDITIONS) {
-					negativePreconditions = true;
-					logger.severe("--> The Problem has Negative Preconditions\n");
-				}
-			}
-
-			Iterator<ActionDef> actionsIterator = this.pddlObject.actionsIterator();
-
-			List<Operator> operators = new ArrayList<>();
-			List<Proposition> initialState = new ArrayList<>();
-			List<Proposition> goalState = new ArrayList<>();
-
-			logger.finest("--> Actions\n");
-
-			while (actionsIterator.hasNext()) {
-				ActionDef actionDef = actionsIterator.next();
-				logger.finest(actionDef.toString());
-
-				Exp precontidion = ((Action) actionDef).getPrecondition();
-				Exp effect = ((Action) actionDef).getEffect();
-
-				List<String> parameterTypes = new ArrayList<>();
-
-				OperatorImpl operatorImpl = new OperatorImpl(actionDef.getName());
-				List<Term> termsOp = new ArrayList<>();
-				for (pddl4j.exp.term.Term term : actionDef.getParameters()) {
-					termsOp.add(new VarTerm(term.getImage().replace("?", "").toUpperCase()));
-					parameterTypes.add(term.getTypeSet().toString());
-
-					Set<String> setVar = this.types.get(term.getTypeSet().toString());
-
-					for (Constant c : this.pddlObject.getTypedDomain(term.getTypeSet())) {
-						if (setVar == null) {
-							setVar = new HashSet<>();
-							setVar.add(c.toString());
-							this.types.put(term.getTypeSet().toString(), setVar);
-						} else setVar.add(c.toString());
-					}
-				}
-
-				this.parameterTypes.put(actionDef.getName(), parameterTypes);
-
-				operatorImpl.addTerms(termsOp);
-
-				operatorImpl.getPreconds().addAll(this.getPropositionFromDomainExp(precontidion));
-				operatorImpl.getEffects().addAll(this.getPropositionFromDomainExp(effect));
-
-				operators.add(operatorImpl);
-			}
-
-			logger.finest("\n--> Init\n");
-
-			for (InitEl init : this.pddlObject.getInit()) {
-				logger.finest(init.toString());
-				boolean negated = false;
-				Literal p;
-
-				if (init instanceof NotAtomicFormula) {
-					p = (NotAtomicFormula) init;
-					negated = true;
-				} else p = (AtomicFormula) init;
-				PropositionImpl proposition = new PropositionImpl(!negated, p.getPredicate());
-				Iterator variables = p.iterator();
-
-				List<Term> terms = new ArrayList<>();
-				while (variables.hasNext()) {
-					Constant var = (Constant) variables.next();
-					Atom term = new Atom(var.getImage());
-					terms.add(term);
-
-					Set<String> setVar = this.types.get(var.getTypeSet().toString());
-					setVar.add(var.getImage());
-				}
-
-				proposition.addTerms(terms);
-				initialState.add(proposition);
-			}
-
-			logger.finest("\n--> Goal\n");
-			logger.finest(this.pddlObject.getGoal().toString());
-
-			goalState.addAll(this.getPropositionFromProblemExp(this.pddlObject.getGoal()));
-
-			logger.finest("\nPDDL Parser\n");
-			return new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes, negativePreconditions);
-		}
-
 		return null;
 	}
 
-	/**
-	 * @return List<PropositionImpl>
-	 */
-	private List<PropositionImpl> getPropositionFromDomainExp(Exp exp) {
-		return getPropositionFromDomainExp(exp, false);
+	private PDDLPlannerAdapter(Parser parser) {
+		this.types = new HashMap<>();
+		this.parameterTypes = new HashMap<>();
+		this.parser = parser;
+	}
+
+	public DomainDescription getDomainDescriptionFromPddlObject() {
+		logger.finest("\nPDDL Parser\n");
+
+		// Parse requirements
+		boolean negativePreconditions = false;
+
+		for(RequireKey requireKey : getRequirements()) {
+			if (requireKey == RequireKey.NEGATIVE_PRECONDITIONS) {
+				negativePreconditions = true;
+				// TODO: why do we need this log? "The Problem has Negative Preconditions"
+				logger.severe("--> The Problem has Negative Preconditions\n");
+				break;
+			}
+		}
+
+		// Parse operators
+		List<Operator> operators = new ArrayList<>();
+		for(Op operator : this.parser.getDomain().getOperators()) {
+			logger.finest(operator.toString());
+			Exp preconditions = operator.getPreconditions();
+			Exp effects = operator.getEffects();
+
+			List<String> parameterTypes = new ArrayList<>();
+			OperatorImpl operatorImpl = new OperatorImpl(operator.getName().getImage());
+			List<Term> termsOp = new ArrayList<>();
+
+			for(TypedSymbol typedSymbol : operator.getParameters()) {
+				termsOp.add(new VarTerm(typedSymbol.getImage().replace("?", "").toUpperCase()));
+				parameterTypes.add(listOfTypesToString(typedSymbol.getTypes()));
+			}
+
+			this.parameterTypes.put(operator.getName().toString(), parameterTypes);
+
+			operatorImpl.addTerms(termsOp);
+
+			operatorImpl.getPreconds().addAll(this.getPropositionsFromExp(preconditions, false));
+			operatorImpl.getEffects().addAll(this.getPropositionsFromExp(effects, false));
+
+			operators.add(operatorImpl);
+		}
+
+		// Parse init
+		logger.finest("\n--> Init\n");
+		List<Proposition> initialState = new ArrayList<>();
+
+		for (Exp exp : this.parser.getProblem().getInit()) {
+			logger.finest(exp.toString());
+
+			switch (exp.getConnective()) {
+				case ATOM:
+					initialState.add(getPropositionImpl(false, exp, true));
+					break;
+				case NOT:
+					initialState.add(getPropositionImpl(true, exp.getChildren().get(0), true));
+					break;
+				default:
+					throw new IllegalStateException("Exp not expected when parsing Proposition: " + exp.getConnective());
+			}
+		}
+
+		// Parse types
+		setupTypes();
+
+		// Parse goals
+
+		logger.finest("\n--> Goal\n");
+		List<Proposition> goalState = new ArrayList<>();
+		logger.finest(this.parser.getProblem().getGoal().toString());
+		goalState.addAll(this.getPropositionsFromExp(this.parser.getProblem().getGoal(), true));
+
+		// Setup
+		logger.finest("\nPDDL Parser\n");
+		return new DomainDescription(operators, initialState, goalState, this.types, this.parameterTypes, negativePreconditions);
 	}
 
 	/**
-	 * @return List<PropositionImpl>
+	 * Utility methods
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<PropositionImpl> getPropositionFromDomainExp(Exp exp, boolean negated) {
-		List<PropositionImpl> propositionImpls = new ArrayList<>();
-		switch (exp.getExpID()) {
-			case AND:
-				AndExp andExp = (AndExp) exp;
-				for (Exp and : andExp) {
-					propositionImpls.addAll(getPropositionFromDomainExp(and, false));
-				}
-				break;
-			case ATOMIC_FORMULA:
-				AtomicFormula p = (AtomicFormula) exp;
-				PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, p.getPredicate()));
 
-				Iterator pddlTerms = p.iterator();
+	private Set<RequireKey> getRequirements() {
+		Set<RequireKey> domainRequirements = this.parser.getDomain().getRequirements();
+		Set<RequireKey> problemRequirements = this.parser.getProblem().getRequirements();
+		Set<RequireKey> requirements = new HashSet<>();
+		requirements.addAll(domainRequirements);
+		requirements.addAll(problemRequirements);
+		return requirements;
+	}
 
-				List<Term> terms = new ArrayList<>();
-				while (pddlTerms.hasNext()) {
-					pddl4j.exp.term.Term var = (pddl4j.exp.term.Term) pddlTerms.next();
-					VarTerm term = new VarTerm(var.getImage().replace("?", "").toUpperCase());
-					terms.add(term);
-
-					Set<String> setVar = this.types.get(var.getTypeSet().toString());
-
-					for (Constant c : this.pddlObject.getTypedDomain(var.getTypeSet())) {
-						if (setVar == null) {
-							setVar = new HashSet<>();
-							setVar.add(c.toString());
-							this.types.put(var.getTypeSet().toString(), setVar);
-						} else setVar.add(c.toString());
+	// Setup types data structure
+	private void setupTypes() {
+		// We first make a loop through all existing types to populate with its corresponding constants
+		for(TypedSymbol typedSymbol : this.parser.getDomain().getTypes()) {
+			Set<String> constants = new HashSet<>();
+			for(TypedSymbol constant : this.parser.getProblem().getObjects()) {
+				for(Symbol symbol : constant.getTypes()) {
+					if(symbol.getImage().equals(typedSymbol.getImage())) {
+						constants.add(constant.getImage());
+						break;
 					}
 				}
+			}
+			this.types.put(typedSymbol.getImage(), constants);
+		}
 
-				proposition.addTerms(terms);
-				propositionImpls.add(proposition);
+		// After this, we must take into account type hierarchies (e.g. room - location - object).
+		// As this hierarchies can go a long way down, we keep looping while there are changes
+		boolean somethingChanged = true;
+		while(somethingChanged) {
+			somethingChanged = false;
+			for(TypedSymbol typedSymbol : this.parser.getDomain().getTypes()) {
+				for(Symbol symbol : typedSymbol.getTypes()) {
+					Set<String> existingTypes = this.types.get(symbol.getImage());
+					Set<String> newTypes = this.types.get(typedSymbol.getImage());
+					Set<String> finalTypes = new HashSet<>();
+					finalTypes.addAll(existingTypes);
+					if(finalTypes.addAll(newTypes)) {
+						somethingChanged = true;
+					}
+					this.types.put(symbol.getImage(),finalTypes);
+				}
+			}
 
+		}
+	}
+
+	// Returns a list of symbol types
+	private String listOfTypesToString(List<Symbol> symbols) {
+		StringBuilder str = new StringBuilder();
+		if(symbols.size() == 0) {
+			str.append("empty-type");
+		} else if(symbols.size() == 1) {
+			str.append((symbols.iterator().next()).toString());
+		} else {
+			str.append("(either");
+			for(Symbol s : symbols) {
+				str.append(" ").append(s.getImage());
+			}
+			str.append(")");
+		}
+
+		return str.toString();
+	}
+
+	// Get Proposition from Exp and ground
+	private List<PropositionImpl> getPropositionsFromExp(Exp exp, boolean isGround) {
+		return getPropositionsFromExp(exp, false, isGround);
+	}
+
+	private List<PropositionImpl> getPropositionsFromExp(Exp exp, boolean negated, boolean isGround) {
+		List<PropositionImpl> propositionImpls = new ArrayList<>();
+		switch (exp.getConnective()) {
+			case AND:
+				for (Exp and : exp.getChildren()) {
+					propositionImpls.addAll(getPropositionsFromExp(and, false, isGround));
+				}
+				break;
+			case ATOM:
+				propositionImpls.add(getPropositionImpl(negated, exp, isGround));
 				break;
 			case NOT:
-				NotExp notExp = (NotExp) exp;
-				propositionImpls.addAll(getPropositionFromDomainExp(notExp.getExp(), true));
+				for (Exp and : exp.getChildren()) {
+					propositionImpls.addAll(getPropositionsFromExp(and, true, isGround));
+				}
 				break;
 			default:
-				break;
+				throw new IllegalStateException("Exp not expected when parsing Proposition: " + exp.getConnective());
 		}
 		return propositionImpls;
 	}
 
+	private PropositionImpl getPropositionImpl(boolean negated, Exp exp, boolean isGround) {
+		PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, exp.getAtom().get(0).getImage()));
 
-	/**
-	 * @return List<PropositionImpl>
-	 */
-	private List<PropositionImpl> getPropositionFromProblemExp(Exp exp) {
-		return getPropositionFromProblemExp(exp, false);
-	}
+		List<Term> terms = new ArrayList<>();
+		boolean isPredicate = true;
+		for(Symbol symbol : exp.getAtom()) {
+			if(isPredicate) {
+				isPredicate = false;
+				continue;
+			}
 
-	/**
-	 * @return List<PropositionImpl>
-	 */
-	@SuppressWarnings("rawtypes")
-	private List<PropositionImpl> getPropositionFromProblemExp(Exp exp, boolean negated) {
-		List<PropositionImpl> propositionImpls = new ArrayList<>();
-		switch (exp.getExpID()) {
-			case AND:
-				AndExp andExp = (AndExp) exp;
-				for (Exp and : andExp) {
-					propositionImpls.addAll(getPropositionFromProblemExp(and, false));
-				}
-				break;
-			case ATOMIC_FORMULA:
-				AtomicFormula p = (AtomicFormula) exp;
-				PropositionImpl proposition = new PropositionImpl(new LiteralImpl(!negated, p.getPredicate()));
-
-				Iterator constants = p.iterator();
-
-				List<Term> terms = new ArrayList<>();
-				while (constants.hasNext()) {
-					Constant con = (Constant) constants.next();
-					Atom term = new Atom(con.getImage());
-					terms.add(term);
-
-					Set<String> setCon = this.types.get(con.getTypeSet().toString());
-
-					for (Constant c : this.pddlObject.getTypedDomain(con.getTypeSet())) {
-						if (setCon == null) {
-							setCon = new HashSet<>();
-							setCon.add(c.toString());
-							this.types.put(con.getTypeSet().toString(), setCon);
-						} else setCon.add(c.toString());
-					}
-				}
-
-				proposition.addTerms(terms);
-				propositionImpls.add(proposition);
-
-				break;
-			case NOT:
-				NotExp notExp = (NotExp) exp;
-				propositionImpls.addAll(getPropositionFromProblemExp(notExp.getExp(), true));
-				break;
-			default:
-				break;
+			Term term;
+			if(isGround) {
+				term = new Atom(symbol.getImage());
+			} else {
+				term = new VarTerm(symbol.getImage().replace("?", "").toUpperCase());
+			}
+			terms.add(term);
 		}
-
-		return propositionImpls;
+		proposition.addTerms(terms);
+		return proposition;
 	}
 }
