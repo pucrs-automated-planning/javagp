@@ -14,7 +14,7 @@
 
 	<property name="jason.jar" value="${basedir}/lib/jason.jar"/>
 	<property name="javacc.jar" value="${basedir}/lib/javacc.jar"/>
-	<property name="pddl4j.jar" value="${basedir}/lib/pddl4j.jar"/>
+	<property name="pddl4j.jar" value="${basedir}/lib/pddl4j-3.3.6.jar"/>
 	<property name="junit.jar" value="${basedir}/lib/junit-4.12.jar"/>
 	<property name="hamcrest-core.jar" value="${basedir}/lib/hamcrest-core-1.3.jar"/>
 	<property name="annotations-java8.jar" value="${basedir}/lib/annotations-java8.jar"/>
