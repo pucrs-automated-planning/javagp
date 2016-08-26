@@ -1,8 +1,0 @@
-ant.importBuild 'build.xml'
-
-apply plugin: 'java'
-apply plugin: 'maven'
-
-repositories {
-    mavenCentral()
-}

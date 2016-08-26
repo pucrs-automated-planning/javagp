@@ -7,7 +7,7 @@
                    
      meneguzz                                                                
      ====================================================================== -->
-<project name="JavaGP" default="jar-ant">
+<project name="JavaGP" default="jar">
 	<description>
             A Java implementation of Graphplan
     </description>
@@ -56,7 +56,7 @@
 	<!-- ================================= 
           target: jar              
          ================================= -->
-	<target name="jar-ant" depends="compile" description="--> A Java implementation of Graphplan">
+	<target name="jar" depends="compile" description="--> A Java implementation of Graphplan">
 		<jar destfile="${javagp.jar}">
 			<manifest>
 				<attribute name="Main-Class" value="graphplan.Graphplan" />
@@ -113,7 +113,7 @@
 	<!-- ================================= 
 		  target: dist              
 		 ================================= -->
-	<target name="dist" depends="jar-ant,clean" description="Creates a zip for distribution">
+	<target name="dist" depends="jar,clean" description="Creates a zip for distribution">
 		<delete file="${dist.file}" />
 		<zip destfile="${dist.file}">
 			<fileset dir="${basedir}">
@@ -267,7 +267,7 @@
         </javac>
     </target>
 
-    <target name="test-ant" depends="test-compile">
+    <target name="test" depends="test-compile">
         <junit printsummary="on" haltonfailure="no" fork="true">
             <classpath>
                 <path refid="classpath.test"/>
