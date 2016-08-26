@@ -217,16 +217,11 @@ public class PDDLPlannerAdapter {
 		for(Symbol symbol : exp.getAtom()) {
 			if(isPredicate) {
 				isPredicate = false;
-				continue;
-			}
-
-			Term term;
-			if(isGround) {
-				term = new Atom(symbol.getImage());
+			} else if(isGround) {
+				terms.add(new Atom(symbol.getImage()));
 			} else {
-				term = new VarTerm(symbol.getImage().replace("?", "").toUpperCase());
+				terms.add(new VarTerm(symbol.getImage().replace("?", "").toUpperCase()));
 			}
-			terms.add(term);
 		}
 		proposition.addTerms(terms);
 		return proposition;
