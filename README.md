@@ -1,23 +1,33 @@
 # javagp [![Build Status](https://travis-ci.org/guilhermekrz/javagp.svg?branch=master)](https://travis-ci.org/guilhermekrz/javagp)
 Java Implementation of Graphplan
 
-In order to use JavaGP you need to have Java (http://java.sun.com) Ant (http://ant.apache.org/) configured in your system, to run the build script build.xml. Then, in order to run the planner you need to follow these steps:
+## How to use
+
+### Build
+
+In order to use JavaGP you can either download a self-contained jar or build it from scratch.
+
+To download the latest version, just go [here](https://github.com/guilhermekrz/javagp/releases/latest) and get the "javagp.jar" file.
+
+In order to build it, you need to have Java (http://java.sun.com) Ant (http://ant.apache.org/) configured in your system, to run the build script build.xml. Then, in order to run the planner you need to follow these steps:
 
 Go to the root of the JavaGP distribution (cd <JavaGP>)
 
 Build the project (ant)
+
+### Run
  
-### For PDDL Language, run
+For PDDL Language, run
 ```bash
 java -jar javagp.jar -d examples/pddl/blocksworld/blockworlds.pddl -p examples/pddl/blocksworld/pb1.pddl
 ```
 
-### For STRIPS Language, run 
+For STRIPS Language, run 
 ```bash
 java -jar javagp.jar -nopddl -d examples/strips/ma-prodcell/domain.txt -p examples/strips/ma-prodcell/problem.txt
 ```
 
-### Planner arguments
+#### Planner arguments
 ```bash
 -maxlevels <NUMBER>,	                Max Graph levels.
 -timeout <NUMBER>,                      Planning timeout.
