@@ -1,4 +1,4 @@
-# javagp [![Build Status](https://travis-ci.org/guilhermekrz/javagp.svg?branch=master)](https://travis-ci.org/guilhermekrz/javagp)
+# javagp [![Build Status](https://travis-ci.org/pucrs-automated-planning/javagp.svg?branch=master)](https://travis-ci.org/pucrs-automated-planning/javagp)
 Java Implementation of Graphplan
 
 ## How to use
