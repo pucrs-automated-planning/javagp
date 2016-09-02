@@ -24,118 +24,65 @@
 package graphplan;
 
 import graphplan.domain.Operator;
+import graphplan.util.SetUtil;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /**
- * A class encapsulating the result of planning. This class allows direct 
- * comparison with a boolean value determining whether or not the plan was 
+ * A class encapsulating the result of planning. This class allows direct
+ * comparison with a boolean value determining whether or not the plan was
  * successful, as well as iteration through the plan steps.
- * @author Felipe Meneguzzi
  *
+ * @author Felipe Meneguzzi
  */
-public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
-	//The steps are a list of list, since we can have multiple operators
-	//at any given step
-	protected List<List<Operator>> steps;
-	protected boolean value = false;
-	private int planLength = 0;
-	
-	public PlanResult(boolean value) {
-		this.value = value;
-		if(value) {
-			this.steps = new ArrayList<List<Operator>>();
-		}
-	}
-	
+public class PlanResult implements Iterable<Operator> {
+	//The steps are a list of list, since we can have multiple operators at any given step
+	private List<List<Operator>> steps = new ArrayList<>();
+	private int planLength;
+
+	// Contains all possible sequence of steps from this plan
+	private Set<List<Operator>> allPossibleSolutions;
+
 	/**
-	 * Creates a new PlanResult from a stack of operators in 
+	 * Creates a new PlanResult from a stack of operators in
 	 * reverse order.
 	 */
 	public PlanResult(Stack<Set<Operator>> stack) {
-		this(true);
-		for(int i = 0; i<stack.size(); i++) {
-			Collection<Operator> stepsInStack = stack.get(i);
-			List<Operator> mySteps = new ArrayList<Operator>(stepsInStack.size());
-			for(Operator step : stepsInStack) {
-				if(!step.isNoop()) {
+		planLength = 0;
+		for (Set<Operator> aStack : stack) {
+			List<Operator> mySteps = new ArrayList<>(aStack.size());
+			for (Operator step : aStack) {
+				if (!step.isNoop()) {
 					mySteps.add(step);
+					planLength++;
 				}
 			}
 			this.steps.add(mySteps);
 		}
 	}
-	
-	/**
-	 * Creates a new plan with the specified steps. This assumes that planning 
-	 * was successful
-	 * @param steps
-	 */
-	public PlanResult(List<Operator> steps) {
-		this(true);
-		this.steps = new ArrayList<List<Operator>>(steps.size());
-		this.addSteps(steps);
-	}
-	
-	/**
-	 * Adds a step to this plan.
-	 * @param step
-	 */
-	public void addStep(Operator step) {
-		this.steps.add(new ArrayList<Operator>());
-		this.steps.get(this.steps.size()-1).add(step);
-	}
-	
-	/**
-	 * Adds a step in the specified time
-	 * @param time
-	 * @param step
-	 */
-	public void addStep(int time, Operator step) {
-		if(this.steps.size() <= time) {
-			this.steps.add(time, new ArrayList<Operator>());
-		}
-		this.steps.get(time).add(step);
-	}
-	
-	/**
-	 * Adds all the steps in the list of operators to this plan, one for
-	 * each unit of time.
-	 * @param list
-	 */
-	public void addSteps(List<Operator> list) {
-		for(Operator step : list) {
-			this.addStep(step);
-		}
-	}
 
-	public int compareTo(Boolean b) {
-		return (b.booleanValue() == value ? 0 : (value ? 1 : -1));
+	public int getPlanLength() {
+		return planLength;
 	}
 
 	public Iterator<Operator> iterator() {
-		if(steps == null) {
+		if (steps == null) {
 			return null;
 		}
-		Iterator<Operator> iterator = new Iterator<Operator>() {
+		return new Iterator<Operator>() {
 			private Iterator<Operator> stepIterator = null;
-			private Iterator<List<Operator>> listIterator = steps.iterator();
-			
+			private Iterator<List<Operator>> listIterator = PlanResult.this.steps.iterator();
+
 			public boolean hasNext() {
-				if(stepIterator == null) {
-					if(listIterator.hasNext()) {
+				if (stepIterator == null) {
+					if (listIterator.hasNext()) {
 						stepIterator = listIterator.next().iterator();
 						return this.hasNext();
 					} else {
 						return false;
 					}
 				} else {
-					if(stepIterator.hasNext()) {
+					if (stepIterator.hasNext()) {
 						return true;
 					} else {
 						stepIterator = null;
@@ -145,7 +92,7 @@ public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
 			}
 
 			public Operator next() {
-				if(this.hasNext()) {
+				if (this.hasNext()) {
 					return stepIterator.next();
 				} else {
 					return null;
@@ -154,29 +101,46 @@ public class PlanResult implements Comparable<Boolean>, Iterable<Operator> {
 
 			public void remove() {
 			}
-			
+
 		};
-		return iterator;
 	}
-	
-	public boolean isTrue() {
-		return value;
+
+	// Get all possible sequence of steps from this plan
+	public Set<List<Operator>> getAllPossibleSolutions() {
+		if (allPossibleSolutions == null) {
+			allPossibleSolutions = new HashSet<>();
+			for (List<Operator> s : steps) {
+				List<List<Operator>> permutations = SetUtil.permutation(s);
+
+				Set<List<Operator>> tempSolutions = new HashSet<>();
+
+				if (allPossibleSolutions.isEmpty()) {
+					tempSolutions.addAll(permutations);
+				} else {
+					for (List<Operator> list : allPossibleSolutions) {
+						for (List<Operator> per : permutations) {
+							List<Operator> newList = new ArrayList<>(list);
+							newList.addAll(per);
+							tempSolutions.add(newList);
+						}
+					}
+				}
+
+				allPossibleSolutions = tempSolutions;
+			}
+		}
+		return allPossibleSolutions;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		
+
 		for (Operator step : this) {
-			this.planLength++;
 			builder.append(step);
 			builder.append(System.getProperty("line.separator"));
 		}
-		
-		return builder.toString();
-	}
 
-	public int getPlanLength() {
-		return planLength;
+		return builder.toString();
 	}
 }

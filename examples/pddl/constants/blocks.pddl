@@ -1,6 +1,6 @@
 (define (domain blocks)
-	(:requirements :strips)	
-	(:constants-def table)	
+	(:requirements :strips)
+	(:constants-def table)
 	(:predicates (on ?a ?b)
 		         (block ?b)
 				 (clear ?b) )	

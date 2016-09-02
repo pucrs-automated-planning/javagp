@@ -31,9 +31,8 @@ import java.util.Set;
 /**
  * The description of a planning problem, including the set of ground
  * uninstantiated operators as well as the initial state and goal state.
- * 
+ *
  * @author Felipe Meneguzzi
- * 
  */
 public class DomainDescription {
 
@@ -42,54 +41,56 @@ public class DomainDescription {
 	protected List<Proposition> initialState;
 
 	protected List<Proposition> goalState;
-	
+
 	protected Map<String, Set<String>> types;
-	
+
 	protected Map<String, List<String>> parameterTypes;
-	
+
 	protected boolean negativePreconditions = false;
-	
+
 	/**
-	 * Instantiate a domain description with the supplied  
+	 * Instantiate a domain description with the supplied
 	 * <code>initialState</code> and <code>goalState</code>.
+	 *
 	 * @param initialState
 	 * @param goalState
 	 */
 	public DomainDescription(List<Proposition> initialState, List<Proposition> goalState) {
-		this.initialState = new ArrayList<Proposition>(initialState);
-		this.goalState = new ArrayList<Proposition>(goalState);
+		this.initialState = new ArrayList<>(initialState);
+		this.goalState = new ArrayList<>(goalState);
 	}
 
 	/**
-	 * Instantiate a domain description with the supplied <code>operators</code>, 
+	 * Instantiate a domain description with the supplied <code>operators</code>,
 	 * <code>initialState</code> and <code>goalState</code>.
+	 *
 	 * @param operators
 	 * @param initialState
 	 * @param goalState
 	 */
 	public DomainDescription(List<Operator> operators,
-							 List<Proposition> initialState, 
-							 List<Proposition> goalState) {
+	                         List<Proposition> initialState,
+	                         List<Proposition> goalState) {
 		this(initialState, goalState);
-		this.operators = new ArrayList<Operator>(operators);
+		this.operators = new ArrayList<>(operators);
 	}
-	
+
 	/**
-	 * Instantiate a domain description with the supplied <code>operators</code>, 
+	 * Instantiate a domain description with the supplied <code>operators</code>,
 	 * <code>initialState</code> and <code>goalState</code>.
+	 *
 	 * @param operators
 	 * @param initialState
 	 * @param goalState
 	 * @param types
-	 * @param parametertypes
 	 */
 	public DomainDescription(List<Operator> operators,
-							 List<Proposition> initialState, 
-							 List<Proposition> goalState, 
-							 Map<String, Set<String>> types, 
-							 Map<String, List<String>> parameterTypes, 
-							 boolean negativePreconditions) {
-		this(operators,initialState, goalState);
+	                         List<Proposition> initialState,
+	                         List<Proposition> goalState,
+	                         Map<String, Set<String>> types,
+	                         Map<String, List<String>> parameterTypes,
+	                         boolean negativePreconditions) {
+		this(operators, initialState, goalState);
 		this.types = types;
 		this.parameterTypes = parameterTypes;
 		this.negativePreconditions = negativePreconditions;
@@ -97,7 +98,7 @@ public class DomainDescription {
 
 	/**
 	 * Returns the operators for this domain.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Operator> getOperators() {
@@ -105,8 +106,17 @@ public class DomainDescription {
 	}
 
 	/**
+	 * Sets the operators in a planning problem.
+	 *
+	 * @param operators
+	 */
+	public void setOperators(List<Operator> operators) {
+		this.operators = operators;
+	}
+
+	/**
 	 * Returns the initial state of this domain.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Proposition> getInitialState() {
@@ -115,19 +125,11 @@ public class DomainDescription {
 
 	/**
 	 * Returns the goal state of this domain.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Proposition> getGoalState() {
 		return this.goalState;
-	}
-	
-	/**
-	 * Sets the operators in a planning problem.
-	 * @param operators
-	 */
-	public void setOperators(List<Operator> operators) {
-		this.operators = operators;
 	}
 
 	public Map<String, Set<String>> getTypes() {

@@ -23,56 +23,57 @@
  */
 package graphplan.domain.jason;
 
-import static org.junit.Assert.*;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.PropositionFactory;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+
+// TODO: implement missing tests
 public class PropositionImplTest {
 	private PropositionFactory propositionFactory = PropositionFactory.getInstance();
 	private Proposition propositions[];
 
 	@Before
 	public void setUp() throws Exception {
-		String propositionSignatures[] = new String[] {"at(a)", "~at(a)"};
+		String propositionSignatures[] = new String[]{"at(a)", "~at(a)"};
 		propositions = propositionFactory.getPropositions(propositionSignatures);
 	}
 
-	@Test
+	//	@Test
 	public void testApply() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	//	@Test
 	public void testGetSignature() {
 		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testIsMutex() {
-		if(!propositions[0].isMutex(propositions[1])) {
-			fail("Proposition "+propositions[0]+" should be mutex with "+propositions[1]);
+		if (!propositions[0].isMutex(propositions[1])) {
+			fail("Proposition " + propositions[0] + " should be mutex with " + propositions[1]);
 		}
 	}
 
-	@Test
+	//	@Test
 	public void testAccept() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	//	@Test
 	public void testIterator() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	//	@Test
 	public void testUnifies() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	//	@Test
 	public void testMakeGround() {
 		fail("Not yet implemented");
 	}

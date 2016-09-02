@@ -23,24 +23,23 @@
  */
 package graphplan.graph.xml;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import graphplan.graph.GraphElement;
 import graphplan.graph.GraphElementVisitor;
 import graphplan.graph.GraphLevel;
 import graphplan.graph.planning.PlanningGraph;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class XMLExporterVisitor implements GraphElementVisitor {
 	protected Document document;
-	
+
 
 	public boolean visitElement(GraphElement element) {
-		if(element instanceof PlanningGraph) {
+		if (element instanceof PlanningGraph) {
 			PlanningGraph planningGraph = (PlanningGraph) element;
 			DocumentBuilder builder;
 			try {
@@ -50,7 +49,7 @@ public class XMLExporterVisitor implements GraphElementVisitor {
 				return false;
 			}
 			document = builder.newDocument();
-			
+
 		}
 		return false;
 	}
@@ -59,14 +58,15 @@ public class XMLExporterVisitor implements GraphElementVisitor {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	protected void addPlanningGraphElement(PlanningGraph planningGraph) {
 		Element element = document.createElement("planning-graph");
-		
+
 	}
 
 	/**
 	 * Returns the DOM representation of the previously visited graph
+	 *
 	 * @return
 	 */
 	public Document getGraphDocument() {

@@ -30,9 +30,10 @@ import graphplan.graph.planning.PlanningGraphException;
 public interface PropositionLevelGenerator {
 	/**
 	 * Creates a new proposition level to succeed the action level specified.
+	 *
 	 * @param actionLevel The preceding action level from which new propositions will be generated.
 	 * @return A new proposition level for the graph.
 	 * @throws PlanningGraphException
 	 */
-	public PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) throws PlanningGraphException;
+	PropositionLevel createNextPropositionLevel(ActionLevel actionLevel);
 }

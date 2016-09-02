@@ -23,39 +23,32 @@
  */
 package graphplan.graph.draw;
 
-import java.io.StringWriter;
-import java.util.Iterator;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import graphplan.domain.Operator;
+import graphplan.domain.Proposition;
+import graphplan.graph.*;
+import graphplan.graph.planning.PlanningGraph;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import graphplan.domain.Operator;
-import graphplan.domain.Proposition;
-import graphplan.graph.ActionLevel;
-import graphplan.graph.GraphElement;
-import graphplan.graph.GraphElementVisitor;
-import graphplan.graph.GraphLevel;
-import graphplan.graph.PropositionLevel;
-import graphplan.graph.planning.PlanningGraph;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
+import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
 public class GraphDrawVisitor implements GraphElementVisitor {
-	
+
 	protected Document graphDoc;
 	protected Element graphElement;
-	
+
 	public GraphDrawVisitor() throws Exception {
 		try {
 			graphDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -64,7 +57,7 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 			throw new Exception(e);
 		}
 	}
-	
+
 	protected void initialize() {
 		Element element = graphDoc.createElement("graphml");
 		graphDoc.appendChild(element);
@@ -76,9 +69,9 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 
 	@SuppressWarnings("unchecked")
 	public boolean visitElement(GraphElement element) {
-		if(element instanceof PlanningGraph) {
+		if (element instanceof PlanningGraph) {
 			PlanningGraph planningGraph = (PlanningGraph) element;
-			for (int i=0; i<planningGraph.size(); i++) {
+			for (int i = 0; i < planningGraph.size(); i++) {
 				this.visitGraphLevel(planningGraph.getGraphLevel(i));
 			}
 		}
@@ -86,99 +79,90 @@ public class GraphDrawVisitor implements GraphElementVisitor {
 	}
 
 	public boolean visitGraphLevel(GraphLevel graphLevel) {
-		if(graphLevel.isPropositionLevel()) {
+		if (graphLevel.isPropositionLevel()) {
 			this.visitPropositionLevel((PropositionLevel) graphLevel);
 		} else {
 			this.visitActionLevel((ActionLevel) graphLevel);
 		}
-		
+
 		return true;
 	}
 
 	public boolean visitActionLevel(ActionLevel actionLevel) {
-		Comment comment = graphDoc.createComment("Action Level "+actionLevel.getIndex());
+		Comment comment = graphDoc.createComment("Action Level " + actionLevel.getIndex());
 		graphElement.appendChild(comment);
-		for (Iterator<Operator> iter = actionLevel.getActions(); iter.hasNext();) {
+		for (Iterator<Operator> iter = actionLevel.getActions(); iter.hasNext(); ) {
 			Operator operator = iter.next();
-			
+
 			String label = operator.getSignature();
-			String id = actionLevel.getIndex()+label;
-			
+			String id = actionLevel.getIndex() + label;
+
 			Element nodeElement = createNode(id, label);
 			graphElement.appendChild(nodeElement);
-			
-			for(Iterator<Proposition> iterPre = operator.getPreconds().iterator(); iterPre.hasNext(); ){
-				Proposition prop = iterPre.next();
-				String target = (actionLevel.getIndex()-1)+prop.getSignature();
+
+			for (Proposition prop : operator.getPreconds()) {
+				String target = (actionLevel.getIndex() - 1) + prop.getSignature();
 				Element edgeElement = createEdge(id, target);
 				graphElement.appendChild(edgeElement);
 			}
-			
-			for(Iterator<Proposition> iterEff = operator.getEffects().iterator(); iterEff.hasNext(); ){
-				Proposition prop = iterEff.next();
-				String target = (actionLevel.getIndex()+1)+prop.getSignature();
+
+			for (Proposition prop : operator.getEffects()) {
+				String target = (actionLevel.getIndex() + 1) + prop.getSignature();
 				Element edgeElement = createEdge(id, target);
 				graphElement.appendChild(edgeElement);
 			}
 		}
 		return true;
 	}
-	
+
 	public boolean visitPropositionLevel(PropositionLevel propositionLevel) {
-		Comment comment = graphDoc.createComment("Proposition Level "+propositionLevel.getIndex());
+		Comment comment = graphDoc.createComment("Proposition Level " + propositionLevel.getIndex());
 		graphElement.appendChild(comment);
-		for (Iterator<Proposition> iter = propositionLevel.getPropositions(); iter.hasNext();) {
+		for (Iterator<Proposition> iter = propositionLevel.getPropositions(); iter.hasNext(); ) {
 			Proposition proposition = iter.next();
-			
+
 			String label = proposition.getSignature();
-			String id = propositionLevel.getIndex()+label;
-			
+			String id = propositionLevel.getIndex() + label;
+
 			Element nodeElement = createNode(id, label);
 			graphElement.appendChild(nodeElement);
 		}
 		return true;
 	}
-	
+
 	protected Element createNode(String id, String label) {
 		Element nodeElement = graphDoc.createElement("node");
 		nodeElement.setAttribute("id", id);
-		
+
 		Element labelElement = graphDoc.createElement("label");
 		Text labelText = graphDoc.createTextNode(label);
 		labelElement.appendChild(labelText);
-		
+
 		nodeElement.appendChild(labelElement);
 		return nodeElement;
 	}
-	
+
 	protected Element createEdge(String source, String target) {
 		Element edgeElement = graphDoc.createElement("edge");
 		edgeElement.setAttribute("source", source);
 		edgeElement.setAttribute("target", target);
-		
+
 		return edgeElement;
 	}
-	
+
 	public String toString() {
 		StringWriter stringWriter = new StringWriter();
-		
+
 		try {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			DOMSource source = new DOMSource(graphDoc);
 			StreamResult result = new StreamResult(stringWriter);
 			transformer.setOutputProperty("indent", "yes");
 			transformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
+		} catch (TransformerFactoryConfigurationError | TransformerException e) {
 			e.printStackTrace();
 		}
-		
+
 		return stringWriter.toString();
 	}
 }

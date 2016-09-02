@@ -28,15 +28,15 @@ import jason.asSemantics.Unifier;
 
 /**
  * A Jason-based adapter implementing the graphplan.domain.Unifier bridge pattern.
- * @author Felipe Meneguzzi
  *
+ * @author Felipe Meneguzzi
  */
 public class UnifierImpl extends Unifier implements graphplan.domain.Unifier {
 
 	public boolean unifies(Proposition proposition1, Proposition proposition2) {
-		if(proposition1 instanceof PropositionImpl &&
+		if (proposition1 instanceof PropositionImpl &&
 				proposition2 instanceof PropositionImpl) {
-			return this.unifies((PropositionImpl)proposition1, (PropositionImpl)proposition2);
+			return this.unifies((PropositionImpl) proposition1, (PropositionImpl) proposition2);
 		} else {
 			return false;
 		}
@@ -45,7 +45,7 @@ public class UnifierImpl extends Unifier implements graphplan.domain.Unifier {
 	protected boolean unifies(PropositionImpl prop1, PropositionImpl prop2) {
 		return super.unifies(prop1, prop2);
 	}
-	
+
 	public boolean isEmpty() {
 		return this.toString().equals("{}");
 	}

@@ -26,49 +26,48 @@ package graphplan.graph.memo;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.PropositionFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MemoizationTable implements Iterable<HashSet<String>> {
 	protected List<HashSet<String>> noGoodsTable;
-	
+
 	//private static int hits = 0;
 	//private static int misses = 0;
-	
+
 	public MemoizationTable() {
-		this.noGoodsTable = new ArrayList<HashSet<String>>();
+		this.noGoodsTable = new ArrayList<>();
 	}
 
 	public Iterator<HashSet<String>> iterator() {
 		return noGoodsTable.iterator();
 	}
-	
+
 	/**
 	 * Translates the supplied graph level into an index in the
 	 * no goods table.
+	 *
 	 * @param graphLevel
 	 * @return
 	 */
-	private final int tableIndex(int graphLevel) {
-		return ((graphLevel >> 1)-1);
+	private int tableIndex(int graphLevel) {
+		return ((graphLevel >> 1) - 1);
 	}
 
-	
+
 	/**
 	 * Ensures that the no goods table has at least the specified size
+	 *
 	 * @param size
 	 */
 	public final void ensureCapacity(int size) {
-		while(noGoodsTable.size() < size) {
-			noGoodsTable.add(new HashSet<String>());
+		while (noGoodsTable.size() < size) {
+			noGoodsTable.add(new HashSet<>());
 		}
 	}
-	
+
 	/**
 	 * Checks whether or
+	 *
 	 * @param propositions
 	 * @param graphLevel
 	 * @return
@@ -78,19 +77,16 @@ public class MemoizationTable implements Iterable<HashSet<String>> {
 		//check the no goods
 		final String signature = PropositionFactory.getInstance().getGoalsSignature(propositions);
 		final HashSet<String> noGoods = noGoodsTable.get(tableIndex(graphLevel));
-		if(noGoods.contains(signature)) {
-			//hits++;
-			return true;
-		} else {
-			//misses++;
-			return false;
-		}
+		//hits++;
+//misses++;
+		return noGoods.contains(signature);
 		//return noGoods.contains(signature);
 	}
-	
+
 	/**
 	 * Adds a new entry to the table of no goods, denoting that the specified set of
 	 * goals is not possible.
+	 *
 	 * @param propositions
 	 * @param graphLevel
 	 */
@@ -99,34 +95,36 @@ public class MemoizationTable implements Iterable<HashSet<String>> {
 		final String signature = PropositionFactory.getInstance().getGoalsSignature(propositions);
 		noGoodsTable.get(tableIndex(graphLevel)).add(signature);
 	}
-	
-	
+
+
 	/**
-	 * Finds out if the plan has not been proven impossible to fulfil given 
-	 * the memoization table. The criterion behind this is that if the graph 
-	 * has levelled off at some level <em>graphLevel</em> and the number of 
+	 * Finds out if the plan has not been proven impossible to fulfil given
+	 * the memoization table. The criterion behind this is that if the graph
+	 * has levelled off at some level <em>graphLevel</em> and the number of
 	 * memoized no-goods of <em>graphLevel+1</em> equals the number at level
 	 * <em>graphLevel</em>, then no plan exists.
+	 *
 	 * @param graphLevel
 	 * @return
 	 */
 	public final boolean levelledOff(int graphLevel) {
-		if(tableIndex(graphLevel) < noGoodsTable.size()) {
+		if (tableIndex(graphLevel) < noGoodsTable.size()) {
 			final int tableIndex = tableIndex(graphLevel);
-			return noGoodsTable.get(tableIndex).size() != noGoodsTable.get(tableIndex-1).size();
+			return noGoodsTable.get(tableIndex).size() != noGoodsTable.get(tableIndex - 1).size();
 		} else {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Returns the total size of the no goods table for every graph level.
+	 *
 	 * @return
 	 */
 	public final int noGoodTableSize() {
 		int res = 0;
-		for(HashSet<String> set : noGoodsTable) {
-			res+= set.size();
+		for (HashSet<String> set : noGoodsTable) {
+			res += set.size();
 		}
 		return res;
 	}

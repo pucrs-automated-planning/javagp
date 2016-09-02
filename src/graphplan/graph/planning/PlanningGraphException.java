@@ -25,39 +25,36 @@ package graphplan.graph.planning;
 
 /**
  * A class representing planning graph exceptions
- * @author Felipe Meneguzzi
  *
+ * @author Felipe Meneguzzi
  */
 public class PlanningGraphException extends Exception {
-	
-	private int graphLevel = -1;
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
+	private int graphLevel = -1;
 
 	public PlanningGraphException() {
 		super();
 	}
-	
+
 	public PlanningGraphException(String message, int graphLevel) {
 		super(message);
 		this.graphLevel = graphLevel;
 	}
-	
+
 	@Override
 	public String getMessage() {
-		if(graphLevel < 0) {
+		if (graphLevel < 0) {
 			return super.getMessage();
 		} else {
-			StringBuilder builder = new StringBuilder();
-			
-			builder.append("At graph level ");
-			builder.append(graphLevel);
-			builder.append(": ");
-			builder.append(super.getMessage());
-			return builder.toString();
+
+			return "At graph level " +
+					graphLevel +
+					": " +
+					super.getMessage();
 		}
 	}
 }

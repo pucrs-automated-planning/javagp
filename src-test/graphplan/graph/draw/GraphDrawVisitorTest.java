@@ -23,10 +23,6 @@
  */
 package graphplan.graph.draw;
 
-import static org.junit.Assert.fail;
-
-import java.util.logging.Logger;
-
 import graphplan.domain.Operator;
 import graphplan.domain.Proposition;
 import graphplan.flyweight.OperatorFactory;
@@ -34,21 +30,21 @@ import graphplan.flyweight.PropositionFactory;
 import graphplan.graph.ActionLevel;
 import graphplan.graph.PropositionLevel;
 import graphplan.graph.planning.PlanningGraph;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.logging.Logger;
+
+import static org.junit.Assert.fail;
+
 public class GraphDrawVisitorTest {
 	private static final Logger logger = Logger.getLogger(GraphDrawVisitorTest.class.getName());
-	
-	private PlanningGraph planningGraph = null;
 
-	private PropositionLevel initialState = null;
+	private PlanningGraph planningGraph = null;
 
 	@Before
 	public void setUp() throws Exception {
-		initialState = new PropositionLevel();
+		PropositionLevel initialState = new PropositionLevel();
 		Proposition proposition = PropositionFactory.getInstance()
 				.getProposition("at(a)");
 		initialState.addProposition(proposition);
@@ -58,13 +54,13 @@ public class GraphDrawVisitorTest {
 
 		OperatorFactory operatorFactory = OperatorFactory.getInstance();
 		Operator operTemplate = operatorFactory.createOperatorTemplate("move(A,B)",
-				new String[] { "~at(B)", "at(A)" }, 
-				new String[] { "at(B)", "~at(A)" });
-		
+				new String[]{"~at(B)", "at(A)"},
+				new String[]{"at(B)", "~at(A)"});
+
 		operatorFactory.addOperatorTemplate(operTemplate);
-		
+
 		planningGraph = new PlanningGraph(initialState);
-		
+
 		ActionLevel actionLevel = new ActionLevel();
 		Operator operator = null;
 		try {
@@ -77,10 +73,6 @@ public class GraphDrawVisitorTest {
 		planningGraph.addGraphLevel(actionLevel);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void testVisitElement() {
 		GraphDrawVisitor drawVisitor = null;
@@ -89,7 +81,7 @@ public class GraphDrawVisitorTest {
 		} catch (Exception e) {
 			fail(e.toString());
 		}
-		
+
 		this.planningGraph.accept(drawVisitor);
 		logger.info(drawVisitor.toString());
 	}

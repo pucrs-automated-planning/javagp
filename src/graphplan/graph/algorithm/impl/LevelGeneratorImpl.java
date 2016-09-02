@@ -33,24 +33,20 @@ import graphplan.graph.algorithm.ActionLevelGenerator;
 import graphplan.graph.algorithm.PropositionLevelGenerator;
 import graphplan.graph.planning.PlanningGraphException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLevelGenerator {
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionLevelGenerator.class.getName());
-	
+
 	private Map<String, Set<String>> types;
 	private Map<String, List<String>> parameterTypes;
-	
+
 	private boolean usingTypes = false;
 
-	public LevelGeneratorImpl(Map<String, Set<String>> types, Map<String, List<String>> parameterTypes){
+	public LevelGeneratorImpl(Map<String, Set<String>> types, Map<String, List<String>> parameterTypes) {
 		this.types = types;
 		this.parameterTypes = parameterTypes;
 		this.usingTypes = true;
@@ -59,15 +55,15 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 		opFactory.setTypes(this.types);
 		opFactory.setParameterTypes(this.parameterTypes);
 	}
-	
-	public LevelGeneratorImpl(){
+
+	public LevelGeneratorImpl() {
 		if (usingTypes) {
 			OperatorFactory opFactory = OperatorFactory.getInstance();
 			opFactory.setTypes(this.types);
 			opFactory.setParameterTypes(this.parameterTypes);
-		}		
+		}
 	}
-	
+
 	/*
 	 * TODO Optimize this method
 	 * (non-Javadoc)
@@ -76,15 +72,15 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 	@Override
 	public ActionLevel createNextActionLevel(PropositionLevel propositionLevel) throws PlanningGraphException {
 		final ActionLevel actionLevel = new ActionLevel();
-		
+
 		final OperatorFactory opFactory = OperatorFactory.getInstance();
 
-		final HashSet<Operator> opTemplateSet = new HashSet<Operator>();
-		final Set<Operator> opSet = new HashSet<Operator>();
-		final ArrayList<Proposition> preconds = new ArrayList<Proposition>();
-		
+		final HashSet<Operator> opTemplateSet = new HashSet<>();
+		final Set<Operator> opSet = new HashSet<>();
+		final ArrayList<Proposition> preconds = new ArrayList<>();
+
 		//TODO Change this to scan by operator rather than by proposition
-		
+
 		// For every proposition
 		for (Proposition proposition : propositionLevel) {
 			final List<Operator> templates;
@@ -96,34 +92,34 @@ public class LevelGeneratorImpl implements ActionLevelGenerator, PropositionLeve
 			//And prepare the list of preconditons for later
 			preconds.add(proposition);
 		}
-		
+
 		// XXX Why the hell do we use a null parameter here?
 		opTemplateSet.addAll(opFactory.getRequiringOperatorTemplates(null));
 
 		/*for (Proposition proposition : propositionLevel) {
-			preconds.add(proposition);
+	        preconds.add(proposition);
 		}*/
-		
+
 		//Piece of crap algorithm used before has been replaced by this call
-		
+
 		try {
 //			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds));
-			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<Operator>(opTemplateSet), preconds,propositionLevel));
+			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds, propositionLevel));
 		} catch (OperatorFactoryException e) {
-			throw new PlanningGraphException(e.getMessage(),propositionLevel.getIndex()+1);
+			throw new PlanningGraphException(e.getMessage(), propositionLevel.getIndex() + 1);
 		}
-		
+
 		for (Operator operator : opSet) {
 			actionLevel.addAction(operator);
 		}
 		// TODO discover how to properly instantiate operator templates
 		// TODO optimize this algorithm
-		
+
 		return actionLevel;
 	}
-	
+
 	@Override
-	public PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) throws PlanningGraphException {
+	public PropositionLevel createNextPropositionLevel(ActionLevel actionLevel) {
 		PropositionLevel propositionLevel = new PropositionLevel();
 		for (Operator operator : actionLevel) {
 			propositionLevel.addPropositions(operator.getEffects());

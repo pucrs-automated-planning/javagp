@@ -38,72 +38,78 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class OperatorImpl extends Structure implements Operator {
+	public static final Iterator<GraphElement> emptyIterator = new Iterator<GraphElement>() {
+		public final boolean hasNext() {
+			return false;
+		}
+
+		public final GraphElement next() {
+			return null;
+		}
+
+		public void remove() {
+		}
+	};
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public static final Iterator<GraphElement> emptyIterator = new Iterator<GraphElement>() {
-		public final boolean hasNext() {return false;}
-
-		public final GraphElement next() {return null;}
-
-		public void remove() {}
-	};
-	
 	protected final List<Proposition> preconds;
 	protected final List<Proposition> effects;
 	private int index = -1;
 
 	public OperatorImpl(String declaration) {
 		super(Structure.parse(declaration));
-		this.preconds = new ArrayList<Proposition>();
-		this.effects = new ArrayList<Proposition>();
+		this.preconds = new ArrayList<>();
+		this.effects = new ArrayList<>();
 	}
-	
+
 	public OperatorImpl(Structure functor, List<Proposition> preconds, List<Proposition> effects) {
 		super(functor);
-		this.preconds = new ArrayList<Proposition>();
-		this.effects = new ArrayList<Proposition>();
+		this.preconds = new ArrayList<>();
+		this.effects = new ArrayList<>();
 		this.addPreconds(preconds);
 		this.addEffects(effects);
 	}
-	
+
 	public OperatorImpl(Operator operator) {
-		this((Structure)operator,operator.getPreconds(),operator.getEffects());
+		this((Structure) operator, operator.getPreconds(), operator.getEffects());
 	}
-	
+
 	/**
 	 * Adds preconditions to this operator while checking for variable consistency.
+	 *
 	 * @param preconds The preconditions to be added to this operator.
 	 */
 	protected void addPreconds(List<Proposition> preconds) {
 		for (Proposition proposition : preconds) {
-			if(checkVariables(proposition)) {
+			if (checkVariables(proposition)) {
 				this.preconds.add(proposition);
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds effects to this operator while checking for variable consistency.
+	 *
 	 * @param effects The effects to be added to this operator.
 	 */
 	protected void addEffects(List<Proposition> effects) {
 		for (Proposition proposition : effects) {
-			if(checkVariables(proposition)) {
+			if (checkVariables(proposition)) {
 				this.effects.add(proposition);
 			}
 		}
 	}
-	
+
 	/**
 	 * Check whether or not the variables in this proposition match those
 	 * in this operator.
+	 *
 	 * @param proposition
 	 * @return Whether the variables in the proposition match those of this operator's header
 	 */
-	private final boolean checkVariables(Proposition proposition) {
+	private boolean checkVariables(Proposition proposition) {
 		//TODO no checking is being made
 		return true;
 	}
@@ -119,7 +125,7 @@ public class OperatorImpl extends Structure implements Operator {
 	public final String getSignature() {
 		return super.toString();
 	}
-	
+
 	public final String getOperatorIndicator() {
 		return super.getPredicateIndicator().toString();
 	}
@@ -140,62 +146,62 @@ public class OperatorImpl extends Structure implements Operator {
 	public final boolean isPrecond(Proposition proposition) {
 		return preconds.contains(proposition);
 	}
-	
+
 	public final boolean isMutex(Operator operator) {
-		//First, we verify if any of this Operator's preconditions is mutex 
+		//First, we verify if any of this Operator's preconditions is mutex
 		//with any precondition or effect in the target Operator
-		
+
 		//If any mutex is found, we can return immediately
-		for(Proposition proposition : preconds) {
-			for(Proposition precond : operator.getPreconds()) {
-				if(proposition.isMutex(precond)) {
+		for (Proposition proposition : preconds) {
+			for (Proposition precond : operator.getPreconds()) {
+				if (proposition.isMutex(precond)) {
 					return true;
 				}
 			}
-			
-			for(Proposition effect : operator.getEffects()) {
-				if(proposition.isMutex(effect)) {
+
+			for (Proposition effect : operator.getEffects()) {
+				if (proposition.isMutex(effect)) {
 					return true;
 				}
 			}
 		}
-		
-		//Verify if any of this Operator's effetcs is mutex with any 
+
+		//Verify if any of this Operator's effetcs is mutex with any
 		//precondition or effect in the target Operator
 		//Again, if we bump into any mutex, we can return immediately
-		for(Proposition proposition : effects) {
-			for(Proposition precond : operator.getPreconds()) {
-				if(proposition.isMutex(precond)) {
+		for (Proposition proposition : effects) {
+			for (Proposition precond : operator.getPreconds()) {
+				if (proposition.isMutex(precond)) {
 					return true;
 				}
 			}
-			
-			for(Proposition effect : operator.getEffects()) {
-				if(proposition.isMutex(effect)) {
+
+			for (Proposition effect : operator.getEffects()) {
+				if (proposition.isMutex(effect)) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean apply(jason.asSemantics.Unifier u) {
 		boolean r = false;
 		boolean tr = super.apply(u);
 		r = r || tr;
-		//XXX We are also having to apply the unifier throughout the 
+		//XXX We are also having to apply the unifier throughout the
 		//XXX preconds and effects, rather than merging variables in the
 		//XXX operator globally
 		List<Proposition> temp = this.preconds;
-		for(int i=0; i<temp.size(); i++) {
-			tr = temp.get(i).apply(u);
+		for (Proposition aTemp1 : temp) {
+			tr = aTemp1.apply(u);
 			r = r || tr;
 		}
-		
+
 		temp = this.effects;
-		for(int i=0; i<temp.size(); i++) {
-			tr = temp.get(i).apply(u);
+		for (Proposition aTemp : temp) {
+			tr = aTemp.apply(u);
 			r = r || tr;
 		}
 		return r;
@@ -203,32 +209,32 @@ public class OperatorImpl extends Structure implements Operator {
 
 	public boolean apply(Unifier unifier) {
 		//XXX Hack to fix the problem of an empty unifier's application returning empty
-		if(unifier.isEmpty()) {
+		if (unifier.isEmpty()) {
 			return true;
 		}
 		//Since this implementation relies on a Jason binding, we have to force our unifier
 		//to be Jason's
-		if(unifier instanceof jason.asSemantics.Unifier) {
-			return this.apply((jason.asSemantics.Unifier)unifier);
+		if (unifier instanceof jason.asSemantics.Unifier) {
+			return this.apply((jason.asSemantics.Unifier) unifier);
 		} else {
 			return false;
 		}
 	}
-	
+
 	public Term clone() {
 		OperatorImpl newOp = new OperatorImpl(this);
-		
+
 		newOp.preconds.clear();
 		newOp.effects.clear();
-		
+
 		for (Proposition prop : preconds) {
 			newOp.preconds.add((Proposition) prop.clone());
 		}
-		
+
 		for (Proposition prop : effects) {
 			newOp.effects.add((Proposition) prop.clone());
 		}
-		
+
 		return newOp;
 	}
 
@@ -237,12 +243,12 @@ public class OperatorImpl extends Structure implements Operator {
 	}
 
 	@Override
-	public void setIndex(int index) {
-		this.index = index;
+	public int getIndex() {
+		return this.index;
 	}
 
 	@Override
-	public int getIndex() {
-		return this.index;
+	public void setIndex(int index) {
+		this.index = index;
 	}
 }

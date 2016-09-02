@@ -27,16 +27,18 @@ public interface Unifier {
 	/**
 	 * Tries to unify proposition1 and proposition2, returning whether or not
 	 * the two can be unified, and storing the unification in this object.
+	 *
 	 * @param proposition1
 	 * @param proposition2
 	 * @return
 	 */
-	public boolean unifies(Proposition proposition1, Proposition proposition2);
-	
+	boolean unifies(Proposition proposition1, Proposition proposition2);
+
 	/**
 	 * Tells whether or not this unifier is empty in that it does not
 	 * have any variable assignments to be made.
+	 *
 	 * @return
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 }

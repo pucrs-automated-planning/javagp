@@ -29,24 +29,25 @@ import graphplan.graph.GraphLevel;
 
 public interface MutexGenerator {
 	/**
-	 * Adds mutex relationships to the specified action level based on the 
+	 * Adds mutex relationships to the specified action level based on the
 	 * preceding proposition level.
-	 *  
+	 *
 	 * @param previousLevel The proposition level preceding the target action
-	 * 						level.
-	 * @param actionLevel	The action level onto which mutex relationships 
-	 * 						are to be added.
+	 *                      level.
+	 * @param actionLevel   The action level onto which mutex relationships
+	 *                      are to be added.
 	 */
-	public void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel);
-	
+	void addActionMutexes(GraphLevel<Proposition> previousLevel, GraphLevel<Operator> actionLevel);
+
 	/**
 	 * Adds mutex relationships to the specified proposition level based on
 	 * the preceding action level.
-	 * @param previousLevel	The action level preceding the target proposition
-	 * 						level.
-	 * @param propositionLevel The proposition level onto which mutex 
-	 * 						relationships are to be added.
+	 *
+	 * @param previousLevel    The action level preceding the target proposition
+	 *                         level.
+	 * @param propositionLevel The proposition level onto which mutex
+	 *                         relationships are to be added.
 	 */
-	public void addPropositionMutexes(GraphLevel<Operator> previousLevel, GraphLevel<Proposition> propositionLevel);
-	
+	void addPropositionMutexes(GraphLevel<Operator> previousLevel, GraphLevel<Proposition> propositionLevel);
+
 }

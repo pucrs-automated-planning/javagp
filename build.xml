@@ -14,12 +14,14 @@
 
 	<property name="jason.jar" value="${basedir}/lib/jason.jar"/>
 	<property name="javacc.jar" value="${basedir}/lib/javacc.jar"/>
-	<property name="pddl4k.jar" value="${basedir}/lib/pddl4j.jar"/>
+	<property name="pddl4j.jar" value="${basedir}/lib/pddl4j-3.3.6.jar"/>
+	<property name="junit.jar" value="${basedir}/lib/junit-4.12.jar"/>
+	<property name="hamcrest-core.jar" value="${basedir}/lib/hamcrest-core-1.3.jar"/>
+	<property name="annotations-java8.jar" value="${basedir}/lib/annotations-java8.jar"/>
 	<property name="build.dir" value="${basedir}/bin" />
 	<property name="src.dir" value="${basedir}/src"/>
 	<property name="doc.api.dir" value="${basedir}/doc/api"/>
 	<property name="debug" value="false"/>
-
 
 	<property name="version" value="1.0" />
 	<property name="release" value="12" />
@@ -27,13 +29,28 @@
 	<property name="dist.file" value="${basedir}/javagp-src-${version}.${release}.zip" />
 	<property name="javagp.jar" value="${basedir}/javagp.jar" />
 	<property name="bin.dist.file" value="${basedir}/javagp-bin-${version}.${release}.zip" />
-
 	
 	<path id="project.classpath">
 		<pathelement location="bin"/>
 	    <pathelement location="${jason.jar}"/>
 		<pathelement location="${javacc.jar}"/>
 		<pathelement location="${pddl4j.jar}"/>
+		<pathelement location="${annotations-java8.jar}"/>
+	</path>
+
+
+	<!-- Test properties -->
+	<property name="test.src.dir" value="src-test/"/>
+
+	<path id="classpath.test">
+        <pathelement location="bin"/>
+        <pathelement location="${jason.jar}"/>
+        <pathelement location="${javacc.jar}"/>
+        <pathelement location="${pddl4j.jar}"/>
+        <pathelement location="${junit.jar}"/>
+        <pathelement location="${hamcrest-core.jar}"/>
+        <pathelement location="${annotations-java8.jar}"/>
+		<pathelement location="${build.dir}"/>
 	</path>
 
 	<!-- ================================= 
@@ -43,7 +60,7 @@
 		<jar destfile="${javagp.jar}">
 			<manifest>
 				<attribute name="Main-Class" value="graphplan.Graphplan" />
-				<attribute name="Class-Path" value="lib/jason.jar lib/pddl4j.jar"/>
+				<attribute name="Class-Path" value="project.classpath"/>
 			</manifest>
 			<fileset dir="${basedir}/bin">
 				<include name="**/*.class" />
@@ -51,6 +68,7 @@
 			<fileset dir="${basedir}/src">
 				<include name="logging.properties"/>
 			</fileset>
+			<zipgroupfileset includes="*.jar" dir="lib"/>
 		</jar>
 	</target>
 
@@ -74,7 +92,7 @@
           target: compile              
          ================================= -->
     <target name="compile" depends="parser" description="--> Compiles the sources">
-    	<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${debug}" deprecation="true" optimize="true" nowarn="true" source="1.5" target="1.5">
+    	<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${debug}" deprecation="true" optimize="true" nowarn="true" source="1.8" target="1.8">
 			<classpath refid="project.classpath" />
 		</javac>
     </target>
@@ -236,5 +254,30 @@
 	                <mapper type="glob" from="*.dot" to="*.pdf"/>
 	            </apply>
 	    </target>
+
+
+    <!-- =================================
+		  target: test-compile and test
+		 ================================= -->
+
+    <target name="test-compile" depends="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${test.src.dir}" destdir="${build.dir}" includeantruntime="false">
+            <classpath refid="classpath.test"/>
+        </javac>
+    </target>
+
+    <target name="test" depends="test-compile">
+        <junit printsummary="on" haltonfailure="no" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${build.dir}"/>
+            </classpath>
+            <formatter type="brief" usefile="false" />
+            <batchtest>
+                <fileset dir="${test.src.dir}" includes="**/*Test.java" />
+            </batchtest>
+        </junit>
+    </target>
 
 </project>
