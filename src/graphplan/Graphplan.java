@@ -557,8 +557,9 @@ public class Graphplan {
 						try {
 							builder.setExtractAllPossibleSolutions(true);
 							builder.setExtractAllPossibleSolutionsWithMaxLength(Integer.parseInt(args[i]));
+							logger.info("Extracting all possible solutions with length up to "+Integer.parseInt(args[i]));
 						} catch (NumberFormatException e) {
-							logger.warning("-maxlevels argument requires an integer number of levels");
+							logger.warning("-extractAllPossibleSolutions argument requires an integer max length");
 						}
 					} else {
 						logger.warning("-extractAllPossibleSolutions argument requires a valid non-negative integer max length");
