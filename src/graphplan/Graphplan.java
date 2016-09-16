@@ -60,7 +60,7 @@ public class Graphplan {
 
 	// Logging
 	private static final Logger logger = Logger.getLogger(Graphplan.class.getName());
-	private static final String LOGGER_FILE = "logging.properties";
+	private static final String LOGGER_FILE = "src/logging.properties";
 
 	// Global parameters
 	public static boolean noopsFirst = false;
