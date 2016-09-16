@@ -83,11 +83,16 @@ public class Graphplan {
 	private SolutionExtractionVisitor solutionExtraction;
 
 	public static void main(String[] args) {
-		Graphplan graphplan = parseArgs(args);
-		if(graphplan != null) {
-			graphplan.printDebugInfo();
-			graphplan.getPlanSolution();
-			graphplan.drawPlanningGraph();
+		try{
+			Graphplan graphplan = parseArgs(args);
+			if(graphplan != null) {
+				graphplan.printDebugInfo();
+				graphplan.getPlanSolution();
+				graphplan.drawPlanningGraph();
+			}
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+			printHelpMessage();
 		}
 	}
 
@@ -273,7 +278,7 @@ public class Graphplan {
 		}
 	}
 
-	private static void wrongParametersMessage() {
+	private static void printHelpMessage() {
 		logger.warning("Wrong parameters");
 		logger.info("Usage: \'java -jar JavaGP \'" +
 				"\n\t>>> STRIPS Language: " +
@@ -572,7 +577,7 @@ public class Graphplan {
 		if (argsOk) {
 			return builder.build();
 		} else {
-			Graphplan.wrongParametersMessage();
+			Graphplan.printHelpMessage();
 			return null;
 		}
 	}
