@@ -557,7 +557,7 @@ public class Graphplan {
 						try {
 							builder.setExtractAllPossibleSolutions(true);
 							builder.setExtractAllPossibleSolutionsWithMaxLength(Integer.parseInt(args[i]));
-							logger.info("Extracting all possible solutions with length up to "+Integer.parseInt(args[i]));
+							logger.info("Extracting all possible solutions with length up to "+Integer.parseInt(args[i])+" beyond optimal plan length");
 						} catch (NumberFormatException e) {
 							logger.warning("-extractAllPossibleSolutions argument requires an integer max length");
 						}
