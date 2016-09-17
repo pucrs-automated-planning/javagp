@@ -70,8 +70,8 @@ public class LevelGeneratorClosedWorldAssumptionImpl extends LevelGeneratorImpl 
 			if (this.isUsingTypes()) {
 				opFactory.setTypes(this.getTypes());
 				opFactory.setParameterTypes(this.getParameterTypes());
-				opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds, initialState));
-			} else opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds));
+			}
+			opSet.addAll(opFactory.getAllPossibleInstantiations(new ArrayList<>(opTemplateSet), preconds, initialState));
 		} catch (OperatorFactoryException e) {
 			throw new PlanningGraphException(e.getMessage(), propositionLevel.getIndex() + 1);
 		}

@@ -347,7 +347,11 @@ public class OperatorFactory {
 					for (Proposition proposition : copy.getPreconds()) {
 						PropositionImpl realProp = (PropositionImpl) proposition;
 						realProp.apply(unifier);
-						addInstance = preconds.contains(proposition);
+						boolean initialStateContainsThisProposition = preconds.contains(proposition);
+						if(!initialStateContainsThisProposition) {
+							// If initial state does not contain this proposition, this operator is not applicable, so we should not add it
+							addInstance = false;
+						}
 
 						if (proposition.negated() && !addInstance) {
 	                        /*Closed World Assumption*/
@@ -360,10 +364,6 @@ public class OperatorFactory {
 									initial.addProposition(proposition);
 								}
 							}
-							//addInstance = true;
-						}
-						if (!addInstance) {
-							break;
 						}
 					}
 					if (addInstance) {
