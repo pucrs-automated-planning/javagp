@@ -21,7 +21,7 @@ public class GraphplanPDDLTest {
 		}
 	}
 
-	@Test
+//	@Test
 	public void testRushPDDL() {
 		logger.info("Testing Rush hour problem in PDDL");
 		try {
