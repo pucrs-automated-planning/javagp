@@ -210,6 +210,20 @@ public class GraphplanPDDLTest {
 	}
 
 	/**
+	 * This unit test is to check if issue #23 (https://github.com/pucrs-automated-planning/javagp/issues/23) is solved
+	 * "Closed world assumption does not seem to be working on the attached RPG domain (it generates a useless destroy_sword action because it cannot find (not (carry))."
+	 * To test this, we are checking if we generate a plan with 9 actions. The destroy_sword is the useless 10th action.
+	 */
+	@Test
+	public void testClosedWorldAssumptionInRpgDomain() {
+		Graphplan graphplan = new Graphplan.Builder().setDomainFilename("examples/pddl/rpg/rpg.txt")
+				.setProblemFilename("examples/pddl/rpg/pb1.txt")
+				.setExtractAllPossibleSolutions(false).build();
+		PlanSolution planSolution = graphplan.getPlanSolution();
+		assertEquals(planSolution.getAllHighlevelPlans().iterator().next().getPlanLength(), 9);
+	}
+
+	/**
 	 * extractAllPossibleSolutions
 	 */
 
