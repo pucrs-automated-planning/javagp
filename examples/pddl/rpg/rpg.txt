@@ -1,0 +1,100 @@
+; Domain description
+; Describe the relations and transitions that can occur
+; This one describe the Tower of Hanoi puzzle
+(define (domain dungeon) ; Domain name must match problem's
+
+  ; Define what the planner must support to execute this domain
+  ; Only domain requirements are currently supported
+  (:requirements
+    :strips                 ; basic preconditions and effects
+    :negative-preconditions ; to use not in preconditions
+    :equality               ; to use = in preconditions
+    ; :typing               ; to define type of objects and parameters
+  )
+
+  ; Define the relations
+  ; Question mark prefix denotes free variables
+  (:predicates
+    (adjacent ?x ?y) ; A Room ?x is adjacent to ?y
+    (destroyed ?x)   ; A room ?x has already been visited
+    (at ?x)          ; The hero is in the room ?x
+    (trap ?x)        ; A room ?x has a trap on it
+    (monster ?x)     ; A room ?x has a monster on it
+    (sword ?x)       ; A room ?x has a sword on it
+    (carry)       ; The hero is carrying a sword
+    )
+
+  ; Define a transition to move a disc from one place to another
+  (:action move
+    :parameters (?from ?to)
+    ; Only conjunction or atomic preconditions are supported
+    :precondition (and
+      (adjacent ?from ?to)
+      (not (destroyed ?to))
+      (at ?from)
+      (not (trap ?from))
+      (not (monster ?to))
+      )
+    ; Only conjunction or atomic effects are supported
+    :effect (and
+      ; Note that adding the new relations is not enough
+      (destroyed ?from)
+      (at ?to)
+      ; Remove the old relations, order is not important
+      (not (at ?from))
+    )
+  )
+  (:action move_armed
+    :parameters (?from ?to)
+    ; Only conjunction or atomic preconditions are supported
+    :precondition (and
+      (adjacent ?from ?to)
+      (not (destroyed ?to))
+      (at ?from)
+      (not (trap ?from))
+      (carry)
+      (monster ?to)
+      )
+    ; Only conjunction or atomic effects are supported
+    :effect (and
+      ; Note that adding the new relations is not enough
+      (destroyed ?from)
+      (at ?to)
+      ; Remove the old relations, order is not important
+      (not (at ?from))
+    )
+  )
+  (:action grab_sword
+    :parameters (?at)
+    :precondition (and
+        (at ?at)
+        (sword ?at)
+        (not (carry))
+        )
+    :effect (and
+    (carry)
+    )
+  )
+  (:action destroy_sword
+    :parameters(?at)
+    :precondition(and
+        (at ?at)
+        (not (trap ?at))
+        (not (monster ?at))
+    )
+    :effect (and
+        (not (carry))
+    )
+  )
+  (:action disarm_trap
+    :parameters(?at)
+    :precondition(and
+        (at ?at)
+        (trap ?at)
+        (not (carry))
+    )
+    :effect(and
+        (not (trap ?at))
+    )
+  )
+)

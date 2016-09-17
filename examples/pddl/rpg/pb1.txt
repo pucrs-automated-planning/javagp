@@ -1,0 +1,54 @@
+; Problem description
+(define (problem pb1)
+  (:domain dungeon)
+
+  ; Objects are candidates to replace free variables
+  (:objects r1 r2 r3 r4 r5 r6 r7 r8)
+
+  ; The initial state describe what is currently true
+  ; Everything else is considered false
+  (:init
+    (adjacent r1 r2)
+    (adjacent r2 r1)
+    
+    (adjacent r1 r3)
+    (adjacent r3 r1)
+    
+    (adjacent r2 r3)
+    (adjacent r3 r2)
+    
+    (adjacent r2 r4)
+    (adjacent r4 r2)
+    
+    (adjacent r3 r5)
+    (adjacent r5 r3)
+    
+    (adjacent r4 r5)
+    (adjacent r5 r4)
+    
+    (adjacent r4 r6)
+    (adjacent r6 r4)
+    
+    (adjacent r5 r7)
+    (adjacent r7 r5)
+    
+    (adjacent r6 r7)
+    (adjacent r7 r6)
+    
+    (adjacent r6 r8)
+    (adjacent r8 r6)
+    
+    (sword r2)
+    (trap r6)
+    (monster r3)
+    (monster r4)
+    
+    (at r1)
+  )
+
+  ; The goal state describe what we desire to achieve
+  (:goal (and
+    ; Discs stacked on peg3
+    (at r8)
+  ))
+)
