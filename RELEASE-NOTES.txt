@@ -1,4 +1,14 @@
 ---------------------------
+version 1.1
+Release 1
+
+release-1.1.1 on Github
+---------------------------
+Changes:
+- Upgraded PDDL4j to 3.3.6
+- Moved the repository to Github
+- Addressed minor bugs
+---------------------------
 version 1.0
 Release 12
 
