@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>JavaGP by pucrs-automated-planning</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>JavaGP</h1>
+        <p>Graphplan implementation in Java</p>
+
+        <p class="view"><a href="https://github.com/pucrs-automated-planning/javagp">View the Project on GitHub <small>pucrs-automated-planning/javagp</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/pucrs-automated-planning/javagp/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/pucrs-automated-planning/javagp/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/pucrs-automated-planning/javagp">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="embeddable-graphplan-implementations" class="anchor" href="#embeddable-graphplan-implementations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Embeddable Graphplan Implementations</h1>
+
+<h2>
+<a id="javagp" class="anchor" href="#javagp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JavaGP</h2>
+
+<p>The goal of this project is to provide “embeddable” versions of <a href="https://pucrs-automated-planning.github.io/javagp/">Graphplan</a> in various languages so that one can simply use the libraries and either programatically introduce planning problems to it, or create character streams to be parsed by the planning algorithms. I originally wrote this software to be embedded in the interpreters of <a href="http://www.meneguzzi.eu/felipe/software.shtml#xbdi">agent programming languages</a>.</p>
+
+<p>Desirable features of each implementation include:</p>
+
+<ul>
+<li>Textual input using a Prolog-like domain description language. </li>
+<li>Easily understandable object model for programmatic input</li>
+<li>Inclusion of all features of the original Graphplan implementation, including memoization and guaranteed termination.</li>
+<li>Statistics gathering modules for comparison of runtimes with other algorithms/implementations</li>
+</ul>
+
+<p>The current set of implementations includes:</p>
+
+<ul>
+<li>C++ (<a href="https://github.com/pucrs-automated-planning/emplan">Emplan</a>): an STL-based implementation using a variation of Lex and Yacc for domain parsing. Operating systems that this implementation is known to compile and run include, Linux (CentOS), Mac OS X and Windows (MinGW). It was originally created to support an extended logic agent, but it can be used as a standalone command-line tool.</li>
+<li>Java (this project, JavaGP): an OS-independent implementation that uses JavaCC for domain parsing. This implementation was created for integration with <a href="http://www.meneguzzi.eu/felipe/software.shtml#peleus">Peleus</a>, a planning-capable extension of the Jason AgentSpeak interpreter.</li>
+</ul>
+
+<p>You can currently download the sources in Java and C++ (which differ somewhat as each language has its own quirks), as well as binaries for Windows and Mac OS. I encourage anyone with the time and disposition to refine these sources to send me a line and participate. At the moment I have some issues to address in the Java version.</p>
+
+<p>It goes without saying that you are free to use this software for any purpose, but if you do use this software for any research or academic purpose, I would ask as a courtesy for you to <a href="http://www.meneguzzi.eu/felipe/pubs.shtml">cite my work</a> that led to the implementation of these libraries. </p>
+
+<p>If you use the C++ version of the planner, you can cite the following journal paper:</p>
+
+<div class="highlight highlight-text-tex"><pre>@ARTICLE{Meneguzzi2007:PlanningBDI,
+  author = {Felipe Meneguzzi and Avelino Francisco Zorzo and Michael da Costa
+    M<span class="pl-cce">\'</span>{o}ra and Michael Luck},
+  title = {Incorporating Planning into {BDI} Agents},
+  journal = {Scalable Computing: Practice and Experience},
+  year = {2007},
+  volume = {8},
+  pages = {15--28}
+}</pre></div>
+
+<p>Whereas if you use the Java library I would ask you to cite the following conference paper:</p>
+
+<div class="highlight highlight-text-tex"><pre>@INPROCEEDINGS{Meneguzzi2008:Leveraging,
+  author = {Felipe Meneguzzi and Michael Luck},
+  title = {Leveraging new plans in {AgentSpeak(PL)}},
+  booktitle = {Proceedings of the Sixth Workshop on Declarative Agent Languages},
+  year = {2008},
+  editor = {Matteo Baldoni and Tran Cao Son and M. Birna van Riemsdijk and Michael Winikoff},
+  pages = {63-78}
+}</pre></div>
+
+<h2>
+<a id="other-implementations" class="anchor" href="#other-implementations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other Implementations</h2>
+
+<p>This implementation of Graphplan is by no means unique, and various others are available on the internet. Although we believe that our implementation is the most “complete” when compared to the original implementations of Graphplan, one can shop around and find others. To my knowledge these are the ones currently out there (if you find other implementations, do let me know):</p>
+
+<ul>
+<li>The original implementation by Blum and Furst: <a href="http://www.cs.cmu.edu/%7Eavrim/graphplan.html">Graphplan</a>
+</li>
+<li>A simple implementation: <a href="https://sourceforge.net/projects/jplan/">JPlan</a>
+</li>
+<li>Philippe Fournier’s implementation: <a href="http://plplan.philippe-fournier-viger.com/">PL-Plan </a>
+</li>
+<li>The implementation embedded in the PDDL parser I use in JavaGP: <a href="https://github.com/pellierd/pddl4j">PDDL4J</a>
+</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/pucrs-automated-planning">pucrs-automated-planning</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
