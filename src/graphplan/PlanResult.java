@@ -61,6 +61,10 @@ public class PlanResult implements Iterable<Operator> {
 		}
 	}
 
+	public List<List<Operator>> getSteps() {
+		return steps;
+	}
+
 	public int getPlanLength() {
 		return planLength;
 	}

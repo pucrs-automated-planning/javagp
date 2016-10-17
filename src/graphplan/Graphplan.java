@@ -347,8 +347,9 @@ public class Graphplan {
 			if (domain.isNegativePreconditions()) {
 				logger.fine("OPTIMIZATION: JavaGP using Closed World Assumption (Lazily)");
 				this.planningGraph = new PlanningGraphClosedWorldAssumption(initialLevel, domain.getTypes(), domain.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
-			} else
+			} else {
 				this.planningGraph = new PlanningGraph(initialLevel, domain.getTypes(), domain.getParameterTypes(), new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
+			}
 		} else {
 			this.planningGraph = new PlanningGraph(initialLevel, new StaticMutexesTable(new ArrayList<>(domain.getOperators())));
 		}
