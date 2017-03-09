@@ -1,0 +1,73 @@
+{
+  "created": "2017-03-07T21:37:15.482225+00:00", 
+  "doi": "10.5281/zenodo.375665", 
+  "id": 375665, 
+  "links": {
+    "badge": "https://zenodo.org/badge/doi/10.5281/zenodo.375665.svg", 
+    "doi": "https://doi.org/10.5281/zenodo.375665", 
+    "html": "https://zenodo.org/record/375665"
+  }, 
+  "metadata": {
+    "access_right": "open", 
+    "access_right_category": "success", 
+    "creators": [
+      {
+        "affiliation": "PUCRS", 
+        "name": "Felipe Meneguzzi"
+      }, 
+      {
+        "affiliation": "PUCRS", 
+        "name": "Ramon Fraga Pereira"
+      }, 
+      {
+        "affiliation": "PUCRS", 
+        "name": "Fernando Fuentes Giroleti"
+      }, 
+      {
+        "affiliation": "PUCRS", 
+        "name": "Guilherme Krzisch"
+      }, 
+      {
+        "affiliation": "PUCRS", 
+        "name": "Mauricio Magnaguagno"
+      }
+    ], 
+    "description": "<p>A Java Implementation of Graphplan.</p>", 
+    "doi": "10.5281/zenodo.375665", 
+    "keywords": [
+      "Graphplan", 
+      "Java"
+    ], 
+    "license": {
+      "id": "other-open"
+    }, 
+    "publication_date": "2017-03-07", 
+    "references": [
+      "Meneguzzi, Felipe. Extending agent languages for multiagent domains. University of London - King's College London, UK, 2009 (PhD Thesis).", 
+      "Meneguzzi, Felipe and Luck, Michael Norm-based behaviour modification in BDI agents. Proceedings of the 8th International Conference on Autonomous Agents and Multiagent Systems (AAMAS), Budapest, Hungary, 2009.", 
+      "Meneguzzi, Felipe Extending agent languages for autonomy. AAMAS 2008 Doctoral Mentoring Programme. Estoril, Portugal, 2008.", 
+      "Meneguzzi, F.; Luck, Michael. Interaction among agents that plan. From Agent Theory to Agent Implementation. Estoril, Portugal, 2008.", 
+      "Meneguzzi, F.; Luck, Michael; Leveraging new plans in AgentSpeak(PL). Declarative Agent Languages and Technologies. Estoril, Portugal, 2008.", 
+      "Meneguzzi, F.; Luck, Michael. Composing high-level plans for declarative agent programming. Declarative Agent Languages and Technologies. Honolulu, Hawai'i, 2007.", 
+      "Meneguzzi, Felipe Rech. Motivations and declarative goals as cornerstones of autonomy. Student Session of the Eight European Agent Systems Summer School. Annecy, France, 2006.", 
+      "Meneguzzi, Felipe. Motivations and Goal-Directed Autonomy, in AAAI-10 Workshop on Goal-Directed Autonomy, 2010."
+    ], 
+    "related_identifiers": [
+      {
+        "identifier": "https://github.com/pucrs-automated-planning/javagp/tree/v-1.1.1z", 
+        "relation": "isSupplementTo", 
+        "scheme": "url"
+      }
+    ], 
+    "resource_type": {
+      "title": "Software", 
+      "type": "software"
+    }, 
+    "title": "pucrs-automated-planning/javagp: Version 1.1 Release 1 Zenodo"
+  }, 
+  "owners": [
+    15320
+  ], 
+  "revision": 1, 
+  "updated": "2017-03-09T19:51:32.767968+00:00"
+}
