@@ -1,5 +1,8 @@
-# javagp [![Build Status](https://travis-ci.org/pucrs-automated-planning/javagp.svg?branch=master)](https://travis-ci.org/pucrs-automated-planning/javagp)
-Java Implementation of Graphplan
+# JavaGP - Java Implementation of Graphplan [![Build Status](https://travis-ci.org/pucrs-automated-planning/javagp.svg?branch=master)](https://travis-ci.org/pucrs-automated-planning/javagp)
+
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.375665.svg)](https://doi.org/10.5281/zenodo.375665)
+
 
 ## How to use
 
